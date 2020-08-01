@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="settings_table">
+        <item>@string/system_table</item>
+        <item>@string/secure_table</item>
+        <item>@string/global_table</item>
+        <item>@string/android_properties</item>
+        <item>@string/java_properties</item>
+        <item>@string/linux_environment</item>
+    </string-array>
+</resources>
