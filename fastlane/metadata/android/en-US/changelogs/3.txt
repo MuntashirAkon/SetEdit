@@ -1,0 +1,4 @@
+- Migrated to AndroidX
+- Day/night theme for supported devices
+- Add search button
+For the first 3 tables, searching only matches the whole key due to an inherent limitation.
