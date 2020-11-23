@@ -1,7 +1,6 @@
 package io.github.muntashirakon.setedit;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -17,17 +16,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListAdapter;
+import android.widget.Filterable;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Locale;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import io.github.muntashirakon.setedit.adapter.AdapterProvider;
 import io.github.muntashirakon.setedit.adapter.IAdapterProvider;
@@ -41,7 +44,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
 
     protected Spinner spinnerTable;
     protected View view;
-    protected ListAdapter adapter;
+    protected BaseAdapter adapter;
     private ListView listView;
     private AlertDialog.Builder dialogBuilder;
     private AlertDialog.Builder contextDialog;
@@ -53,6 +56,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
     private View editorDialogView;
     private EditText editText;
     private final IAdapterProvider adapterProvider = new AdapterProvider(this, this);
+    SearchView searchView;
 
     private void oneTimeWarningDialog(SharedPreferences sharedPreferences, CharSequence charSequence) {
         TextView textView = new TextView(this);
@@ -194,7 +198,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
         setContentView(R.layout.activity_editor);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            SearchView searchView = new SearchView(actionBar.getThemedContext());
+            searchView = new SearchView(actionBar.getThemedContext());
             actionBar.setDisplayShowCustomEnabled(true);
             ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -205,6 +209,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
         // List view
         listView = findViewById(R.id.list_view);
         listView.setOnItemClickListener(this);
+        listView.setTextFilterEnabled(false);
         // Add header (add new item)
         View addNewItemView = getLayoutInflater().inflate(R.layout.item_list_header, null);
         addNewItemView.setOnClickListener(v -> displaySettingEditor(null, null));
@@ -248,6 +253,9 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
     public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
         if (adapterView == spinnerTable && position != 6) {
             adapter = adapterProvider.getAdapter(position);
+            searchView.setQuery(null, false);
+            searchView.clearFocus();
+            searchView.setIconified(true);
         } else return;
         listView.setAdapter(adapter);
     }
@@ -275,6 +283,9 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
 
     @Override
     public boolean onQueryTextChange(String newText) {
+        if (adapter instanceof Filterable) {
+            ((Filterable) adapter).getFilter().filter(newText.toLowerCase(Locale.ROOT));
+        }
         return false;
     }
 }

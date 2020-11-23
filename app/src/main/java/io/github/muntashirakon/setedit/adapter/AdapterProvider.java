@@ -1,7 +1,7 @@
 package io.github.muntashirakon.setedit.adapter;
 
 import android.content.Context;
-import android.widget.ListAdapter;
+import android.widget.BaseAdapter;
 
 import io.github.muntashirakon.setedit.IEditorActivity;
 import io.github.muntashirakon.setedit.adapters.AndroidPropertyListAdapter;
@@ -18,7 +18,7 @@ public class AdapterProvider implements IAdapterProvider {
         this.editorActivity = editorActivity;
     }
 
-    public ListAdapter getAdapter(int position) {
+    public BaseAdapter getAdapter(int position) {
         switch (position) {
             case 0:
                 return new SettingsCursorAdapter(context, editorActivity, "system");

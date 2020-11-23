@@ -1,7 +1,7 @@
 package io.github.muntashirakon.setedit.adapter;
 
-import android.widget.ListAdapter;
+import android.widget.BaseAdapter;
 
 public interface IAdapterProvider {
-    ListAdapter getAdapter(int position);
+    BaseAdapter getAdapter(int position);
 }

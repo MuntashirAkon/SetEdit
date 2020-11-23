@@ -1,28 +1,31 @@
 package io.github.muntashirakon.setedit.adapters;
 
-import android.database.DataSetObserver;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListAdapter;
-import io.github.muntashirakon.setedit.Native;
+import android.widget.BaseAdapter;
+import android.widget.Filter;
+import android.widget.Filterable;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
-public class AndroidPropertyListAdapter implements ListAdapter {
+import io.github.muntashirakon.setedit.Native;
+
+public class AndroidPropertyListAdapter extends BaseAdapter implements Filterable {
     private final List<String[]> list = new ArrayList<>();
+    private final List<Integer> matchedIndexes = new ArrayList<>();
+    private Filter filter;
 
     public AndroidPropertyListAdapter() {
         Native.setPropertyList(list);
-    }
-
-    @Override
-    public boolean areAllItemsEnabled() {
-        return true;
+        getFilter().filter(null);
     }
 
     @Override
     public int getCount() {
-        return list.size();
+        return matchedIndexes.size();
     }
 
     @Override
@@ -36,13 +39,8 @@ public class AndroidPropertyListAdapter implements ListAdapter {
     }
 
     @Override
-    public int getItemViewType(int i) {
-        return 0;
-    }
-
-    @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-        String[] property = list.get(i);
+        String[] property = list.get(matchedIndexes.get(i));
         if (view == null) {
             view = AdapterUtils.inflateSetting(viewGroup.getContext(), viewGroup);
         }
@@ -51,28 +49,36 @@ public class AndroidPropertyListAdapter implements ListAdapter {
     }
 
     @Override
-    public int getViewTypeCount() {
-        return 1;
+    public Filter getFilter() {
+        if (filter == null) {
+            filter = new Filter() {
+                @Override
+                protected FilterResults performFiltering(CharSequence constraint) {
+                    FilterResults results = new FilterResults();
+                    List<Integer> matchedIndexes = new ArrayList<>(list.size());
+                    if (TextUtils.isEmpty(constraint)) {
+                        for (int i = 0; i < list.size(); ++i) matchedIndexes.add(i);
+                    } else {
+                        for (int i = 0; i < list.size(); ++i) {
+                            String key = list.get(i)[0];
+                            if (key.toLowerCase(Locale.ROOT).contains(constraint)) {
+                                matchedIndexes.add(i);
+                            }
+                        }
+                    }
+                    results.count = matchedIndexes.size();
+                    results.values = matchedIndexes;
+                    return results;
+                }
+
+                @Override
+                protected void publishResults(CharSequence constraint, FilterResults results) {
+                    matchedIndexes.clear();
+                    matchedIndexes.addAll((List<Integer>) results.values);
+                    notifyDataSetChanged();
+                }
+            };
+        }
+        return filter;
     }
-
-    @Override
-    public boolean hasStableIds() {
-        return true;
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return false;
-    }
-
-    @Override
-    public boolean isEnabled(int i) {
-        return true;
-    }
-
-    @Override
-    public void registerDataSetObserver(DataSetObserver dataSetObserver) {}
-
-    @Override
-    public void unregisterDataSetObserver(DataSetObserver dataSetObserver) {}
 }
