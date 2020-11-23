@@ -17,7 +17,7 @@
         android:name="android.hardware.touchscreen"
         android:required="false"/>
     <application
-        android:theme="@style/setedit_base"
+        android:theme="@style/AppTheme"
         android:label="@string/app_name"
         android:icon="@mipmap/ic_launcher"
         android:name=".SetEdit"
@@ -25,7 +25,6 @@
         android:banner="@mipmap/ic_banner"
         tools:ignore="UnusedAttribute">
         <activity
-            android:theme="@style/setedit_editor"
             android:label="SetEdit"
             android:name=".EditorActivity"
             android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|layoutDirection|fontScale"

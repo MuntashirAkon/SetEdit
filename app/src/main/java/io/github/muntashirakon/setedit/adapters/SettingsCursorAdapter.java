@@ -20,9 +20,9 @@ import io.github.muntashirakon.setedit.R;
 
 public class SettingsCursorAdapter extends CursorAdapter implements SettingsAdapter {
     public static final String[] columns = {"_id", "name", "value"};
-    private String settingsType;
-    private Context context;
-    private IEditorActivity editorActivity;
+    private final String settingsType;
+    private final Context context;
+    private final IEditorActivity editorActivity;
 
     public SettingsCursorAdapter(Context context, IEditorActivity editorActivity, String settingsType) {
         super(context, checkPermission(context, settingsType), 2);

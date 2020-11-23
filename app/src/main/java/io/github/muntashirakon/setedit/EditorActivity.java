@@ -1,7 +1,6 @@
 package io.github.muntashirakon.setedit;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -9,10 +8,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.method.LinkMovementMethod;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,22 +21,24 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 import io.github.muntashirakon.setedit.adapter.AdapterProvider;
-import io.github.muntashirakon.setedit.adapter.DevicesAdapter;
 import io.github.muntashirakon.setedit.adapter.IAdapterProvider;
 import io.github.muntashirakon.setedit.adapters.AdapterUtils;
 import io.github.muntashirakon.setedit.adapters.SettingsAdapter;
 
-public class EditorActivity extends Activity implements View.OnClickListener,
-        AdapterView.OnItemClickListener, AdapterView.OnItemSelectedListener, IEditorActivity {
+public class EditorActivity extends AppCompatActivity implements View.OnClickListener,
+        AdapterView.OnItemClickListener, AdapterView.OnItemSelectedListener,
+        SearchView.OnQueryTextListener, IEditorActivity {
     private static final String SELECTED_TABLE = "SELECTED_TABLE";
 
-    protected Spinner spinnerDevices;
     protected Spinner spinnerTable;
     protected View view;
     protected ListAdapter adapter;
@@ -51,8 +52,7 @@ public class EditorActivity extends Activity implements View.OnClickListener,
     private AlertDialog.Builder editorDialogBuilder;
     private View editorDialogView;
     private EditText editText;
-    private DevicesAdapter devicesAdapter;
-    private IAdapterProvider adapterProvider = new AdapterProvider(this, this);
+    private final IAdapterProvider adapterProvider = new AdapterProvider(this, this);
 
     private void oneTimeWarningDialog(SharedPreferences sharedPreferences, CharSequence charSequence) {
         TextView textView = new TextView(this);
@@ -190,9 +190,18 @@ public class EditorActivity extends Activity implements View.OnClickListener,
     @SuppressLint("InflateParams")
     @Override
     public void onCreate(Bundle bundle) {
-        Toolbar toolbar;
         super.onCreate(bundle);
         setContentView(R.layout.activity_editor);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            SearchView searchView = new SearchView(actionBar.getThemedContext());
+            actionBar.setDisplayShowCustomEnabled(true);
+            ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT);
+            layoutParams.gravity = Gravity.END;
+            actionBar.setCustomView(searchView, layoutParams);
+            searchView.setOnQueryTextListener(this);
+        }
         // List view
         listView = findViewById(R.id.list_view);
         listView.setOnItemClickListener(this);
@@ -201,10 +210,6 @@ public class EditorActivity extends Activity implements View.OnClickListener,
         addNewItemView.setOnClickListener(v -> displaySettingEditor(null, null));
         listView.addHeaderView(addNewItemView);
         // Set devices list
-        spinnerDevices = findViewById(R.id.spinner_devices);
-        spinnerDevices.setOnItemSelectedListener(this);
-        devicesAdapter = new DevicesAdapter(adapterProvider);
-        spinnerDevices.setAdapter(devicesAdapter);
         spinnerTable = findViewById(R.id.spinner_table);
         spinnerTable.setOnItemSelectedListener(this);
         spinnerTable.setAdapter(ArrayAdapter.createFromResource(this, R.array.settings_table, R.layout.item_spinner));
@@ -215,9 +220,6 @@ public class EditorActivity extends Activity implements View.OnClickListener,
         contextDialog = new AlertDialog.Builder(this);
         contextDialogView = LayoutInflater.from(contextDialog.getContext()).inflate(R.layout.dialog_menu, null);
         setDialogText((ViewGroup) contextDialogView);
-        if (Build.VERSION.SDK_INT >= 21 && (toolbar = findViewById(R.id.toolbar)) != null) {
-            setActionBar(toolbar);
-        }
         final SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         boolean hasWarned = defaultSharedPreferences.getBoolean("has_warned", false);
         if (!hasWarned) {
@@ -244,26 +246,35 @@ public class EditorActivity extends Activity implements View.OnClickListener,
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
-        if (adapterView == spinnerDevices) {
-            adapterProvider = devicesAdapter.getAdapterProvider(position);
-            adapter = adapterProvider.getAdapter(spinnerTable.getSelectedItemPosition());
-        } else if (adapterView == spinnerTable && position != 6) {
+        if (adapterView == spinnerTable && position != 6) {
             adapter = adapterProvider.getAdapter(position);
         } else return;
         listView.setAdapter(adapter);
     }
 
     @Override
-    public void onNothingSelected(AdapterView<?> adapterView) {}
+    public void onNothingSelected(AdapterView<?> adapterView) {
+    }
 
     @Override
-    public void onRestoreInstanceState(Bundle bundle) {
-        if (bundle != null && spinnerTable != null)
+    public void onRestoreInstanceState(@NonNull Bundle bundle) {
+        if (spinnerTable != null)
             spinnerTable.setSelection(bundle.getInt(SELECTED_TABLE));
     }
 
     @Override
-    public void onSaveInstanceState(Bundle bundle) {
+    public void onSaveInstanceState(@NonNull Bundle bundle) {
+        super.onSaveInstanceState(bundle);
         bundle.putInt(SELECTED_TABLE, spinnerTable.getSelectedItemPosition());
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        return false;
     }
 }

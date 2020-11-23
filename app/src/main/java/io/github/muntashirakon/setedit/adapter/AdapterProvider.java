@@ -10,8 +10,8 @@ import io.github.muntashirakon.setedit.adapters.JavaPropertyListAdapter;
 import io.github.muntashirakon.setedit.adapters.SettingsCursorAdapter;
 
 public class AdapterProvider implements IAdapterProvider {
-    private Context context;
-    private IEditorActivity editorActivity;
+    private final Context context;
+    private final IEditorActivity editorActivity;
 
     public AdapterProvider(Context context, IEditorActivity editorActivity) {
         this.context = context;

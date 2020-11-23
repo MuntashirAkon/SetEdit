@@ -9,13 +9,6 @@
     <Spinner
         android:gravity="center_horizontal"
         android:layout_gravity="center"
-        android:id="@+id/spinner_devices"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:minWidth="180dp"/>
-    <Spinner
-        android:gravity="center_horizontal"
-        android:layout_gravity="center"
         android:id="@+id/spinner_table"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"

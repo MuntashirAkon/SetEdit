@@ -9,13 +9,7 @@
     android:layout_marginTop="20dp"
     android:layout_marginBottom="20dp"
     android:layout_marginEnd="20dp"
-    android:layout_marginRight="20dp"
-    android:weightSum="2">
-    <Spinner
-        android:id="@+id/spinner_devices"
-        android:layout_width="0px"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"/>
+    android:layout_marginRight="20dp">
     <Spinner
         android:id="@+id/spinner_table"
         android:layout_width="0px"

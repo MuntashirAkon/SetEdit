@@ -8,8 +8,7 @@
     <include layout="@layout/toolbar_editor"/>
     <ListView
         android:id="@+id/list_view"
-        android:nextFocusLeft="@+id/spinner_devices"
-        android:nextFocusRight="@+id/spinner_table"
+        android:nextFocusUp="@id/spinner_table"
         android:clipToPadding="false"
         android:layout_width="match_parent"
         android:layout_height="0px"
