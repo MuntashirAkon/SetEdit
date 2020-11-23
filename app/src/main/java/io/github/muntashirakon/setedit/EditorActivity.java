@@ -108,51 +108,59 @@ public class EditorActivity extends Activity implements View.OnClickListener,
 
     private void onClickDialogButton(int id) {
         ClipData clipData = null;
-        switch (id) {
-            case R.id.button_copy_name:
-                String s = AdapterUtils.getName(view);
-                clipData = ClipData.newPlainText(s, s);
-                break;
-            case R.id.button_copy_value:
-                clipData = ClipData.newPlainText(AdapterUtils.getName(view), AdapterUtils.getValue(view));
-                break;
-            case R.id.button_copy_both:
-                String s1 = AdapterUtils.getName(view);
-                clipData = ClipData.newPlainText(s1, s1 + "\t" + AdapterUtils.getValue(view));
-                break;
-            case R.id.button_delete_row:
-                String s2 = AdapterUtils.getName(view);
-                if (adapter instanceof SettingsAdapter) {
-                    SettingsAdapter settingsAdapter = (SettingsAdapter) adapter;
-                    settingsAdapter.setMessage(s2);
-                } else setErrorMessage();
-                break;
-            case R.id.button_edit_value:
-                if (adapter instanceof SettingsAdapter) {
-                    ((SettingsAdapter) adapter).checkPermission(view, this.id);
-                } else setErrorMessage();
-                break;
-            case R.id.button_help:
-                String str;
-                StringBuilder sb = new StringBuilder("https://www.google.com/search?q=android+");
-                switch (spinnerTable.getSelectedItemPosition()) {
-                    case 0: str = "settings put system \""; break;
-                    case 1: str = "settings put secure \""; break;
-                    case 2: str = "settings put global \""; break;
-                    case 3: str = "setprop \""; break;
-                    case 4: str = "java properties \""; break;
-                    case 5: str = "environment \""; break;
-                    default: str = "\""; break;
-                }
-                sb.append(str);
-                sb.append(Uri.encode(AdapterUtils.getName(view)));
-                sb.append('\"');
-                try {
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(sb.toString())));
-                } catch (Exception ignore) {}
-                break;
-            default:
-                return;
+        if (id == R.id.button_copy_name) {
+            String s = AdapterUtils.getName(view);
+            clipData = ClipData.newPlainText(s, s);
+        } else if (id == R.id.button_copy_value) {
+            clipData = ClipData.newPlainText(AdapterUtils.getName(view), AdapterUtils.getValue(view));
+        } else if (id == R.id.button_copy_both) {
+            String s1 = AdapterUtils.getName(view);
+            clipData = ClipData.newPlainText(s1, s1 + "\t" + AdapterUtils.getValue(view));
+        } else if (id == R.id.button_delete_row) {
+            String s2 = AdapterUtils.getName(view);
+            if (adapter instanceof SettingsAdapter) {
+                SettingsAdapter settingsAdapter = (SettingsAdapter) adapter;
+                settingsAdapter.setMessage(s2);
+            } else setErrorMessage();
+        } else if (id == R.id.button_edit_value) {
+            if (adapter instanceof SettingsAdapter) {
+                ((SettingsAdapter) adapter).checkPermission(view, this.id);
+            } else setErrorMessage();
+        } else if (id == R.id.button_help) {
+            String str;
+            StringBuilder sb = new StringBuilder("https://www.google.com/search?q=android+");
+            switch (spinnerTable.getSelectedItemPosition()) {
+                case 0:
+                    str = "settings put system \"";
+                    break;
+                case 1:
+                    str = "settings put secure \"";
+                    break;
+                case 2:
+                    str = "settings put global \"";
+                    break;
+                case 3:
+                    str = "setprop \"";
+                    break;
+                case 4:
+                    str = "java properties \"";
+                    break;
+                case 5:
+                    str = "environment \"";
+                    break;
+                default:
+                    str = "\"";
+                    break;
+            }
+            sb.append(str);
+            sb.append(Uri.encode(AdapterUtils.getName(view)));
+            sb.append('\"');
+            try {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(sb.toString())));
+            } catch (Exception ignore) {
+            }
+        } else {
+            return;
         }
         if (clipData != null) {
             ClipboardManager clipboardManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
@@ -186,28 +194,28 @@ public class EditorActivity extends Activity implements View.OnClickListener,
         super.onCreate(bundle);
         setContentView(R.layout.activity_editor);
         // List view
-        listView = (ListView) findViewById(R.id.list_view);
+        listView = findViewById(R.id.list_view);
         listView.setOnItemClickListener(this);
         // Add header (add new item)
         View addNewItemView = getLayoutInflater().inflate(R.layout.item_list_header, null);
         addNewItemView.setOnClickListener(v -> displaySettingEditor(null, null));
         listView.addHeaderView(addNewItemView);
         // Set devices list
-        spinnerDevices = (Spinner) findViewById(R.id.spinner_devices);
+        spinnerDevices = findViewById(R.id.spinner_devices);
         spinnerDevices.setOnItemSelectedListener(this);
         devicesAdapter = new DevicesAdapter(adapterProvider);
         spinnerDevices.setAdapter(devicesAdapter);
-        spinnerTable = (Spinner) findViewById(R.id.spinner_table);
+        spinnerTable = findViewById(R.id.spinner_table);
         spinnerTable.setOnItemSelectedListener(this);
         spinnerTable.setAdapter(ArrayAdapter.createFromResource(this, R.array.settings_table, R.layout.item_spinner));
         editorDialogBuilder = new AlertDialog.Builder(this);
         editorDialogView = LayoutInflater.from(editorDialogBuilder.getContext()).inflate(R.layout.dialog_editor, null);
-        editText = (EditText) editorDialogView.findViewById(R.id.txt);
+        editText = editorDialogView.findViewById(R.id.txt);
         dialogBuilder = new AlertDialog.Builder(this);
         contextDialog = new AlertDialog.Builder(this);
         contextDialogView = LayoutInflater.from(contextDialog.getContext()).inflate(R.layout.dialog_menu, null);
         setDialogText((ViewGroup) contextDialogView);
-        if (Build.VERSION.SDK_INT >= 21 && (toolbar = (Toolbar) findViewById(R.id.toolbar)) != null) {
+        if (Build.VERSION.SDK_INT >= 21 && (toolbar = findViewById(R.id.toolbar)) != null) {
             setActionBar(toolbar);
         }
         final SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);

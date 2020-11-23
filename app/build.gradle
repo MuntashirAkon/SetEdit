@@ -4,7 +4,8 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 29
-    buildToolsVersion "30.0.0"
+    buildToolsVersion "30.0.2"
+    ndkVersion '21.3.6528147'
 
     defaultConfig {
         applicationId "io.github.muntashirakon.setedit"
