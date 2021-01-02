@@ -1,0 +1,1 @@
+Replace google.com with disroot.org's searx instance.
