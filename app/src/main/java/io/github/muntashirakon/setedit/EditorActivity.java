@@ -132,7 +132,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
             } else setErrorMessage();
         } else if (id == R.id.button_help) {
             String str;
-            StringBuilder sb = new StringBuilder("https://www.google.com/search?q=android+");
+            StringBuilder sb = new StringBuilder("https://search.disroot.org/?q=android+");
             switch (spinnerTable.getSelectedItemPosition()) {
                 case 0:
                     str = "settings put system \"";
