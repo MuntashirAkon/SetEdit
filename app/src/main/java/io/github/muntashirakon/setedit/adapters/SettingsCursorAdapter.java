@@ -19,7 +19,7 @@ import io.github.muntashirakon.setedit.R;
 import io.github.muntashirakon.setedit.cursor.CursorHelper;
 import io.github.muntashirakon.setedit.cursor.SettingsCursor;
 
-public class SettingsCursorAdapter extends CursorAdapter implements SettingsAdapter, FilterQueryProvider {
+public class SettingsCursorAdapter extends CursorAdapter implements FilterQueryProvider {
     public static final String[] columns = {"_id", "name", "value"};
     private final String settingsType;
     private final Context context;
@@ -33,7 +33,6 @@ public class SettingsCursorAdapter extends CursorAdapter implements SettingsAdap
         this.setFilterQueryProvider(this);
     }
 
-    @Override
     public String getSettingsType() {
         return settingsType;
     }
@@ -53,12 +52,10 @@ public class SettingsCursorAdapter extends CursorAdapter implements SettingsAdap
         }
     }
 
-    @Override
     public void setName(String name) {
         editorActivity.displaySettingEditor(name, null);
     }
 
-    @Override
     public void updateValueForName(String name, String value) {
         ContentResolver contentResolver = context.getContentResolver();
         try {
@@ -73,7 +70,6 @@ public class SettingsCursorAdapter extends CursorAdapter implements SettingsAdap
         }
     }
 
-    @Override
     public void deleteEntryByName(String str) {
         String message = EditorUtils.checkPermission(context, settingsType);
         if ("c".equals(message)) return;

@@ -1,4 +1,4 @@
-package io.github.muntashirakon.setedit.adapter;
+package io.github.muntashirakon.setedit;
 
 import android.content.Context;
 import android.widget.BaseAdapter;
@@ -9,7 +9,7 @@ import io.github.muntashirakon.setedit.adapters.LinuxEnvironmentListAdapter;
 import io.github.muntashirakon.setedit.adapters.JavaPropertyListAdapter;
 import io.github.muntashirakon.setedit.adapters.SettingsCursorAdapter;
 
-public class AdapterProvider implements IAdapterProvider {
+public class AdapterProvider {
     private final Context context;
     private final IEditorActivity editorActivity;
 

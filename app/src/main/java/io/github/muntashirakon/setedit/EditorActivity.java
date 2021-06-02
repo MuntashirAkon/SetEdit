@@ -32,17 +32,15 @@ import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.Locale;
 
-import io.github.muntashirakon.setedit.adapter.AdapterProvider;
-import io.github.muntashirakon.setedit.adapter.IAdapterProvider;
 import io.github.muntashirakon.setedit.adapters.AdapterUtils;
-import io.github.muntashirakon.setedit.adapters.SettingsAdapter;
+import io.github.muntashirakon.setedit.adapters.SettingsCursorAdapter;
 
 public class EditorActivity extends AppCompatActivity implements AdapterView.OnItemClickListener,
         AdapterView.OnItemSelectedListener, SearchView.OnQueryTextListener, IEditorActivity {
     private static final String SELECTED_TABLE = "SELECTED_TABLE";
 
     @NonNull
-    private final IAdapterProvider adapterProvider = new AdapterProvider(this, this);
+    private final AdapterProvider adapterProvider = new AdapterProvider(this, this);
 
     @Nullable
     private AppCompatSpinner spinnerTable;
@@ -74,8 +72,8 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
                 .setView(editorDialogView)
                 .setTitle(name != null ? name : getString(R.string.new_item))
                 .setPositiveButton(R.string.save, ((dialog, which) -> {
-                    if (!(adapter instanceof SettingsAdapter)) return;
-                    SettingsAdapter settingsAdapter = (SettingsAdapter) adapter;
+                    if (!(adapter instanceof SettingsCursorAdapter)) return;
+                    SettingsCursorAdapter settingsAdapter = (SettingsCursorAdapter) adapter;
                     if (name == null) {
                         settingsAdapter.setName(editText.getText().toString());
                         return;
@@ -155,8 +153,8 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
         // Add efab
         addNewItem = findViewById(R.id.efab);
         addNewItem.setOnClickListener(v -> {
-            if (adapter instanceof SettingsAdapter) {
-                String permString = EditorUtils.checkPermission(this, ((SettingsAdapter) adapter).getSettingsType());
+            if (adapter instanceof SettingsCursorAdapter) {
+                String permString = EditorUtils.checkPermission(this, ((SettingsCursorAdapter) adapter).getSettingsType());
                 if ("p".equals(permString)) {
                     displaySettingEditor(null, null);
                 } else if (!"c".equals(permString)) {
@@ -183,11 +181,11 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this)
                 .setView(editDialogView)
                 .setNegativeButton(R.string.close, null);
-        if (adapter instanceof SettingsAdapter) {
+        if (adapter instanceof SettingsCursorAdapter) {
             builder.setPositiveButton(R.string.save, (dialog, which) -> {
                 Editable editable = editText.getText();
                 if (editable == null) return;
-                SettingsAdapter settingsAdapter = (SettingsAdapter) adapter;
+                SettingsCursorAdapter settingsAdapter = (SettingsCursorAdapter) adapter;
                 String permString = EditorUtils.checkPermission(this, settingsAdapter.getSettingsType());
                 if ("p".equals(permString)) {
                     settingsAdapter.updateValueForName(name, editable.toString());
@@ -195,7 +193,7 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
                     setMessage(permString);
                 }
             }).setNeutralButton(R.string.delete, (dialog, which) -> {
-                SettingsAdapter settingsAdapter = (SettingsAdapter) adapter;
+                SettingsCursorAdapter settingsAdapter = (SettingsCursorAdapter) adapter;
                 settingsAdapter.deleteEntryByName(name);
             });
         } else {
