@@ -18,4 +18,5 @@
     <string name="new_item">New Item</string>
     <string name="close">Close</string>
     <string name="value">Value</string>
+    <string name="name">Name</string>
 </resources>

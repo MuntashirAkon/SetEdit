@@ -3,6 +3,8 @@ package io.github.muntashirakon.setedit;
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,7 +33,7 @@ import io.github.muntashirakon.setedit.adapters.AbsRecyclerAdapter;
 import io.github.muntashirakon.setedit.adapters.SettingsRecyclerAdapter;
 
 public class EditorActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener,
-        SearchView.OnQueryTextListener, IEditorActivity {
+        SearchView.OnQueryTextListener {
     private static final String SELECTED_TABLE = "SELECTED_TABLE";
 
     @NonNull
@@ -56,34 +58,23 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
         preferences.edit().putBoolean("has_warned", true).apply();
     }
 
-    public void displaySettingEditor(@Nullable String name, @Nullable String value) {
-        View editorDialogView = getLayoutInflater().inflate(R.layout.dialog_editor, null);
-        EditText editText = editorDialogView.findViewById(R.id.txt);
-        editText.setText(value);
-        if (value != null) {
-            editText.setSelection(0, value.length());
-        }
+    public void addNewItemDialog() {
+        View editorDialogView = getLayoutInflater().inflate(R.layout.dialog_new, null);
+        EditText keyNameView = editorDialogView.findViewById(R.id.txtName);
+        EditText keyValueView = editorDialogView.findViewById(R.id.txtValue);
+        keyNameView.requestFocus();
         new MaterialAlertDialogBuilder(this)
                 .setView(editorDialogView)
-                .setTitle(name != null ? name : getString(R.string.new_item))
+                .setTitle(R.string.new_item)
                 .setPositiveButton(R.string.save, ((dialog, which) -> {
                     if (!(adapter instanceof SettingsRecyclerAdapter)) return;
+                    Editable keyName = keyNameView.getText();
+                    Editable keyValue = keyValueView.getText();
+                    if (TextUtils.isEmpty(keyName) || keyValue == null) return;
                     SettingsRecyclerAdapter settingsAdapter = (SettingsRecyclerAdapter) adapter;
-                    if (name == null) {
-                        displaySettingEditor(editText.getText().toString(), null);
-                        return;
-                    }
-                    settingsAdapter.updateValueForName(name, editText.getText().toString());
+                    settingsAdapter.updateValueForName(keyName.toString(), keyValue.toString());
                 }))
                 .setNegativeButton(android.R.string.cancel, null)
-                .show();
-    }
-
-    @Override
-    public void setMessage(CharSequence charSequence) {
-        new MaterialAlertDialogBuilder(this)
-                .setMessage(charSequence)
-                .setNegativeButton(R.string.close, null)
                 .show();
     }
 
@@ -114,9 +105,12 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
             if (adapter instanceof SettingsRecyclerAdapter) {
                 String permString = EditorUtils.checkPermission(this, ((SettingsRecyclerAdapter) adapter).getSettingsType());
                 if ("p".equals(permString)) {
-                    displaySettingEditor(null, null);
+                    addNewItemDialog();
                 } else if (!"c".equals(permString)) {
-                    setMessage(permString);
+                    new MaterialAlertDialogBuilder(this)
+                            .setMessage(permString)
+                            .setNegativeButton(R.string.close, null)
+                            .show();
                 }
             }
         });

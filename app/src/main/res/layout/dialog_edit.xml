@@ -11,8 +11,7 @@
         android:paddingEnd="15dp"
         android:paddingTop="15dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        style="?android:attr/buttonBarStyle">
+        android:layout_height="wrap_content">
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
