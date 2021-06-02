@@ -13,12 +13,19 @@
         <item name="android:windowContentTransitions" tools:targetApi="lollipop">true</item>
         <item name="android:windowAllowEnterTransitionOverlap" tools:targetApi="lollipop">true</item>
         <item name="android:windowAllowReturnTransitionOverlap" tools:targetApi="lollipop">true</item>
+        <item name="appBarLayoutStyle">@style/AppTheme.AppBarLayout</item>
         <item name="actionOverflowButtonStyle">@style/AppTheme.ActionButton.Overflow</item>
         <item name="materialAlertDialogTheme">@style/AppTheme.AlertDialog</item>
     </style>
     <style name="Theme.MaterialComponents.DayNight.NoActionBar" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="colorPrimaryDark" tools:targetApi="m">@color/colorPrimaryDark</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
+    </style>
+    <style name="AppTheme.AppBarLayout" parent="Widget.MaterialComponents.AppBarLayout.Primary">
+        <item name="android:backgroundTintMode" tools:targetApi="lollipop">add</item>
+        <item name="android:backgroundTint" tools:targetApi="lollipop">#000</item>
+        <item name="backgroundTintMode">add</item>
+        <item name="backgroundTint">#000</item>
     </style>
     <style name="AppTheme.ActionButton.Overflow" parent="@style/Widget.AppCompat.ActionButton.Overflow">
         <item name="tint">@color/colorAccent</item>

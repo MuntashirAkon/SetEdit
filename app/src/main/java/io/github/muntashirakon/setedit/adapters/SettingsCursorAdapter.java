@@ -13,12 +13,11 @@ import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.FilterQueryProvider;
 
-import io.github.muntashirakon.setedit.cursor.CursorHelper;
-import io.github.muntashirakon.setedit.cursor.SettingsCursor;
-import io.github.muntashirakon.setedit.SetEdit;
 import io.github.muntashirakon.setedit.EditorUtils;
 import io.github.muntashirakon.setedit.IEditorActivity;
 import io.github.muntashirakon.setedit.R;
+import io.github.muntashirakon.setedit.cursor.CursorHelper;
+import io.github.muntashirakon.setedit.cursor.SettingsCursor;
 
 public class SettingsCursorAdapter extends CursorAdapter implements SettingsAdapter, FilterQueryProvider {
     public static final String[] columns = {"_id", "name", "value"};
@@ -70,7 +69,7 @@ public class SettingsCursorAdapter extends CursorAdapter implements SettingsAdap
             onContentChanged();
         } catch (Throwable th) {
             th.printStackTrace();
-            editorActivity.setMessage(SetEdit.getInstance().getString(R.string.error_rejected));
+            editorActivity.setMessage(context.getString(R.string.error_rejected));
         }
     }
 
@@ -89,7 +88,7 @@ public class SettingsCursorAdapter extends CursorAdapter implements SettingsAdap
             onContentChanged();
         } catch (Throwable th) {
             th.printStackTrace();
-            editorActivity.setMessage(SetEdit.getInstance().getString(R.string.error_unexpected));
+            editorActivity.setMessage(context.getString(R.string.error_unexpected));
         }
     }
 
