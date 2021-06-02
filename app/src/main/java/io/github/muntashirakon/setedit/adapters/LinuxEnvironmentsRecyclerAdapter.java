@@ -1,11 +1,11 @@
 package io.github.muntashirakon.setedit.adapters;
 
+import android.content.Context;
 import android.text.TextUtils;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
+
+import androidx.core.util.Pair;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,13 +14,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class LinuxEnvironmentListAdapter extends BaseAdapter implements Filterable {
+public class LinuxEnvironmentsRecyclerAdapter extends AbsRecyclerAdapter implements Filterable {
     private final Map<String, String> ENV_VAR_MAP = System.getenv();
     private final String[] envVars;
     private final List<Integer> matchedIndexes = new ArrayList<>(ENV_VAR_MAP.size());
     private Filter filter;
 
-    public LinuxEnvironmentListAdapter() {
+    public LinuxEnvironmentsRecyclerAdapter(Context context) {
+        super(context);
         int size = this.ENV_VAR_MAP.size();
         this.envVars = new String[size];
         Iterator<String> it = this.ENV_VAR_MAP.keySet().iterator();
@@ -32,29 +33,25 @@ public class LinuxEnvironmentListAdapter extends BaseAdapter implements Filterab
     }
 
     @Override
-    public int getCount() {
+    public int getListType() {
+        return 5;
+    }
+
+    @Override
+    public Pair<String, String> getItem(int position) {
+        String key = this.envVars[matchedIndexes.get(position)];
+        String value = this.ENV_VAR_MAP.get(key);
+        return new Pair<>(key, value);
+    }
+
+    @Override
+    public int getItemCount() {
         return matchedIndexes.size();
     }
 
     @Override
-    public Object getItem(int i) {
-        return null;
-    }
-
-    @Override
-    public long getItemId(int i) {
-        return (long) i;
-    }
-
-    @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
-        String key = this.envVars[matchedIndexes.get(i)];
-        String value = this.ENV_VAR_MAP.get(key);
-        if (view == null) {
-            view = AdapterUtils.inflateSetting(viewGroup.getContext(), viewGroup);
-        }
-        AdapterUtils.setNameValue(view, key, value);
-        return view;
+    public long getItemId(int position) {
+        return this.envVars[matchedIndexes.get(position)].hashCode();
     }
 
     @Override
@@ -82,6 +79,7 @@ public class LinuxEnvironmentListAdapter extends BaseAdapter implements Filterab
                 @Override
                 protected void publishResults(CharSequence constraint, FilterResults results) {
                     matchedIndexes.clear();
+                    //noinspection unchecked
                     matchedIndexes.addAll((List<Integer>) results.values);
                     notifyDataSetChanged();
                 }

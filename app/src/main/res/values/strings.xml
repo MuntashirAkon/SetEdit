@@ -17,4 +17,5 @@
     <string name="export_as_json">Export as JSON</string>
     <string name="new_item">New Item</string>
     <string name="close">Close</string>
+    <string name="value">Value</string>
 </resources>

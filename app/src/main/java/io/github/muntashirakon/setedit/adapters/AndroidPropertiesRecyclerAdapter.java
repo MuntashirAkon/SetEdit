@@ -1,11 +1,11 @@
 package io.github.muntashirakon.setedit.adapters;
 
+import android.content.Context;
 import android.text.TextUtils;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
+
+import androidx.core.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,39 +13,37 @@ import java.util.Locale;
 
 import io.github.muntashirakon.setedit.Native;
 
-public class AndroidPropertyListAdapter extends BaseAdapter implements Filterable {
+public class AndroidPropertiesRecyclerAdapter extends AbsRecyclerAdapter implements Filterable {
     private final List<String[]> list = new ArrayList<>();
     private final List<Integer> matchedIndexes = new ArrayList<>();
     private Filter filter;
 
-    public AndroidPropertyListAdapter() {
+    public AndroidPropertiesRecyclerAdapter(Context context) {
+        super(context);
         Native.setPropertyList(list);
         getFilter().filter(null);
     }
 
     @Override
-    public int getCount() {
+    public int getListType() {
+        return 3;
+    }
+
+    @Override
+    public Pair<String, String> getItem(int position) {
+        String[] property = list.get(matchedIndexes.get(position));
+        return new Pair<>(property[0], property[1]);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        String[] property = list.get(matchedIndexes.get(position));
+        return property[0].hashCode();
+    }
+
+    @Override
+    public int getItemCount() {
         return matchedIndexes.size();
-    }
-
-    @Override
-    public Object getItem(int i) {
-        return null;
-    }
-
-    @Override
-    public long getItemId(int i) {
-        return i;
-    }
-
-    @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
-        String[] property = list.get(matchedIndexes.get(i));
-        if (view == null) {
-            view = AdapterUtils.inflateSetting(viewGroup.getContext(), viewGroup);
-        }
-        AdapterUtils.setNameValue(view, property[0], property[1]);
-        return view;
     }
 
     @Override
@@ -74,6 +72,7 @@ public class AndroidPropertyListAdapter extends BaseAdapter implements Filterabl
                 @Override
                 protected void publishResults(CharSequence constraint, FilterResults results) {
                     matchedIndexes.clear();
+                    //noinspection unchecked
                     matchedIndexes.addAll((List<Integer>) results.values);
                     notifyDataSetChanged();
                 }

@@ -1,22 +1,16 @@
 package io.github.muntashirakon.setedit;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
-import android.text.Editable;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.Filterable;
 import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,30 +19,31 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
-import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.Locale;
 
-import io.github.muntashirakon.setedit.adapters.AdapterUtils;
-import io.github.muntashirakon.setedit.adapters.SettingsCursorAdapter;
+import io.github.muntashirakon.setedit.adapters.AbsRecyclerAdapter;
+import io.github.muntashirakon.setedit.adapters.SettingsRecyclerAdapter;
 
-public class EditorActivity extends AppCompatActivity implements AdapterView.OnItemClickListener,
-        AdapterView.OnItemSelectedListener, SearchView.OnQueryTextListener, IEditorActivity {
+public class EditorActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener,
+        SearchView.OnQueryTextListener, IEditorActivity {
     private static final String SELECTED_TABLE = "SELECTED_TABLE";
 
     @NonNull
-    private final AdapterProvider adapterProvider = new AdapterProvider(this, this);
+    private final AdapterProvider adapterProvider = new AdapterProvider(this);
 
     @Nullable
     private AppCompatSpinner spinnerTable;
     @Nullable
     private SearchView searchView;
     private ExtendedFloatingActionButton addNewItem;
-    private BaseAdapter adapter;
-    private ListView listView;
+    private AbsRecyclerAdapter adapter;
+    private RecyclerView listView;
 
     private void displayOneTimeWarningDialog() {
         final SharedPreferences preferences = getPreferences(MODE_PRIVATE);
@@ -72,52 +67,16 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
                 .setView(editorDialogView)
                 .setTitle(name != null ? name : getString(R.string.new_item))
                 .setPositiveButton(R.string.save, ((dialog, which) -> {
-                    if (!(adapter instanceof SettingsCursorAdapter)) return;
-                    SettingsCursorAdapter settingsAdapter = (SettingsCursorAdapter) adapter;
+                    if (!(adapter instanceof SettingsRecyclerAdapter)) return;
+                    SettingsRecyclerAdapter settingsAdapter = (SettingsRecyclerAdapter) adapter;
                     if (name == null) {
-                        settingsAdapter.setName(editText.getText().toString());
+                        displaySettingEditor(editText.getText().toString(), null);
                         return;
                     }
                     settingsAdapter.updateValueForName(name, editText.getText().toString());
                 }))
                 .setNegativeButton(android.R.string.cancel, null)
                 .show();
-    }
-
-    private void openHelp(String keyName) {
-        if (spinnerTable == null) return;
-        String str;
-        StringBuilder sb = new StringBuilder("https://search.disroot.org/?q=android+");
-        switch (spinnerTable.getSelectedItemPosition()) {
-            case 0:
-                str = "settings put system \"";
-                break;
-            case 1:
-                str = "settings put secure \"";
-                break;
-            case 2:
-                str = "settings put global \"";
-                break;
-            case 3:
-                str = "setprop \"";
-                break;
-            case 4:
-                str = "java properties \"";
-                break;
-            case 5:
-                str = "environment \"";
-                break;
-            default:
-                str = "\"";
-                break;
-        }
-        sb.append(str);
-        sb.append(Uri.encode(keyName));
-        sb.append('\"');
-        try {
-            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(sb.toString())));
-        } catch (Exception ignore) {
-        }
     }
 
     @Override
@@ -147,14 +106,13 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
             spinnerTable.setAdapter(ArrayAdapter.createFromResource(this, R.array.settings_table, R.layout.item_spinner));
         }
         // List view
-        listView = findViewById(R.id.list_view);
-        listView.setOnItemClickListener(this);
-        listView.setTextFilterEnabled(false);
+        listView = findViewById(R.id.recycler_view);
+        listView.setLayoutManager(new LinearLayoutManager(this));
         // Add efab
         addNewItem = findViewById(R.id.efab);
         addNewItem.setOnClickListener(v -> {
-            if (adapter instanceof SettingsCursorAdapter) {
-                String permString = EditorUtils.checkPermission(this, ((SettingsCursorAdapter) adapter).getSettingsType());
+            if (adapter instanceof SettingsRecyclerAdapter) {
+                String permString = EditorUtils.checkPermission(this, ((SettingsRecyclerAdapter) adapter).getSettingsType());
                 if ("p".equals(permString)) {
                     displaySettingEditor(null, null);
                 } else if (!"c".equals(permString)) {
@@ -164,42 +122,6 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
         });
         // Display warning if it's the first time
         displayOneTimeWarningDialog();
-    }
-
-    @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-        // An item in the ListView has been clicked
-        View editDialogView = getLayoutInflater().inflate(R.layout.dialog_edit, null);
-        editDialogView.findViewById(R.id.button_help).setOnClickListener(v -> openHelp(AdapterUtils.getName(view)));
-        String name = AdapterUtils.getName(view);
-        String value = AdapterUtils.getValue(view);
-        ((TextView) editDialogView.findViewById(R.id.title)).setText(name);
-        TextInputEditText editText = editDialogView.findViewById(R.id.txt);
-        editText.setText(value);
-        editText.requestFocus();
-        editText.setSelection(0, value.length());
-        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this)
-                .setView(editDialogView)
-                .setNegativeButton(R.string.close, null);
-        if (adapter instanceof SettingsCursorAdapter) {
-            builder.setPositiveButton(R.string.save, (dialog, which) -> {
-                Editable editable = editText.getText();
-                if (editable == null) return;
-                SettingsCursorAdapter settingsAdapter = (SettingsCursorAdapter) adapter;
-                String permString = EditorUtils.checkPermission(this, settingsAdapter.getSettingsType());
-                if ("p".equals(permString)) {
-                    settingsAdapter.updateValueForName(name, editable.toString());
-                } else if (!"c".equals(permString)) {
-                    setMessage(permString);
-                }
-            }).setNeutralButton(R.string.delete, (dialog, which) -> {
-                SettingsCursorAdapter settingsAdapter = (SettingsCursorAdapter) adapter;
-                settingsAdapter.deleteEntryByName(name);
-            });
-        } else {
-            editText.setKeyListener(null);
-        }
-        builder.show();
     }
 
     @Override
@@ -226,7 +148,7 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
-        listView.setAdapter(adapter = adapterProvider.getAdapter(position));
+        listView.setAdapter(adapter = adapterProvider.getRecyclerAdapter(position));
         if (position < 3) addNewItem.setVisibility(View.VISIBLE);
         else addNewItem.setVisibility(View.GONE);
         if (searchView != null) {
