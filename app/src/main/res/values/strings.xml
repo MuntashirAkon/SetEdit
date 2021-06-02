@@ -14,9 +14,12 @@
     <string name="java_properties">Java Properties</string>
     <string name="linux_environment">Linux Environments</string>
     <string name="startup_warning">WARNING — We do not guarantee that problems caused by the improper use of this utility can be fixed, and we are unable to help you with any such problems. We support only this app, not your device.</string>
-    <string name="export_as_json">Export as JSON</string>
+    <string name="save_as_json">Save as JSON</string>
     <string name="new_item">New Item</string>
     <string name="close">Close</string>
     <string name="value">Value</string>
     <string name="name">Name</string>
+    <string name="saved">Saved</string>
+    <string name="failed">Failed</string>
+    <string name="saved_to_file">Saved to %s</string>
 </resources>

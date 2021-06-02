@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.widget.Filter;
 import android.widget.Filterable;
 
+import androidx.annotation.NonNull;
 import androidx.core.util.Pair;
 
 import java.util.ArrayList;
@@ -30,6 +31,16 @@ class JavaPropertiesRecyclerAdapter extends AbsRecyclerAdapter implements Filter
         for (int i = 0; i < size; i++) propertyNames[i] = it.next();
         Arrays.sort(propertyNames, String.CASE_INSENSITIVE_ORDER);
         getFilter().filter(null);
+    }
+
+    @NonNull
+    @Override
+    public List<Pair<String, String>> getAllItems() {
+        List<Pair<String, String>> items = new ArrayList<>(propertyNames.length);
+        for (String key : propertyNames) {
+            items.add(new Pair<>(key, PROPERTIES.getProperty(key)));
+        }
+        return items;
     }
 
     @Override

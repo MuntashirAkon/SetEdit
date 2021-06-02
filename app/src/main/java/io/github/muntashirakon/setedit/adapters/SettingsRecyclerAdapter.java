@@ -7,7 +7,11 @@ import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
 
+import androidx.annotation.NonNull;
 import androidx.core.util.Pair;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import io.github.muntashirakon.setedit.EditorUtils;
 import io.github.muntashirakon.setedit.R;
@@ -25,6 +29,20 @@ public class SettingsRecyclerAdapter extends AbsRecyclerAdapter {
         super(context);
         this.settingsType = settingsType;
         swapCursor(getCursor(context, settingsType));
+    }
+
+    @NonNull
+    @Override
+    public List<Pair<String, String>> getAllItems() {
+        if (!mDataValid) {
+            throw new IllegalStateException("Cannot lookup item id when cursor is in invalid state.");
+        }
+        List<Pair<String, String>> items = new ArrayList<>(cursor.getCount());
+        cursor.moveToFirst();
+        do {
+            items.add(new Pair<>(cursor.getString(1), cursor.getString(2)));
+        } while (cursor.moveToNext());
+        return items;
     }
 
     public String getSettingsType() {

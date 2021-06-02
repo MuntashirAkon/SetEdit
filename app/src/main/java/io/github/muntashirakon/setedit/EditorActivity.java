@@ -1,8 +1,12 @@
 package io.github.muntashirakon.setedit;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -13,9 +17,13 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Filterable;
 import android.widget.ImageView;
+import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatSpinner;
@@ -27,6 +35,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 
+import org.json.JSONException;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Locale;
 
 import io.github.muntashirakon.setedit.adapters.AbsRecyclerAdapter;
@@ -47,6 +61,23 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
     private ExtendedFloatingActionButton addNewItem;
     private AbsRecyclerAdapter adapter;
     private RecyclerView listView;
+
+    private final ActivityResultLauncher<String> pre21StoragePermissionLauncher = registerForActivityResult(
+            new ActivityResultContracts.RequestPermission(), granted -> saveAsJsonLegacy());
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+    private final ActivityResultLauncher<String> post21SaveLauncher = registerForActivityResult(
+            new ActivityResultContracts.CreateDocument(),
+            uri -> {
+                if (uri == null) return;
+                try (OutputStream os = getContentResolver().openOutputStream(uri)) {
+                    if (os == null) throw new IOException();
+                    saveAsJson(os);
+                    Toast.makeText(this, R.string.saved, Toast.LENGTH_SHORT).show();
+                } catch (Throwable th) {
+                    th.printStackTrace();
+                    Toast.makeText(this, R.string.failed, Toast.LENGTH_SHORT).show();
+                }
+            });
 
     private void displayOneTimeWarningDialog() {
         final SharedPreferences preferences = getPreferences(MODE_PRIVATE);
@@ -136,7 +167,10 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.action_export) {
-            // TODO: 1/6/21 Export as JSON
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                post21SaveLauncher.launch(getFileName());
+            } else saveAsJsonLegacy();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -184,5 +218,32 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
             ((Filterable) adapter).getFilter().filter(newText.toLowerCase(Locale.ROOT));
         }
         return false;
+    }
+
+    private String getFileName() {
+        return "SetEdit-" + System.currentTimeMillis() + ".json";
+    }
+
+    private void saveAsJsonLegacy() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            pre21StoragePermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            return;
+        }
+        @SuppressWarnings("deprecation")
+        File file = new File(Environment.getExternalStorageDirectory(), getFileName());
+        try (OutputStream os = new FileOutputStream(file)) {
+            saveAsJson(os);
+            Toast.makeText(this, getString(R.string.saved_to_file, file.getAbsolutePath()), Toast.LENGTH_LONG).show();
+        } catch (Throwable th) {
+            th.printStackTrace();
+            Toast.makeText(this, R.string.failed, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void saveAsJson(OutputStream os) throws JSONException, IOException {
+        String jsonString = EditorUtils.getJson(adapter.getAllItems(), adapter instanceof SettingsRecyclerAdapter ?
+                ((SettingsRecyclerAdapter) adapter).getSettingsType() : null);
+        os.write(jsonString.getBytes());
     }
 }

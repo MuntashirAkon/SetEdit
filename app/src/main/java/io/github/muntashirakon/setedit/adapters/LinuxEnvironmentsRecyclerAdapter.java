@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.widget.Filter;
 import android.widget.Filterable;
 
+import androidx.annotation.NonNull;
 import androidx.core.util.Pair;
 
 import java.util.ArrayList;
@@ -30,6 +31,16 @@ class LinuxEnvironmentsRecyclerAdapter extends AbsRecyclerAdapter implements Fil
         }
         Arrays.sort(this.envVars, String.CASE_INSENSITIVE_ORDER);
         getFilter().filter(null);
+    }
+
+    @NonNull
+    @Override
+    public List<Pair<String, String>> getAllItems() {
+        List<Pair<String, String>> items = new ArrayList<>(envVars.length);
+        for (String key : envVars) {
+            items.add(new Pair<>(key, ENV_VAR_MAP.get(key)));
+        }
+        return items;
     }
 
     @Override

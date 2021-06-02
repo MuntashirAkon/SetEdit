@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.widget.Filter;
 import android.widget.Filterable;
 
+import androidx.annotation.NonNull;
 import androidx.core.util.Pair;
 
 import java.util.ArrayList;
@@ -14,14 +15,24 @@ import java.util.Locale;
 import io.github.muntashirakon.setedit.Native;
 
 class AndroidPropertiesRecyclerAdapter extends AbsRecyclerAdapter implements Filterable {
-    private final List<String[]> list = new ArrayList<>();
+    private final List<String[]> propertyList = new ArrayList<>();
     private final List<Integer> matchedIndexes = new ArrayList<>();
     private Filter filter;
 
     public AndroidPropertiesRecyclerAdapter(Context context) {
         super(context);
-        Native.setPropertyList(list);
+        Native.setPropertyList(propertyList);
         getFilter().filter(null);
+    }
+
+    @NonNull
+    @Override
+    public List<Pair<String, String>> getAllItems() {
+        List<Pair<String, String>> items = new ArrayList<>(propertyList.size());
+        for (String[] pair : propertyList) {
+            items.add(new Pair<>(pair[0], pair[0]));
+        }
+        return items;
     }
 
     @Override
@@ -31,13 +42,13 @@ class AndroidPropertiesRecyclerAdapter extends AbsRecyclerAdapter implements Fil
 
     @Override
     public Pair<String, String> getItem(int position) {
-        String[] property = list.get(matchedIndexes.get(position));
+        String[] property = propertyList.get(matchedIndexes.get(position));
         return new Pair<>(property[0], property[1]);
     }
 
     @Override
     public long getItemId(int position) {
-        String[] property = list.get(matchedIndexes.get(position));
+        String[] property = propertyList.get(matchedIndexes.get(position));
         return property[0].hashCode();
     }
 
@@ -53,12 +64,12 @@ class AndroidPropertiesRecyclerAdapter extends AbsRecyclerAdapter implements Fil
                 @Override
                 protected FilterResults performFiltering(CharSequence constraint) {
                     FilterResults results = new FilterResults();
-                    List<Integer> matchedIndexes = new ArrayList<>(list.size());
+                    List<Integer> matchedIndexes = new ArrayList<>(propertyList.size());
                     if (TextUtils.isEmpty(constraint)) {
-                        for (int i = 0; i < list.size(); ++i) matchedIndexes.add(i);
+                        for (int i = 0; i < propertyList.size(); ++i) matchedIndexes.add(i);
                     } else {
-                        for (int i = 0; i < list.size(); ++i) {
-                            String key = list.get(i)[0];
+                        for (int i = 0; i < propertyList.size(); ++i) {
+                            String key = propertyList.get(i)[0];
                             if (key.toLowerCase(Locale.ROOT).contains(constraint)) {
                                 matchedIndexes.add(i);
                             }

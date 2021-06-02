@@ -17,6 +17,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.util.List;
+
 import io.github.muntashirakon.setedit.EditorUtils;
 import io.github.muntashirakon.setedit.R;
 
@@ -27,6 +29,9 @@ public abstract class AbsRecyclerAdapter extends RecyclerView.Adapter<AbsRecycle
         setHasStableIds(true);
         this.context = context;
     }
+
+    @NonNull
+    public abstract List<Pair<String, String>> getAllItems();
 
     public abstract int getListType();
 

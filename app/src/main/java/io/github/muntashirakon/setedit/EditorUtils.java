@@ -8,6 +8,14 @@ import android.os.Build;
 import android.os.Process;
 import android.provider.Settings;
 
+import androidx.annotation.Nullable;
+import androidx.core.util.Pair;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.List;
+
 public class EditorUtils {
     public static String checkPermission(Context context, String tableType) {
         String permission = "system".equals(tableType) ? "android.permission.WRITE_SETTINGS" : "android.permission.WRITE_SECURE_SETTINGS";
@@ -26,5 +34,16 @@ public class EditorUtils {
         }
         return context.getString(R.string.error_no_support) + "\n\n" + "pm grant " +
                 BuildConfig.APPLICATION_ID + " " + permission;
+    }
+
+    public static String getJson(List<Pair<String, String>> items, @Nullable String settingsType) throws JSONException {
+        JSONObject jsonObject = new JSONObject();
+        if (settingsType != null) {
+            jsonObject.put("_settings_type", settingsType);
+        }
+        for (Pair<String, String> pair : items) {
+            jsonObject.put(pair.first, pair.second);
+        }
+        return jsonObject.toString(4);
     }
 }
