@@ -1,0 +1,4 @@
+- Option to export list as a JSON file
+- Material design with App Manager-style theme
+- Support for Android 11 and gesture navigation
+and some other minor improvements.
