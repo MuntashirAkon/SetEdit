@@ -1,32 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Settings Database Editor</string>
-    <string name="empty_setting_name">NEW_SETTING</string>
-    <string name="empty_setting_value">SETTING_VALUE</string>
-    <string name="add_new_item">Add New Item</string>
+    <string name="app_name" translatable="false">Settings Database Editor</string>
     <string name="save">Save</string>
-    <string name="error_no_support">SetEdit does not currently support editing this table.</string>
+    <string name="error_no_support">SetEdit does not currently support editing this table. To enable editing, run the following command in a root or ADB shell:</string>
     <string name="error_rejected">Unexpected failure: Your system software has rejected this edit.</string>
     <string name="error_unexpected">Unexpected failure</string>
-    <string name="item_this_device">This Device</string>
-    <string name="copy">Copy</string>
-    <string name="copy_both">Both</string>
-    <string name="copy_name">Name</string>
-    <string name="copy_value">Value</string>
     <string name="delete">Delete</string>
-    <string name="edit_value">Edit Value</string>
-    <string name="help">Help With This Row</string>
-    <string name="dev_permission_message">Consult the Android documentation for more information.</string>
+    <string name="help">Get help</string>
     <string name="system_table">System Table</string>
     <string name="secure_table">Secure Table</string>
     <string name="global_table">Global Table</string>
     <string name="android_properties">Android Properties</string>
     <string name="java_properties">Java Properties</string>
-    <string name="linux_environment">Linux Environment</string>
+    <string name="linux_environment">Linux Environments</string>
     <string name="startup_warning">WARNING — We do not guarantee that problems caused by the improper use of this utility can be fixed, and we are unable to help you with any such problems. We support only this app, not your device.</string>
-    <string name="text_copied_to_clipboard">Text has been copied to clipboard</string>
     <string name="export_as_json">Export as JSON</string>
     <string name="new_item">New Item</string>
     <string name="close">Close</string>
-    <string name="search">Search</string>
 </resources>

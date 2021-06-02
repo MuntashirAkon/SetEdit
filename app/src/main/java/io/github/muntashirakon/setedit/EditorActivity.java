@@ -64,14 +64,15 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
     }
 
     public void displaySettingEditor(@Nullable String name, @Nullable String value) {
-        if (value == null) value = getString(R.string.empty_setting_value);
         View editorDialogView = getLayoutInflater().inflate(R.layout.dialog_editor, null);
         EditText editText = editorDialogView.findViewById(R.id.txt);
         editText.setText(value);
-        editText.setSelection(0, value.length());
+        if (value != null) {
+            editText.setSelection(0, value.length());
+        }
         new MaterialAlertDialogBuilder(this)
                 .setView(editorDialogView)
-                .setTitle(name != null ? name : getString(R.string.add_new_item))
+                .setTitle(name != null ? name : getString(R.string.new_item))
                 .setPositiveButton(R.string.save, ((dialog, which) -> {
                     if (!(adapter instanceof SettingsAdapter)) return;
                     SettingsAdapter settingsAdapter = (SettingsAdapter) adapter;
@@ -124,7 +125,7 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
     public void displayUnsupportedMessage() {
         new MaterialAlertDialogBuilder(this)
                 .setMessage(R.string.error_no_support)
-                .setNegativeButton(R.string.close, null)
+                .setNegativeButton(android.R.string.ok, null)
                 .show();
     }
 
@@ -164,7 +165,7 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
             if (adapter instanceof SettingsAdapter) {
                 String permString = EditorUtils.checkPermission(this, ((SettingsAdapter) adapter).getSettingsType());
                 if ("p".equals(permString)) {
-                    displaySettingEditor(null, getString(R.string.empty_setting_name));
+                    displaySettingEditor(null, null);
                 } else if (!"c".equals(permString)) {
                     setMessage(permString);
                 }

@@ -25,7 +25,6 @@ public class EditorUtils {
             return "p";
         }
         return context.getString(R.string.error_no_support) + "\n\n" + "pm grant " +
-                BuildConfig.APPLICATION_ID + " " + permission + "\n\n" +
-                context.getString(R.string.dev_permission_message);
+                BuildConfig.APPLICATION_ID + " " + permission;
     }
 }
