@@ -121,7 +121,7 @@ public class SettingsRecyclerAdapter extends AbsRecyclerAdapter {
             swapCursor(getCursor(context, settingsType));
         } catch (Throwable th) {
             th.printStackTrace();
-            setMessage(context.getString(R.string.error_unexpected));
+            setMessage(context.getString(R.string.error_unexpected, th.getMessage()));
         }
     }
 

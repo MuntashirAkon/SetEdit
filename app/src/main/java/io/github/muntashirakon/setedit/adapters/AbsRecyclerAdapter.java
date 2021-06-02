@@ -67,7 +67,9 @@ public abstract class AbsRecyclerAdapter extends RecyclerView.Adapter<AbsRecycle
             TextInputEditText editText = editDialogView.findViewById(R.id.txt);
             editText.setText(keyValue);
             editText.requestFocus();
-            editText.setSelection(0, keyValue.length());
+            if (keyValue != null) {
+                editText.setSelection(0, keyValue.length());
+            }
             MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context)
                     .setView(editDialogView)
                     .setNegativeButton(R.string.close, null);

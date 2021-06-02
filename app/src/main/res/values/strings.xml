@@ -4,7 +4,7 @@
     <string name="save">Save</string>
     <string name="error_no_support">SetEdit does not currently support editing this table. To enable editing, run the following command in a root or ADB shell:</string>
     <string name="error_rejected">Unexpected failure: Your system software has rejected this edit.</string>
-    <string name="error_unexpected">Unexpected failure</string>
+    <string name="error_unexpected">Unexpected failure: %s</string>
     <string name="delete">Delete</string>
     <string name="help">Get help</string>
     <string name="system_table">System Table</string>
