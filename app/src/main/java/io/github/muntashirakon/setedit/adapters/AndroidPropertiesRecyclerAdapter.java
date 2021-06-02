@@ -13,7 +13,7 @@ import java.util.Locale;
 
 import io.github.muntashirakon.setedit.Native;
 
-public class AndroidPropertiesRecyclerAdapter extends AbsRecyclerAdapter implements Filterable {
+class AndroidPropertiesRecyclerAdapter extends AbsRecyclerAdapter implements Filterable {
     private final List<String[]> list = new ArrayList<>();
     private final List<Integer> matchedIndexes = new ArrayList<>();
     private Filter filter;

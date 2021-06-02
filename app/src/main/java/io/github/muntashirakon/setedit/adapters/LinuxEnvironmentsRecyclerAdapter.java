@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class LinuxEnvironmentsRecyclerAdapter extends AbsRecyclerAdapter implements Filterable {
+class LinuxEnvironmentsRecyclerAdapter extends AbsRecyclerAdapter implements Filterable {
     private final Map<String, String> ENV_VAR_MAP = System.getenv();
     private final String[] envVars;
     private final List<Integer> matchedIndexes = new ArrayList<>(ENV_VAR_MAP.size());

@@ -15,7 +15,7 @@ import java.util.Locale;
 import java.util.Properties;
 import java.util.Set;
 
-public class JavaPropertiesRecyclerAdapter extends AbsRecyclerAdapter implements Filterable {
+class JavaPropertiesRecyclerAdapter extends AbsRecyclerAdapter implements Filterable {
     private final Properties PROPERTIES = System.getProperties();
     private final String[] propertyNames;
     private final List<Integer> matchedIndexes = new ArrayList<>(PROPERTIES.size());

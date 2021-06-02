@@ -1,12 +1,6 @@
-package io.github.muntashirakon.setedit;
+package io.github.muntashirakon.setedit.adapters;
 
 import android.content.Context;
-
-import io.github.muntashirakon.setedit.adapters.AbsRecyclerAdapter;
-import io.github.muntashirakon.setedit.adapters.AndroidPropertiesRecyclerAdapter;
-import io.github.muntashirakon.setedit.adapters.JavaPropertiesRecyclerAdapter;
-import io.github.muntashirakon.setedit.adapters.LinuxEnvironmentsRecyclerAdapter;
-import io.github.muntashirakon.setedit.adapters.SettingsRecyclerAdapter;
 
 public class AdapterProvider {
     private final Context context;

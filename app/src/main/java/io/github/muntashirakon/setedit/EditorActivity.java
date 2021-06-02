@@ -30,6 +30,7 @@ import com.google.android.material.floatingactionbutton.ExtendedFloatingActionBu
 import java.util.Locale;
 
 import io.github.muntashirakon.setedit.adapters.AbsRecyclerAdapter;
+import io.github.muntashirakon.setedit.adapters.AdapterProvider;
 import io.github.muntashirakon.setedit.adapters.SettingsRecyclerAdapter;
 
 public class EditorActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener,
