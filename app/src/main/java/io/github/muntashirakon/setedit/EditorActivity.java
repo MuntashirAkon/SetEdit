@@ -122,13 +122,6 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
         }
     }
 
-    public void displayUnsupportedMessage() {
-        new MaterialAlertDialogBuilder(this)
-                .setMessage(R.string.error_no_support)
-                .setNegativeButton(android.R.string.ok, null)
-                .show();
-    }
-
     @Override
     public void setMessage(CharSequence charSequence) {
         new MaterialAlertDialogBuilder(this)
@@ -169,7 +162,7 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
                 } else if (!"c".equals(permString)) {
                     setMessage(permString);
                 }
-            } else displayUnsupportedMessage();
+            }
         });
         // Display warning if it's the first time
         displayOneTimeWarningDialog();
@@ -187,30 +180,28 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
         editText.setText(value);
         editText.requestFocus();
         editText.setSelection(0, value.length());
-        new MaterialAlertDialogBuilder(this)
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this)
                 .setView(editDialogView)
-                .setPositiveButton(R.string.save, (dialog, which) -> {
-                    if (adapter instanceof SettingsAdapter) {
-                        Editable editable = editText.getText();
-                        if (editable == null) return;
-                        SettingsAdapter settingsAdapter = (SettingsAdapter) adapter;
-                        String permString = EditorUtils.checkPermission(this, settingsAdapter.getSettingsType());
-                        if ("p".equals(permString)) {
-                            settingsAdapter.updateValueForName(name, editable.toString());
-                        } else if (!"c".equals(permString)) {
-                            setMessage(permString);
-                        }
-                    } else displayUnsupportedMessage();
-
-                })
-                .setNegativeButton(R.string.close, null)
-                .setNeutralButton(R.string.delete, (dialog, which) -> {
-                    if (adapter instanceof SettingsAdapter) {
-                        SettingsAdapter settingsAdapter = (SettingsAdapter) adapter;
-                        settingsAdapter.deleteEntryByName(name);
-                    } else displayUnsupportedMessage();
-                })
-                .show();
+                .setNegativeButton(R.string.close, null);
+        if (adapter instanceof SettingsAdapter) {
+            builder.setPositiveButton(R.string.save, (dialog, which) -> {
+                Editable editable = editText.getText();
+                if (editable == null) return;
+                SettingsAdapter settingsAdapter = (SettingsAdapter) adapter;
+                String permString = EditorUtils.checkPermission(this, settingsAdapter.getSettingsType());
+                if ("p".equals(permString)) {
+                    settingsAdapter.updateValueForName(name, editable.toString());
+                } else if (!"c".equals(permString)) {
+                    setMessage(permString);
+                }
+            }).setNeutralButton(R.string.delete, (dialog, which) -> {
+                SettingsAdapter settingsAdapter = (SettingsAdapter) adapter;
+                settingsAdapter.deleteEntryByName(name);
+            });
+        } else {
+            editText.setKeyListener(null);
+        }
+        builder.show();
     }
 
     @Override
