@@ -9,8 +9,8 @@ import android.os.Process;
 import android.provider.Settings;
 
 public class EditorUtils {
-    public static String checkPermission(Context context, String str) {
-        String permission = "system".equals(str) ? "android.permission.WRITE_SETTINGS" : "android.permission.WRITE_SECURE_SETTINGS";
+    public static String checkPermission(Context context, String tableType) {
+        String permission = "system".equals(tableType) ? "android.permission.WRITE_SETTINGS" : "android.permission.WRITE_SECURE_SETTINGS";
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (!Settings.System.canWrite(context)) {
                 try {
@@ -19,7 +19,7 @@ public class EditorUtils {
                     context.startActivity(intent);
                     return "c";
                 } catch (Exception ignore) {}
-            } else if ("system".equals(str)) return "p";
+            } else if ("system".equals(tableType)) return "p";
         }
         if (context.checkPermission(permission, Process.myPid(), Process.myUid()) == PackageManager.PERMISSION_GRANTED) {
             return "p";

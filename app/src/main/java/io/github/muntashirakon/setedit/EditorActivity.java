@@ -1,98 +1,78 @@
 package io.github.muntashirakon.setedit;
 
 import android.annotation.SuppressLint;
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.text.method.LinkMovementMethod;
-import android.view.Gravity;
-import android.view.LayoutInflater;
+import android.text.Editable;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Filterable;
+import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.SearchView;
-import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatSpinner;
+import androidx.appcompat.widget.SearchView;
+import androidx.core.content.ContextCompat;
+
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.Locale;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import io.github.muntashirakon.setedit.adapter.AdapterProvider;
 import io.github.muntashirakon.setedit.adapter.IAdapterProvider;
 import io.github.muntashirakon.setedit.adapters.AdapterUtils;
 import io.github.muntashirakon.setedit.adapters.SettingsAdapter;
 
-public class EditorActivity extends AppCompatActivity implements View.OnClickListener,
-        AdapterView.OnItemClickListener, AdapterView.OnItemSelectedListener,
-        SearchView.OnQueryTextListener, IEditorActivity {
+public class EditorActivity extends AppCompatActivity implements AdapterView.OnItemClickListener,
+        AdapterView.OnItemSelectedListener, SearchView.OnQueryTextListener, IEditorActivity {
     private static final String SELECTED_TABLE = "SELECTED_TABLE";
 
-    protected Spinner spinnerTable;
-    protected View view;
-    protected BaseAdapter adapter;
-    private ListView listView;
-    private AlertDialog.Builder dialogBuilder;
-    private AlertDialog.Builder contextDialog;
-    private AlertDialog alertDialog;
-    private View contextDialogView;
-    private TextView nameView;
-    private long id;
-    private AlertDialog.Builder editorDialogBuilder;
-    private View editorDialogView;
-    private EditText editText;
+    @NonNull
     private final IAdapterProvider adapterProvider = new AdapterProvider(this, this);
-    SearchView searchView;
 
-    private void oneTimeWarningDialog(SharedPreferences sharedPreferences, CharSequence charSequence) {
-        TextView textView = new TextView(this);
-        textView.setText(charSequence);
-        textView.setGravity(17);
-        int dimensionPixelSize = getResources().getDimensionPixelSize(android.R.dimen.notification_large_icon_height) / 2;
-        textView.setPadding(dimensionPixelSize, dimensionPixelSize, dimensionPixelSize, dimensionPixelSize);
-        textView.setMovementMethod(LinkMovementMethod.getInstance());
-        new AlertDialog.Builder(this).setView(textView).show();
-        sharedPreferences.edit().putBoolean("has_warned", true).apply();
+    @Nullable
+    private AppCompatSpinner spinnerTable;
+    @Nullable
+    private SearchView searchView;
+    private ExtendedFloatingActionButton addNewItem;
+    private BaseAdapter adapter;
+    private ListView listView;
+
+    private void displayOneTimeWarningDialog() {
+        final SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+        boolean hasWarned = preferences.getBoolean("has_warned", false);
+        if (hasWarned) return;
+        new MaterialAlertDialogBuilder(this)
+                .setMessage(R.string.startup_warning)
+                .setNegativeButton(R.string.close, null)
+                .show();
+        preferences.edit().putBoolean("has_warned", true).apply();
     }
 
-    private void setDialogText(ViewGroup viewGroup) {
-        int childCount = viewGroup.getChildCount();
-        for (int i = 0; i < childCount; i++) {
-            View childAt = viewGroup.getChildAt(i);
-            if (childAt instanceof Button) {
-                childAt.setOnClickListener(this);
-            } else if (childAt instanceof ViewGroup) {
-                setDialogText((ViewGroup) childAt);
-            }
-            if (childAt instanceof TextView) {
-                if (childAt.getId() == R.id.title) nameView = (TextView) childAt;
-            }
-        }
-    }
-
-    public void displaySettingEditor(String name, String value) {
+    public void displaySettingEditor(@Nullable String name, @Nullable String value) {
         if (value == null) value = getString(R.string.empty_setting_value);
-        ViewGroup viewGroup = (ViewGroup) editorDialogView.getParent();
-        if (viewGroup != null) viewGroup.removeView(editorDialogView);
+        View editorDialogView = getLayoutInflater().inflate(R.layout.dialog_editor, null);
+        EditText editText = editorDialogView.findViewById(R.id.txt);
         editText.setText(value);
         editText.setSelection(0, value.length());
-        editorDialogBuilder.setView(editorDialogView)
+        new MaterialAlertDialogBuilder(this)
+                .setView(editorDialogView)
                 .setTitle(name != null ? name : getString(R.string.add_new_item))
-                .setPositiveButton(R.string.save_changes, ((dialogInterface, i) -> {
+                .setPositiveButton(R.string.save, ((dialog, which) -> {
                     if (!(adapter instanceof SettingsAdapter)) return;
                     SettingsAdapter settingsAdapter = (SettingsAdapter) adapter;
                     if (name == null) {
@@ -105,175 +85,185 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
                 .show();
     }
 
-    @Override
-    public void displayNewSettingEditor() {
-        displaySettingEditor(null, getString(R.string.empty_setting_name));
+    private void openHelp(String keyName) {
+        if (spinnerTable == null) return;
+        String str;
+        StringBuilder sb = new StringBuilder("https://search.disroot.org/?q=android+");
+        switch (spinnerTable.getSelectedItemPosition()) {
+            case 0:
+                str = "settings put system \"";
+                break;
+            case 1:
+                str = "settings put secure \"";
+                break;
+            case 2:
+                str = "settings put global \"";
+                break;
+            case 3:
+                str = "setprop \"";
+                break;
+            case 4:
+                str = "java properties \"";
+                break;
+            case 5:
+                str = "environment \"";
+                break;
+            default:
+                str = "\"";
+                break;
+        }
+        sb.append(str);
+        sb.append(Uri.encode(keyName));
+        sb.append('\"');
+        try {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(sb.toString())));
+        } catch (Exception ignore) {
+        }
     }
 
-    private void onClickDialogButton(int id) {
-        ClipData clipData = null;
-        if (id == R.id.button_copy_name) {
-            String s = AdapterUtils.getName(view);
-            clipData = ClipData.newPlainText(s, s);
-        } else if (id == R.id.button_copy_value) {
-            clipData = ClipData.newPlainText(AdapterUtils.getName(view), AdapterUtils.getValue(view));
-        } else if (id == R.id.button_copy_both) {
-            String s1 = AdapterUtils.getName(view);
-            clipData = ClipData.newPlainText(s1, s1 + "\t" + AdapterUtils.getValue(view));
-        } else if (id == R.id.button_delete_row) {
-            String s2 = AdapterUtils.getName(view);
-            if (adapter instanceof SettingsAdapter) {
-                SettingsAdapter settingsAdapter = (SettingsAdapter) adapter;
-                settingsAdapter.setMessage(s2);
-            } else setErrorMessage();
-        } else if (id == R.id.button_edit_value) {
-            if (adapter instanceof SettingsAdapter) {
-                ((SettingsAdapter) adapter).checkPermission(view, this.id);
-            } else setErrorMessage();
-        } else if (id == R.id.button_help) {
-            String str;
-            StringBuilder sb = new StringBuilder("https://search.disroot.org/?q=android+");
-            switch (spinnerTable.getSelectedItemPosition()) {
-                case 0:
-                    str = "settings put system \"";
-                    break;
-                case 1:
-                    str = "settings put secure \"";
-                    break;
-                case 2:
-                    str = "settings put global \"";
-                    break;
-                case 3:
-                    str = "setprop \"";
-                    break;
-                case 4:
-                    str = "java properties \"";
-                    break;
-                case 5:
-                    str = "environment \"";
-                    break;
-                default:
-                    str = "\"";
-                    break;
-            }
-            sb.append(str);
-            sb.append(Uri.encode(AdapterUtils.getName(view)));
-            sb.append('\"');
-            try {
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(sb.toString())));
-            } catch (Exception ignore) {
-            }
-        } else {
-            return;
-        }
-        if (clipData != null) {
-            ClipboardManager clipboardManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-            if (clipboardManager != null) {
-                clipboardManager.setPrimaryClip(clipData);
-                Toast.makeText(this, R.string.text_copied_to_clipboard, Toast.LENGTH_SHORT).show();
-            }
-        }
-        if (alertDialog != null) alertDialog.dismiss();
-    }
-
-    public void setErrorMessage() {
-        setMessage(getString(R.string.error_no_support));
+    public void displayUnsupportedMessage() {
+        new MaterialAlertDialogBuilder(this)
+                .setMessage(R.string.error_no_support)
+                .setNegativeButton(R.string.close, null)
+                .show();
     }
 
     @Override
     public void setMessage(CharSequence charSequence) {
-        dialogBuilder.setMessage(charSequence);
-        dialogBuilder.show();
+        new MaterialAlertDialogBuilder(this)
+                .setMessage(charSequence)
+                .setNegativeButton(R.string.close, null)
+                .show();
     }
 
-    @Override
-    public void onClick(View view) {
-        onClickDialogButton(view.getId());
-    }
-
-    @SuppressLint("InflateParams")
+    @SuppressLint({"InflateParams", "RestrictedApi"})
     @Override
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         setContentView(R.layout.activity_editor);
+        setSupportActionBar(findViewById(R.id.toolbar));
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            searchView = new SearchView(actionBar.getThemedContext());
+            actionBar.setDisplayShowTitleEnabled(false);
             actionBar.setDisplayShowCustomEnabled(true);
-            ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT);
-            layoutParams.gravity = Gravity.END;
-            actionBar.setCustomView(searchView, layoutParams);
-            searchView.setOnQueryTextListener(this);
+            actionBar.setCustomView(R.layout.toolbar_custom_view);
+            View actionBarView = actionBar.getCustomView();
+            // Item view
+            spinnerTable = actionBarView.findViewById(R.id.spinner);
+            spinnerTable.setSupportBackgroundTintList(ContextCompat.getColorStateList(this, R.color.colorAccent));
+            spinnerTable.setOnItemSelectedListener(this);
+            spinnerTable.setAdapter(ArrayAdapter.createFromResource(this, R.array.settings_table, R.layout.item_spinner));
         }
         // List view
         listView = findViewById(R.id.list_view);
         listView.setOnItemClickListener(this);
         listView.setTextFilterEnabled(false);
-        // Add header (add new item)
-        View addNewItemView = getLayoutInflater().inflate(R.layout.item_list_header, null);
-        addNewItemView.setOnClickListener(v -> displaySettingEditor(null, null));
-        listView.addHeaderView(addNewItemView);
-        // Set devices list
-        spinnerTable = findViewById(R.id.spinner_table);
-        spinnerTable.setOnItemSelectedListener(this);
-        spinnerTable.setAdapter(ArrayAdapter.createFromResource(this, R.array.settings_table, R.layout.item_spinner));
-        editorDialogBuilder = new AlertDialog.Builder(this);
-        editorDialogView = LayoutInflater.from(editorDialogBuilder.getContext()).inflate(R.layout.dialog_editor, null);
-        editText = editorDialogView.findViewById(R.id.txt);
-        dialogBuilder = new AlertDialog.Builder(this);
-        contextDialog = new AlertDialog.Builder(this);
-        contextDialogView = LayoutInflater.from(contextDialog.getContext()).inflate(R.layout.dialog_menu, null);
-        setDialogText((ViewGroup) contextDialogView);
-        final SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        boolean hasWarned = defaultSharedPreferences.getBoolean("has_warned", false);
-        if (!hasWarned) {
-            oneTimeWarningDialog(defaultSharedPreferences, getString(R.string.startup_warning));
-        }
+        // Add efab
+        addNewItem = findViewById(R.id.efab);
+        addNewItem.setOnClickListener(v -> {
+            if (adapter instanceof SettingsAdapter) {
+                String permString = EditorUtils.checkPermission(this, ((SettingsAdapter) adapter).getSettingsType());
+                if ("p".equals(permString)) {
+                    displaySettingEditor(null, getString(R.string.empty_setting_name));
+                } else if (!"c".equals(permString)) {
+                    setMessage(permString);
+                }
+            } else displayUnsupportedMessage();
+        });
+        // Display warning if it's the first time
+        displayOneTimeWarningDialog();
     }
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-        if (adapterView == listView) {
-            this.view = view;
-            this.id = id;
-            if (id == -1) {
-                onClickDialogButton(R.id.button_edit_value);
-                return;
-            }
-            ViewGroup viewGroup = (ViewGroup) contextDialogView.getParent();
-            if (viewGroup != null) viewGroup.removeView(contextDialogView);
-            nameView.setText(AdapterUtils.getName(view));
-            contextDialog.setView(contextDialogView);
-            alertDialog = contextDialog.show();
+        // An item in the ListView has been clicked
+        View editDialogView = getLayoutInflater().inflate(R.layout.dialog_edit, null);
+        editDialogView.findViewById(R.id.button_help).setOnClickListener(v -> openHelp(AdapterUtils.getName(view)));
+        String name = AdapterUtils.getName(view);
+        String value = AdapterUtils.getValue(view);
+        ((TextView) editDialogView.findViewById(R.id.title)).setText(name);
+        TextInputEditText editText = editDialogView.findViewById(R.id.txt);
+        editText.setText(value);
+        editText.requestFocus();
+        editText.setSelection(0, value.length());
+        new MaterialAlertDialogBuilder(this)
+                .setView(editDialogView)
+                .setPositiveButton(R.string.save, (dialog, which) -> {
+                    if (adapter instanceof SettingsAdapter) {
+                        Editable editable = editText.getText();
+                        if (editable == null) return;
+                        SettingsAdapter settingsAdapter = (SettingsAdapter) adapter;
+                        String permString = EditorUtils.checkPermission(this, settingsAdapter.getSettingsType());
+                        if ("p".equals(permString)) {
+                            settingsAdapter.updateValueForName(name, editable.toString());
+                        } else if (!"c".equals(permString)) {
+                            setMessage(permString);
+                        }
+                    } else displayUnsupportedMessage();
+
+                })
+                .setNegativeButton(R.string.close, null)
+                .setNeutralButton(R.string.delete, (dialog, which) -> {
+                    if (adapter instanceof SettingsAdapter) {
+                        SettingsAdapter settingsAdapter = (SettingsAdapter) adapter;
+                        settingsAdapter.deleteEntryByName(name);
+                    } else displayUnsupportedMessage();
+                })
+                .show();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.activity_editor_actions, menu);
+        // Search view
+        searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        // Set query listener
+        searchView.setOnQueryTextListener(this);
+        // Set images
+        int accentColor = ContextCompat.getColor(this, R.color.colorAccent);
+        ((ImageView) searchView.findViewById(androidx.appcompat.R.id.search_button)).setColorFilter(accentColor);
+        ((ImageView) searchView.findViewById(androidx.appcompat.R.id.search_close_btn)).setColorFilter(accentColor);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.action_export) {
+            // TODO: 1/6/21 Export as JSON
         }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
-        if (adapterView == spinnerTable && position != 6) {
-            adapter = adapterProvider.getAdapter(position);
+        listView.setAdapter(adapter = adapterProvider.getAdapter(position));
+        if (position < 3) addNewItem.setVisibility(View.VISIBLE);
+        else addNewItem.setVisibility(View.GONE);
+        if (searchView != null) {
             searchView.setQuery(null, false);
             searchView.clearFocus();
             searchView.setIconified(true);
-        } else return;
-        listView.setAdapter(adapter);
+        }
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
+        addNewItem.show();
     }
 
     @Override
     public void onRestoreInstanceState(@NonNull Bundle bundle) {
-        if (spinnerTable != null)
+        if (spinnerTable != null) {
             spinnerTable.setSelection(bundle.getInt(SELECTED_TABLE));
+        }
     }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle bundle) {
         super.onSaveInstanceState(bundle);
-        bundle.putInt(SELECTED_TABLE, spinnerTable.getSelectedItemPosition());
+        if (spinnerTable != null) {
+            bundle.putInt(SELECTED_TABLE, spinnerTable.getSelectedItemPosition());
+        }
     }
 
     @Override

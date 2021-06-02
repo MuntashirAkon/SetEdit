@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<com.google.android.material.textfield.TextInputLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    style="@style/AppTheme.TextInputLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <EditText
+    <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/txt"
+        style="@style/TextAppearance.MaterialComponents.Subtitle1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16sp"
@@ -15,7 +17,6 @@
         android:layout_marginRight="16sp"
         android:inputType="textMultiLine"
         android:textSize="16sp"
-        tools:ignore="LabelFor"
         tools:text="@tools:sample/lorem[7]" />
 
-</ScrollView>
+</com.google.android.material.textfield.TextInputLayout>

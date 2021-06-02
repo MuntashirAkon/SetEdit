@@ -1,4 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <style name="AppTheme" parent="Theme.AppCompat.Light" />
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorOnPrimary">?android:attr/colorAccent</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorOnSurface">?android:attr/textColorPrimary</item>
+        <item name="android:colorBackground">@color/colorPrimaryDark</item>
+        <item name="android:colorControlActivated" tools:targetApi="lollipop">@color/colorAccent</item>
+        <item name="android:navigationBarColor" tools:targetApi="lollipop">@color/colorPrimaryDark</item>
+        <item name="android:textColorPrimary">@color/textColorPrimary</item>
+        <item name="android:textColorSecondary">@color/textColorSecondary</item>
+        <item name="android:windowContentTransitions" tools:targetApi="lollipop">true</item>
+        <item name="android:windowAllowEnterTransitionOverlap" tools:targetApi="lollipop">true</item>
+        <item name="android:windowAllowReturnTransitionOverlap" tools:targetApi="lollipop">true</item>
+        <item name="actionOverflowButtonStyle">@style/AppTheme.ActionButton.Overflow</item>
+        <item name="materialAlertDialogTheme">@style/AppTheme.AlertDialog</item>
+    </style>
+    <style name="Theme.MaterialComponents.DayNight.NoActionBar" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimaryDark" tools:targetApi="m">@color/colorPrimaryDark</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
+    </style>
+    <style name="AppTheme.ActionButton.Overflow" parent="@style/Widget.AppCompat.ActionButton.Overflow">
+        <item name="tint">@color/colorAccent</item>
+    </style>
+    <style name="AppTheme.FloatingActionButton" parent="@style/Widget.MaterialComponents.FloatingActionButton">
+        <item name="materialThemeOverlay">@style/AppTheme.FabOverlay</item>
+    </style>
+    <style name="AppTheme.FabOverlay">
+        <item name="colorSecondary">@color/colorAccent</item>
+    </style>
+    <style name="AppTheme.AlertDialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="colorPrimary">@color/colorAccent</item>
+        <item name="colorOnPrimary">@color/colorPrimary</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorOnSurface">@color/colorPrimaryDark</item>
+        <item name="shapeAppearanceOverlay">@style/AppTheme.AlertDialog.Rounded</item>
+        <item name="android:checkedTextViewStyle" tools:targetApi="jelly_bean_mr1">@style/AppTheme.AlertDialog.CheckedTextView</item>
+        <item name="checkedTextViewStyle">@style/AppTheme.AlertDialog.CheckedTextView</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/AppTheme.AlertDialog.Title.Text</item>
+        <item name="materialAlertDialogBodyTextStyle">@style/AppTheme.AlertDialog.Body.Text</item>
+        <item name="materialAlertDialogTitlePanelStyle">@style/AppTheme.AlertDialog.Title.Panel</item>
+    </style>
+    <style name="AppTheme.AlertDialog.Rounded" parent="MaterialAlertDialog.MaterialComponents.Title.Panel">
+        <item name="cornerSize">16dp</item>
+    </style>
+    <style name="AppTheme.AlertDialog.Title.Panel" parent="MaterialAlertDialog.MaterialComponents.Title.Panel">
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
+    </style>
+    <style name="AppTheme.AlertDialog.Title.Text" parent="MaterialAlertDialog.MaterialComponents.Title.Text">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">?android:textColorPrimary</item>
+    </style>
+    <style name="AppTheme.AlertDialog.Body.Text" parent="MaterialAlertDialog.MaterialComponents.Body.Text">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">?android:textColorSecondary</item>
+    </style>
+    <style name="AppTheme.AlertDialog.CheckedTextView" parent="Widget.MaterialComponents.CheckedTextView">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">?android:textColorPrimary</item>
+    </style>
+    <style name="AppTheme.TextInputLayout" parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+        <item name="boxStrokeColor">@color/outlined_stroke_color</item>
+        <item name="hintTextColor">@color/colorAccent</item>
+        <item name="endIconTint">@color/colorAccent</item>
+    </style>
+    <style name="AppTheme.Button" parent="@style/Widget.MaterialComponents.Button" />
 </resources>

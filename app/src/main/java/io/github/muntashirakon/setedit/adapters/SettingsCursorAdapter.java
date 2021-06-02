@@ -34,6 +34,11 @@ public class SettingsCursorAdapter extends CursorAdapter implements SettingsAdap
         this.setFilterQueryProvider(this);
     }
 
+    @Override
+    public String getSettingsType() {
+        return settingsType;
+    }
+
     private static Cursor checkPermission(Context context, String settingsType) {
         try {
             ContentResolver contentResolver = context.getContentResolver();
@@ -46,20 +51,6 @@ public class SettingsCursorAdapter extends CursorAdapter implements SettingsAdap
         } catch (Throwable th) {
             th.printStackTrace();
             return new MatrixCursor(columns);
-        }
-    }
-
-    @Override
-    public void checkPermission(View view, long id) {
-        String permString = EditorUtils.checkPermission(context, settingsType);
-        if ("p".equals(permString)) {
-            if (id == -1) {
-                editorActivity.displayNewSettingEditor();
-                return;
-            }
-            editorActivity.displaySettingEditor(AdapterUtils.getName(view), AdapterUtils.getValue(view));
-        } else if (!"c".equals(permString)) {
-            editorActivity.setMessage(permString);
         }
     }
 
@@ -84,22 +75,21 @@ public class SettingsCursorAdapter extends CursorAdapter implements SettingsAdap
     }
 
     @Override
-    public void setMessage(String str) {
+    public void deleteEntryByName(String str) {
         String message = EditorUtils.checkPermission(context, settingsType);
-        if (!"c".equals(message)) {
-            if (!"p".equals(message)) {
-                editorActivity.setMessage(message);
-                return;
-            }
-            ContentResolver contentResolver = context.getContentResolver();
-            try {
-                String[] strArr = {str};
-                contentResolver.delete(Uri.parse("content://settings/" + settingsType), "name = ?", strArr);
-                onContentChanged();
-            } catch (Throwable th) {
-                th.printStackTrace();
-                editorActivity.setMessage(SetEdit.getInstance().getString(R.string.error_unexpected));
-            }
+        if ("c".equals(message)) return;
+        if (!"p".equals(message)) {
+            editorActivity.setMessage(message);
+            return;
+        }
+        ContentResolver contentResolver = context.getContentResolver();
+        try {
+            String[] strArr = {str};
+            contentResolver.delete(Uri.parse("content://settings/" + settingsType), "name = ?", strArr);
+            onContentChanged();
+        } catch (Throwable th) {
+            th.printStackTrace();
+            editorActivity.setMessage(SetEdit.getInstance().getString(R.string.error_unexpected));
         }
     }
 
