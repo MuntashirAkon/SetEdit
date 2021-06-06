@@ -22,4 +22,9 @@
     <string name="saved">Saved</string>
     <string name="failed">Failed</string>
     <string name="saved_to_file">Saved to %s</string>
+    <string name="theme_system">Follow system</string>
+    <string name="theme_day">Day</string>
+    <string name="theme_night">Night</string>
+    <string name="theme_battery">Follow battery saver</string>
+    <string name="theme">Theme</string>
 </resources>

@@ -29,9 +29,7 @@
         tools:ignore="UnusedAttribute">
         <activity
             android:label="SetEdit"
-            android:name=".EditorActivity"
-            android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|layoutDirection|fontScale"
-            android:resumeWhilePausing="true">
+            android:name=".EditorActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 

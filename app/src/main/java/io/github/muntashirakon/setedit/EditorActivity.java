@@ -25,6 +25,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.content.ContextCompat;
@@ -40,6 +41,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import io.github.muntashirakon.setedit.adapters.AbsRecyclerAdapter;
@@ -60,6 +63,7 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
     private ExtendedFloatingActionButton addNewItem;
     private AbsRecyclerAdapter adapter;
     private RecyclerView listView;
+    private SharedPreferences preferences;
 
     private final ActivityResultLauncher<String> pre21StoragePermissionLauncher = registerForActivityResult(
             new ActivityResultContracts.RequestPermission(), granted -> saveAsJsonLegacy());
@@ -112,6 +116,9 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
     @SuppressLint({"InflateParams", "RestrictedApi"})
     @Override
     public void onCreate(Bundle bundle) {
+        preferences = getSharedPreferences("prefs", MODE_PRIVATE);
+        int mode = preferences.getInt("theme", AppCompatDelegate.getDefaultNightMode());
+        AppCompatDelegate.setDefaultNightMode(mode);
         super.onCreate(bundle);
         setContentView(R.layout.activity_editor);
         setSupportActionBar(findViewById(R.id.toolbar));
@@ -165,11 +172,29 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.action_export) {
+        int id = item.getItemId();
+        if (id == R.id.action_export) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 post21SaveLauncher.launch(getFileName());
             } else saveAsJsonLegacy();
             return true;
+        } else if (id == R.id.action_theme) {
+            List<Integer> themeMap = new ArrayList<>(4);
+            // Sequence must be preserved
+            themeMap.add(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+            themeMap.add(AppCompatDelegate.MODE_NIGHT_NO);
+            themeMap.add(AppCompatDelegate.MODE_NIGHT_YES);
+            themeMap.add(AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY);
+            int mode = preferences.getInt("theme", AppCompatDelegate.getDefaultNightMode());
+            new MaterialAlertDialogBuilder(this)
+                    .setTitle(R.string.theme)
+                    .setSingleChoiceItems(R.array.theme_options, themeMap.indexOf(mode), (dialog, which) -> {
+                        int newMode = themeMap.get(which);
+                        preferences.edit().putInt("theme", newMode).apply();
+                        AppCompatDelegate.setDefaultNightMode(newMode);
+                        dialog.dismiss();
+                    })
+                    .show();
         }
         return super.onOptionsItemSelected(item);
     }

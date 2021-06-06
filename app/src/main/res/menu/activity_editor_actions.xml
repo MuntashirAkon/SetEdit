@@ -11,4 +11,8 @@
     <item
         android:id="@+id/action_export"
         android:title="@string/save_as_json" />
+
+    <item
+        android:id="@+id/action_theme"
+        android:title="@string/theme" />
 </menu>
