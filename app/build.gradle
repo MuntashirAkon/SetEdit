@@ -12,8 +12,8 @@ android {
         minSdkVersion 14
         //noinspection ExpiredTargetSdkVersion
         targetSdkVersion 22
-        versionCode 5
-        versionName "2.0"
+        versionCode 6
+        versionName "2.1"
         resConfig "en"
     }
 

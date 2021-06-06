@@ -1,0 +1,3 @@
+- Enabled searching for settings tables
+- Added the ability to change app theme
+- Ability to copy permission command from the dialog prompt.
