@@ -6,6 +6,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.widget.Filter;
 
@@ -114,15 +115,17 @@ public class SettingsRecyclerAdapter extends AbsRecyclerAdapter {
             swapCursor(getCursor(context, settingsType));
         } catch (Throwable th) {
             th.printStackTrace();
-            setMessage(context.getString(R.string.error_rejected));
+            setMessage(new SpannableStringBuilder(context.getText(R.string.error_unexpected))
+                    .append(" ")
+                    .append(th.getMessage()));
         }
     }
 
     public void deleteEntryByName(String keyName) {
-        String message = EditorUtils.checkPermission(context, settingsType);
-        if ("c".equals(message)) return;
-        if (!"p".equals(message)) {
-            setMessage(message);
+        Boolean isGranted = EditorUtils.checkPermission(context, settingsType);
+        if (isGranted == null) return;
+        if (!isGranted) {
+            EditorUtils.displayUnsupportedMessage(context);
             return;
         }
         ContentResolver contentResolver = context.getContentResolver();
@@ -132,7 +135,9 @@ public class SettingsRecyclerAdapter extends AbsRecyclerAdapter {
             swapCursor(getCursor(context, settingsType));
         } catch (Throwable th) {
             th.printStackTrace();
-            setMessage(context.getString(R.string.error_unexpected, th.getMessage()));
+            setMessage(new SpannableStringBuilder(context.getText(R.string.error_unexpected))
+                    .append(" ")
+                    .append(th.getMessage()));
         }
     }
 

@@ -2,9 +2,8 @@
 <resources>
     <string name="app_name" translatable="false">Settings Database Editor</string>
     <string name="save">Save</string>
-    <string name="error_no_support">SetEdit does not currently support editing this table. To enable editing, run the following command in a root or ADB shell:</string>
-    <string name="error_rejected">Unexpected failure: Your system software has rejected this edit.</string>
-    <string name="error_unexpected">Unexpected failure: %s</string>
+    <string name="error_no_support"><b>SetEdit</b> does not currently support editing this table. To enable editing, run the following command in a root or ADB shell:</string>
+    <string name="error_unexpected"><b>Unexpected failure:</b></string>
     <string name="delete">Delete</string>
     <string name="help">Get help</string>
     <string name="system_table">System Table</string>
@@ -13,7 +12,7 @@
     <string name="android_properties">Android Properties</string>
     <string name="java_properties">Java Properties</string>
     <string name="linux_environment">Linux Environments</string>
-    <string name="startup_warning">WARNING — We do not guarantee that problems caused by the improper use of this utility can be fixed, and we are unable to help you with any such problems. We support only this app, not your device.</string>
+    <string name="startup_warning"><b>Warning!</b> We do not guarantee that problems caused by the improper use of this utility can be fixed, and we are unable to help you with any such problems. We support only this app, not your device.</string>
     <string name="save_as_json">Save as JSON</string>
     <string name="new_item">New Item</string>
     <string name="close">Close</string>

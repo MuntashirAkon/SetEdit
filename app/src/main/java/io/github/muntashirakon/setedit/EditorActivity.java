@@ -141,14 +141,12 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
         addNewItem = findViewById(R.id.efab);
         addNewItem.setOnClickListener(v -> {
             if (adapter instanceof SettingsRecyclerAdapter) {
-                String permString = EditorUtils.checkPermission(this, ((SettingsRecyclerAdapter) adapter).getSettingsType());
-                if ("p".equals(permString)) {
+                Boolean isGranted = EditorUtils.checkPermission(this, ((SettingsRecyclerAdapter) adapter).getSettingsType());
+                if (isGranted == null) return;
+                if (isGranted) {
                     addNewItemDialog();
-                } else if (!"c".equals(permString)) {
-                    new MaterialAlertDialogBuilder(this)
-                            .setMessage(permString)
-                            .setNegativeButton(R.string.close, null)
-                            .show();
+                } else {
+                    EditorUtils.displayUnsupportedMessage(this);
                 }
             }
         });

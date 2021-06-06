@@ -91,11 +91,12 @@ public abstract class AbsRecyclerAdapter extends RecyclerView.Adapter<AbsRecycle
                     Editable editable = editText.getText();
                     if (editable == null) return;
                     SettingsRecyclerAdapter settingsAdapter = (SettingsRecyclerAdapter) this;
-                    String permString = EditorUtils.checkPermission(context, settingsAdapter.getSettingsType());
-                    if ("p".equals(permString)) {
+                    Boolean isGranted = EditorUtils.checkPermission(context, settingsAdapter.getSettingsType());
+                    if (isGranted == null) return;
+                    if (isGranted) {
                         settingsAdapter.updateValueForName(keyName, editable.toString());
-                    } else if (!"c".equals(permString)) {
-                        setMessage(permString);
+                    } else {
+                        EditorUtils.displayUnsupportedMessage(context);
                     }
                 }).setNeutralButton(R.string.delete, (dialog, which) -> {
                     SettingsRecyclerAdapter settingsAdapter = (SettingsRecyclerAdapter) this;
