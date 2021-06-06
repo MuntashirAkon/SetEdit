@@ -7,6 +7,7 @@ import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -24,6 +25,7 @@ import io.github.muntashirakon.setedit.R;
 
 public abstract class AbsRecyclerAdapter extends RecyclerView.Adapter<AbsRecyclerAdapter.ViewHolder> {
     protected final Context context;
+    private String constraint;
 
     public AbsRecyclerAdapter(Context context) {
         setHasStableIds(true);
@@ -34,6 +36,15 @@ public abstract class AbsRecyclerAdapter extends RecyclerView.Adapter<AbsRecycle
     public abstract List<Pair<String, String>> getAllItems();
 
     public abstract int getListType();
+
+    public void filter(String constraint) {
+        this.constraint = constraint;
+        getFilter().filter(constraint);
+    }
+
+    public void filter() {
+        getFilter().filter(constraint);
+    }
 
     @NonNull
     @Override
@@ -55,6 +66,8 @@ public abstract class AbsRecyclerAdapter extends RecyclerView.Adapter<AbsRecycle
         Pair<String, String> key = getItem(position);
         onBindViewHolder(holder, key.first, key.second, position);
     }
+
+    protected abstract Filter getFilter();
 
     private void onBindViewHolder(@NonNull ViewHolder holder, String keyName, String keyValue, int position) {
         holder.keyName.setText(keyName);

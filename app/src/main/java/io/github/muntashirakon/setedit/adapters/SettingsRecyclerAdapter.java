@@ -6,12 +6,16 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
+import android.text.TextUtils;
+import android.widget.Filter;
 
 import androidx.annotation.NonNull;
 import androidx.core.util.Pair;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 import io.github.muntashirakon.setedit.EditorUtils;
 import io.github.muntashirakon.setedit.R;
@@ -22,12 +26,15 @@ public class SettingsRecyclerAdapter extends AbsRecyclerAdapter {
     public static final String[] columns = {"_id", "name", "value"};
 
     private final String settingsType;
+    private final List<Integer> matchedPositions;
     private Cursor cursor;
     private boolean mDataValid;
+    private Filter filter;
 
     public SettingsRecyclerAdapter(Context context, String settingsType) {
         super(context);
         this.settingsType = settingsType;
+        matchedPositions = new ArrayList<>();
         swapCursor(getCursor(context, settingsType));
     }
 
@@ -37,8 +44,10 @@ public class SettingsRecyclerAdapter extends AbsRecyclerAdapter {
         if (!mDataValid) {
             throw new IllegalStateException("Cannot lookup item id when cursor is in invalid state.");
         }
+        if (!cursor.moveToFirst()) {
+            return Collections.emptyList();
+        }
         List<Pair<String, String>> items = new ArrayList<>(cursor.getCount());
-        cursor.moveToFirst();
         do {
             items.add(new Pair<>(cursor.getString(1), cursor.getString(2)));
         } while (cursor.moveToNext());
@@ -67,8 +76,9 @@ public class SettingsRecyclerAdapter extends AbsRecyclerAdapter {
         if (!mDataValid) {
             throw new IllegalStateException("Cannot lookup item id when cursor is in invalid state.");
         }
-        if (!cursor.moveToPosition(position)) {
-            throw new IllegalStateException("Could not move cursor to position " + position + " when trying to get an item id");
+        int newPosition = matchedPositions.get(position);
+        if (!cursor.moveToPosition(newPosition)) {
+            throw new IllegalStateException("Could not move cursor to position " + newPosition + " when trying to get an item id");
         }
         return new Pair<>(cursor.getString(1), cursor.getString(2));
     }
@@ -76,7 +86,7 @@ public class SettingsRecyclerAdapter extends AbsRecyclerAdapter {
     @Override
     public int getItemCount() {
         if (mDataValid) {
-            return cursor.getCount();
+            return matchedPositions.size();
         } else {
             return 0;
         }
@@ -87,8 +97,9 @@ public class SettingsRecyclerAdapter extends AbsRecyclerAdapter {
         if (!mDataValid) {
             throw new IllegalStateException("Cannot lookup item id when cursor is in invalid state.");
         }
-        if (!cursor.moveToPosition(position)) {
-            throw new IllegalStateException("Could not move cursor to position " + position + " when trying to get an item id");
+        int newPosition = matchedPositions.get(position);
+        if (!cursor.moveToPosition(newPosition)) {
+            throw new IllegalStateException("Could not move cursor to position " + newPosition + " when trying to get an item id");
         }
         return cursor.getLong(0);
     }
@@ -132,8 +143,8 @@ public class SettingsRecyclerAdapter extends AbsRecyclerAdapter {
         if (newCursor != null) {
             cursor = newCursor;
             mDataValid = true;
-            // notify the observers about the new cursor
-            notifyDataSetChanged();
+            // Apply filter on new items
+            filter();
         } else {
             notifyItemRangeRemoved(0, getItemCount());
             cursor = null;
@@ -141,6 +152,50 @@ public class SettingsRecyclerAdapter extends AbsRecyclerAdapter {
         }
     }
 
+    @Override
+    protected Filter getFilter() {
+        if (filter == null) {
+            filter = new Filter() {
+                @Override
+                protected FilterResults performFiltering(CharSequence constraint) {
+                    FilterResults results = new FilterResults();
+                    List<Integer> matchedPositions = new ArrayList<>(cursor.getCount());
+                    if (TextUtils.isEmpty(constraint)) {
+                        if (cursor.moveToFirst()) {
+                            do {
+                                matchedPositions.add(cursor.getPosition());
+                            } while (cursor.moveToNext());
+                        }
+                    } else {
+                        if (!mDataValid) {
+                            throw new IllegalStateException("Cannot lookup item id when cursor is in invalid state.");
+                        }
+                        if (cursor.moveToFirst()) {
+                            do {
+                                if (cursor.getString(1).toLowerCase(Locale.ROOT).contains(constraint)) {
+                                    matchedPositions.add(cursor.getPosition());
+                                }
+                            } while (cursor.moveToNext());
+                        }
+                    }
+                    results.count = matchedPositions.size();
+                    results.values = matchedPositions;
+                    return results;
+                }
+
+                @Override
+                protected void publishResults(CharSequence constraint, FilterResults results) {
+                    matchedPositions.clear();
+                    //noinspection unchecked
+                    matchedPositions.addAll((List<Integer>) results.values);
+                    notifyDataSetChanged();
+                }
+            };
+        }
+        return filter;
+    }
+
+    @NonNull
     private static Cursor getCursor(Context context, String settingsType) {
         try {
             ContentResolver contentResolver = context.getContentResolver();

@@ -3,7 +3,6 @@ package io.github.muntashirakon.setedit.adapters;
 import android.content.Context;
 import android.text.TextUtils;
 import android.widget.Filter;
-import android.widget.Filterable;
 
 import androidx.annotation.NonNull;
 import androidx.core.util.Pair;
@@ -15,7 +14,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-class LinuxEnvironmentsRecyclerAdapter extends AbsRecyclerAdapter implements Filterable {
+class LinuxEnvironmentsRecyclerAdapter extends AbsRecyclerAdapter {
     private final Map<String, String> ENV_VAR_MAP = System.getenv();
     private final String[] envVars;
     private final List<Integer> matchedIndexes = new ArrayList<>(ENV_VAR_MAP.size());
@@ -66,7 +65,7 @@ class LinuxEnvironmentsRecyclerAdapter extends AbsRecyclerAdapter implements Fil
     }
 
     @Override
-    public Filter getFilter() {
+    protected Filter getFilter() {
         if (filter == null) {
             filter = new Filter() {
                 @Override

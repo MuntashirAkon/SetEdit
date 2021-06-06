@@ -3,7 +3,6 @@ package io.github.muntashirakon.setedit.adapters;
 import android.content.Context;
 import android.text.TextUtils;
 import android.widget.Filter;
-import android.widget.Filterable;
 
 import androidx.annotation.NonNull;
 import androidx.core.util.Pair;
@@ -14,7 +13,7 @@ import java.util.Locale;
 
 import io.github.muntashirakon.setedit.Native;
 
-class AndroidPropertiesRecyclerAdapter extends AbsRecyclerAdapter implements Filterable {
+class AndroidPropertiesRecyclerAdapter extends AbsRecyclerAdapter {
     private final List<String[]> propertyList = new ArrayList<>();
     private final List<Integer> matchedIndexes = new ArrayList<>();
     private Filter filter;
@@ -58,7 +57,7 @@ class AndroidPropertiesRecyclerAdapter extends AbsRecyclerAdapter implements Fil
     }
 
     @Override
-    public Filter getFilter() {
+    protected Filter getFilter() {
         if (filter == null) {
             filter = new Filter() {
                 @Override

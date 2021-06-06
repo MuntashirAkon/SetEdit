@@ -15,7 +15,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -214,8 +213,8 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        if (adapter instanceof Filterable) {
-            ((Filterable) adapter).getFilter().filter(newText.toLowerCase(Locale.ROOT));
+        if (adapter != null) {
+            adapter.filter(newText.toLowerCase(Locale.ROOT));
         }
         return false;
     }
