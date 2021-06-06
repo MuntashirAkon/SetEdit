@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import android.widget.Filter;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.util.Pair;
 
 import java.util.ArrayList;
@@ -19,7 +20,6 @@ import java.util.Locale;
 
 import io.github.muntashirakon.setedit.EditorUtils;
 import io.github.muntashirakon.setedit.R;
-import io.github.muntashirakon.setedit.cursor.CursorHelper;
 import io.github.muntashirakon.setedit.cursor.SettingsCursor;
 
 public class SettingsRecyclerAdapter extends AbsRecyclerAdapter {
@@ -199,12 +199,10 @@ public class SettingsRecyclerAdapter extends AbsRecyclerAdapter {
     private static Cursor getCursor(Context context, String settingsType) {
         try {
             ContentResolver contentResolver = context.getContentResolver();
+            @Nullable
             Cursor query = contentResolver.query(Uri.parse("content://settings/" + settingsType),
                     columns, null, null, null);
-            SettingsCursor settingsCursor = new SettingsCursor();
-            settingsCursor.setCursor(query);
-            settingsCursor.setCursorHelper(CursorHelper.getStringAtIndex(1), String.CASE_INSENSITIVE_ORDER);
-            return settingsCursor;
+            return new SettingsCursor(query);
         } catch (Throwable th) {
             th.printStackTrace();
             return new MatrixCursor(columns);

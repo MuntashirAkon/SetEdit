@@ -8,26 +8,31 @@ import android.database.Cursor;
 import android.database.DataSetObserver;
 import android.net.Uri;
 import android.os.Bundle;
+
+import androidx.annotation.Nullable;
+
 import java.util.Arrays;
 import java.util.Comparator;
 
 public class SettingsCursor implements Cursor {
-    private Cursor cursor;
-    private CursorHelper cursorHelper;
+    @Nullable
+    private final Cursor cursor;
+
+    private SortHelper sortHelper;
     private Comparator<String> comparator;
     private String[] data;
     private Integer[] integerData;
     private int position = -1;
 
     private void sortValues() {
-        if (cursor != null && cursorHelper != null && comparator != null) {
+        if (cursor != null && sortHelper != null && comparator != null) {
             int count = cursor.getCount();
             if (data == null || data.length != count) {
                 data = new String[count];
             }
             for (int i = 0; i < count; i++) {
                 cursor.moveToPosition(i);
-                data[i] = cursorHelper.getStringAtIndex(cursor);
+                data[i] = sortHelper.getString(cursor);
             }
             if (integerData == null || integerData.length != count) {
                 integerData = new Integer[count];
@@ -38,13 +43,15 @@ public class SettingsCursor implements Cursor {
         }
     }
 
-    public void setCursor(Cursor cursor) {
+    public SettingsCursor(@Nullable Cursor cursor) {
         this.cursor = cursor;
+        this.sortHelper = SortHelper.getInstance(/* Setting key */ 1);
+        this.comparator = String.CASE_INSENSITIVE_ORDER;
         sortValues();
     }
 
-    public void setCursorHelper(CursorHelper cursorHelper, Comparator<String> comparator) {
-        this.cursorHelper = cursorHelper;
+    public void setSortCriteria(SortHelper sortHelper, Comparator<String> comparator) {
+        this.sortHelper = sortHelper;
         this.comparator = comparator;
         sortValues();
     }
