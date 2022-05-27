@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main_layout"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -9,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <androidx.appcompat.widget.Toolbar
+        <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
@@ -40,13 +41,10 @@
         android:layout_width="wrap_content"
         android:clickable="true"
         android:focusable="true"
-        style="@style/AppTheme.FloatingActionButton"
+        style="@style/Widget.Material3.FloatingActionButton.Primary"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
         android:text="@string/new_item"
-        android:textColor="@color/colorPrimary"
-        app:icon="@drawable/ic_baseline_add_24"
-        app:backgroundTint="@color/colorAccent"
-        app:iconTint="@color/colorPrimary" />
+        app:icon="@drawable/ic_baseline_add_24" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

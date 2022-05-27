@@ -39,8 +39,8 @@
                 app:icon="@drawable/ic_outline_help_outline_24"
                 app:iconPadding="0dp"
                 app:iconGravity="textStart"
-                app:iconTint="@color/colorAccent"
-                app:backgroundTint="@color/colorPrimary"
+                app:iconTint="?attr/colorAccent"
+                app:iconSize="30dp"
                 android:text="@null"
                 android:background="?selectableItemBackgroundBorderless"
                 android:contentDescription="@string/help" />
@@ -48,7 +48,7 @@
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <com.google.android.material.textfield.TextInputLayout
-            style="@style/AppTheme.TextInputLayout"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/value">

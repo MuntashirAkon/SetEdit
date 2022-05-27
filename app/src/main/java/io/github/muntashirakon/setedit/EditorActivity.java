@@ -1,7 +1,6 @@
 package io.github.muntashirakon.setedit;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -15,7 +14,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -113,7 +111,6 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
                 .show();
     }
 
-    @SuppressLint({"InflateParams", "RestrictedApi"})
     @Override
     public void onCreate(Bundle bundle) {
         preferences = getSharedPreferences("prefs", MODE_PRIVATE);
@@ -130,7 +127,6 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
             View actionBarView = actionBar.getCustomView();
             // Item view
             spinnerTable = actionBarView.findViewById(R.id.spinner);
-            spinnerTable.setSupportBackgroundTintList(ContextCompat.getColorStateList(this, R.color.colorAccent));
             spinnerTable.setOnItemSelectedListener(this);
             spinnerTable.setAdapter(ArrayAdapter.createFromResource(this, R.array.settings_table, R.layout.item_spinner));
         }
@@ -161,10 +157,6 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
         searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
         // Set query listener
         searchView.setOnQueryTextListener(this);
-        // Set images
-        int accentColor = ContextCompat.getColor(this, R.color.colorAccent);
-        ((ImageView) searchView.findViewById(androidx.appcompat.R.id.search_button)).setColorFilter(accentColor);
-        ((ImageView) searchView.findViewById(androidx.appcompat.R.id.search_close_btn)).setColorFilter(accentColor);
         return super.onCreateOptionsMenu(menu);
     }
 

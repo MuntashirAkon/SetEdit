@@ -13,7 +13,7 @@
         android:layout_height="wrap_content">
 
         <com.google.android.material.textfield.TextInputLayout
-            style="@style/AppTheme.TextInputLayout"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:hint="@string/name">
@@ -34,7 +34,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            style="@style/AppTheme.TextInputLayout"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:hint="@string/value">

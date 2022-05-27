@@ -16,9 +16,7 @@
         android:layout_height="wrap_content"
         android:ellipsize="marquee"
         android:gravity="center_vertical"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:textColor="@color/textColorPrimary"
+        android:textAppearance="?android:attr/textAppearanceListItem"
         android:singleLine="true"
         tools:text="@tools:sample/lorem[7]" />
 
@@ -28,7 +26,6 @@
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:gravity="center_vertical"
-        android:textSize="14sp"
-        android:textColor="@color/textColorSecondary"
+        android:textColor="?android:attr/textColorSecondary"
         tools:text="@tools:sample/lorem[10]" />
 </androidx.appcompat.widget.LinearLayoutCompat>
