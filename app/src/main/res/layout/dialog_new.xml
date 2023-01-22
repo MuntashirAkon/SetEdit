@@ -54,5 +54,26 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.Dense"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="@string/shortcut">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/txtShortcut"
+                style="@style/TextAppearance.MaterialComponents.Subtitle1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16sp"
+                android:layout_marginLeft="16sp"
+                android:layout_marginEnd="16sp"
+                android:layout_marginRight="16sp"
+                android:inputType="textMultiLine"
+                android:textSize="16sp"
+                tools:text="@tools:sample/lorem[7]" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
     </androidx.appcompat.widget.LinearLayoutCompat>
 </ScrollView>

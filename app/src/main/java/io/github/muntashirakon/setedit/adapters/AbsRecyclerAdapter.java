@@ -4,14 +4,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.pm.ShortcutInfoCompat;
+import androidx.core.content.pm.ShortcutManagerCompat;
+import androidx.core.graphics.drawable.IconCompat;
 import androidx.core.util.Pair;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -19,9 +25,11 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.List;
+import java.util.UUID;
 
 import io.github.muntashirakon.setedit.EditorUtils;
 import io.github.muntashirakon.setedit.R;
+import io.github.muntashirakon.setedit.SetActivity;
 
 public abstract class AbsRecyclerAdapter extends RecyclerView.Adapter<AbsRecyclerAdapter.ViewHolder> {
     protected final Context context;
@@ -78,6 +86,7 @@ public abstract class AbsRecyclerAdapter extends RecyclerView.Adapter<AbsRecycle
             editDialogView.findViewById(R.id.button_help).setOnClickListener(v2 -> openHelp(keyName));
             ((TextView) editDialogView.findViewById(R.id.title)).setText(keyName);
             TextInputEditText editText = editDialogView.findViewById(R.id.txt);
+            EditText keyShortcutView = editDialogView.findViewById(R.id.txtEditShortcut);
             editText.setText(keyValue);
             editText.requestFocus();
             if (keyValue != null) {
@@ -94,7 +103,32 @@ public abstract class AbsRecyclerAdapter extends RecyclerView.Adapter<AbsRecycle
                     Boolean isGranted = EditorUtils.checkPermission(context, settingsAdapter.getSettingsType());
                     if (isGranted == null) return;
                     if (isGranted) {
-                        settingsAdapter.updateValueForName(keyName, editable.toString());
+                        Editable keyShortcut = keyShortcutView.getText();
+                        if (!TextUtils.isEmpty(keyShortcut) || keyShortcut != null) {
+                            SetActivity setActivity = new SetActivity();
+                            Intent shortcutIntent = new Intent(context,
+                                    SetActivity.class);
+                            shortcutIntent.putExtra("duplicate", false);
+                            shortcutIntent.setAction(Intent.ACTION_RUN);
+                            shortcutIntent.putExtra("settingsType", settingsAdapter.getSettingsType());
+                            shortcutIntent.putExtra("keyName", keyName);
+                            shortcutIntent.putExtra("KeyValue", editable.toString());
+                            shortcutIntent.setComponent(setActivity.SetActivityShrotcut());
+                            if (ShortcutManagerCompat.isRequestPinShortcutSupported(context)) {
+                                ShortcutInfoCompat shortcut = new ShortcutInfoCompat.Builder(context, UUID.randomUUID().toString())
+
+                                        .setShortLabel(keyShortcut)
+                                        .setIcon(IconCompat.createWithResource(context, R.drawable.ic_launcher_foreground))
+                                        .setIntent(shortcutIntent)
+                                        .build();
+                                ShortcutManagerCompat.requestPinShortcut(context, shortcut, null);
+
+                            } else {
+                                Toast.makeText(context, R.string.shortcut_not_supported, Toast.LENGTH_LONG).show();
+                            }
+
+                        } else {
+                        settingsAdapter.updateValueForName(keyName, editable.toString());}
                     } else {
                         EditorUtils.displayUnsupportedMessage(context);
                     }
