@@ -1,9 +1,7 @@
-import com.android.build.OutputFile
-
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 32
+    compileSdkVersion 33
     buildToolsVersion "30.0.3"
 
     defaultConfig {
@@ -13,7 +11,7 @@ android {
         targetSdkVersion 22
         versionCode 7
         versionName "2.2"
-        resConfig "en"
+        resConfigs 'en'
     }
 
     signingConfigs {
@@ -41,14 +39,8 @@ android {
         }
     }
 
-    def archPrefix = ['armeabi-v7a':4, 'arm64-v8a':2, 'x86':3, 'x86_64':1]
 
-    android.applicationVariants.all { variant ->
-        variant.outputs.each { output ->
-            int abiVersionCode = archPrefix.get(output.getFilter(OutputFile.ABI), 0)
-            output.versionCodeOverride = (abiVersionCode * 100000) + defaultConfig.versionCode
-        }
-    }
+
 
     buildTypes {
         release {
@@ -64,10 +56,11 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    namespace 'io.github.muntashirakon.setedit'
 }
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
-    implementation 'androidx.appcompat:appcompat:1.4.1'
-    implementation 'com.google.android.material:material:1.6.0'
+    implementation 'androidx.appcompat:appcompat:1.6.0'
+    implementation 'com.google.android.material:material:1.7.0'
 }
