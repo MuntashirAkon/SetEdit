@@ -122,7 +122,7 @@ public class SettingsRecyclerAdapter extends AbsRecyclerAdapter {
     }
 
     public void deleteEntryByName(String keyName) {
-        Boolean isGranted = EditorUtils.checkPermission(context, settingsType);
+        Boolean isGranted = EditorUtils.checkSettingsWritePermission(context, settingsType);
         if (isGranted == null) return;
         if (!isGranted) {
             EditorUtils.displayUnsupportedMessage(context);

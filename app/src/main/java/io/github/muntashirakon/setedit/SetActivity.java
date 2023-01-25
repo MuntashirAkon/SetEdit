@@ -18,17 +18,14 @@ public class SetActivity extends Activity {
         settingsType = getIntent().getExtras().getString("settingsType");
         keyName = getIntent().getExtras().getString("keyName");
         KeyValue = getIntent().getExtras().getString("KeyValue");
-        SetActivityShrotcut();
+        SetActivityShortcut();
     }
 
-    public SetActivity() {
 
-    }
-
-    public ComponentName SetActivityShrotcut() {
+    public ComponentName SetActivityShortcut() {
         if (settingsType != null) {
             Context context = this.getBaseContext();
-            Boolean isGranted = EditorUtils.checkPermission(context, settingsType);
+            Boolean isGranted = EditorUtils.checkSettingsWritePermission(context, settingsType);
             if (isGranted == null) return null;
             if (isGranted) {
                 SettingsRecyclerAdapter settingsAdapter = new SettingsRecyclerAdapter(context, settingsType);

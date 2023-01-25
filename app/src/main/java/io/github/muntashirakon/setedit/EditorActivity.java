@@ -33,6 +33,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 
+
 import org.json.JSONException;
 
 import java.io.File;
@@ -42,6 +43,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
 
 import io.github.muntashirakon.setedit.adapters.AbsRecyclerAdapter;
 import io.github.muntashirakon.setedit.adapters.AdapterProvider;
@@ -137,7 +139,7 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
         addNewItem = findViewById(R.id.efab);
         addNewItem.setOnClickListener(v -> {
             if (adapter instanceof SettingsRecyclerAdapter) {
-                Boolean isGranted = EditorUtils.checkPermission(this, ((SettingsRecyclerAdapter) adapter).getSettingsType());
+                Boolean isGranted = EditorUtils.checkSettingsWritePermission(this, ((SettingsRecyclerAdapter) adapter).getSettingsType());
                 if (isGranted == null) return;
                 if (isGranted) {
                     addNewItemDialog();

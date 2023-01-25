@@ -11,13 +11,9 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.pm.ShortcutInfoCompat;
-import androidx.core.content.pm.ShortcutManagerCompat;
-import androidx.core.graphics.drawable.IconCompat;
 import androidx.core.util.Pair;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -25,15 +21,14 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.List;
-import java.util.UUID;
 
 import io.github.muntashirakon.setedit.EditorUtils;
 import io.github.muntashirakon.setedit.R;
-import io.github.muntashirakon.setedit.SetActivity;
 
 public abstract class AbsRecyclerAdapter extends RecyclerView.Adapter<AbsRecyclerAdapter.ViewHolder> {
     protected final Context context;
     private String constraint;
+
 
     public AbsRecyclerAdapter(Context context) {
         setHasStableIds(true);
@@ -97,38 +92,18 @@ public abstract class AbsRecyclerAdapter extends RecyclerView.Adapter<AbsRecycle
                     .setNegativeButton(R.string.close, null);
             if (this instanceof SettingsRecyclerAdapter) {
                 builder.setPositiveButton(R.string.save, (dialog, which) -> {
-                    Editable editable = editText.getText();
-                    if (editable == null) return;
+                    Editable NewKeyValue = editText.getText();
+                    if (NewKeyValue == null) return;
                     SettingsRecyclerAdapter settingsAdapter = (SettingsRecyclerAdapter) this;
-                    Boolean isGranted = EditorUtils.checkPermission(context, settingsAdapter.getSettingsType());
+                    Boolean isGranted = EditorUtils.checkSettingsWritePermission(context, settingsAdapter.getSettingsType());
                     if (isGranted == null) return;
                     if (isGranted) {
                         Editable keyShortcut = keyShortcutView.getText();
                         if (!TextUtils.isEmpty(keyShortcut) || keyShortcut != null) {
-                            SetActivity setActivity = new SetActivity();
-                            Intent shortcutIntent = new Intent(context,
-                                    SetActivity.class);
-                            shortcutIntent.putExtra("duplicate", false);
-                            shortcutIntent.setAction(Intent.ACTION_RUN);
-                            shortcutIntent.putExtra("settingsType", settingsAdapter.getSettingsType());
-                            shortcutIntent.putExtra("keyName", keyName);
-                            shortcutIntent.putExtra("KeyValue", editable.toString());
-                            shortcutIntent.setComponent(setActivity.SetActivityShrotcut());
-                            if (ShortcutManagerCompat.isRequestPinShortcutSupported(context)) {
-                                ShortcutInfoCompat shortcut = new ShortcutInfoCompat.Builder(context, UUID.randomUUID().toString())
-
-                                        .setShortLabel(keyShortcut)
-                                        .setIcon(IconCompat.createWithResource(context, R.drawable.ic_launcher_foreground))
-                                        .setIntent(shortcutIntent)
-                                        .build();
-                                ShortcutManagerCompat.requestPinShortcut(context, shortcut, null);
-
-                            } else {
-                                Toast.makeText(context, R.string.shortcut_not_supported, Toast.LENGTH_LONG).show();
-                            }
-
+                            EditorUtils.createDesktopShortcut(context, settingsAdapter, keyName, NewKeyValue.toString(), keyShortcut.toString());
                         } else {
-                        settingsAdapter.updateValueForName(keyName, editable.toString());}
+                            settingsAdapter.updateValueForName(keyName, NewKeyValue.toString());
+                        }
                     } else {
                         EditorUtils.displayUnsupportedMessage(context);
                     }
@@ -142,6 +117,7 @@ public abstract class AbsRecyclerAdapter extends RecyclerView.Adapter<AbsRecycle
             builder.show();
         });
     }
+
 
     protected void setMessage(CharSequence charSequence) {
         new MaterialAlertDialogBuilder(context)

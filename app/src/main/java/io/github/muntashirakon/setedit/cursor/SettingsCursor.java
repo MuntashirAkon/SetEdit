@@ -156,7 +156,7 @@ public class SettingsCursor implements Cursor {
 
     @Override
     public int getType(int i) {
-        return cursor == null ? 0 : cursor.getType(i);
+        return cursor == null ? Cursor.FIELD_TYPE_NULL : cursor.getType(i);
     }
 
     @Override

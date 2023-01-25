@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name" translatable="false">Settings Database Editor</string>
+    <string name="app_name">Settings Database Editor</string>
     <string name="save">Save</string>
     <string name="error_no_support"><b>SetEdit</b> does not currently support editing this table. To enable editing, run the following command in a root or ADB shell:</string>
     <string name="error_unexpected"><b>Unexpected failure:</b></string>
