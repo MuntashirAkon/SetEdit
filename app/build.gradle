@@ -5,7 +5,7 @@ android {
     buildToolsVersion "30.0.3"
 
     defaultConfig {
-        applicationId "io.github.muntashirakon.setedit"
+        applicationId 'io.github.ferreol.seteditplus'
         minSdkVersion 19
         //noinspection ExpiredTargetSdkVersion
         targetSdkVersion 22
@@ -56,7 +56,7 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-    namespace 'io.github.muntashirakon.setedit'
+    namespace 'io.github.ferreol.seteditplus'
 }
 
 dependencies {

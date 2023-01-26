@@ -1,11 +1,11 @@
-package io.github.muntashirakon.setedit;
+package io.github.ferreol.seteditplus;
 
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.os.Bundle;
 
-import io.github.muntashirakon.setedit.adapters.SettingsRecyclerAdapter;
+import io.github.ferreol.seteditplus.adapters.SettingsRecyclerAdapter;
 
 public class SetActivity extends Activity {
     private String settingsType;

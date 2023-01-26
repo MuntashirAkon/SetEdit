@@ -1,4 +1,4 @@
-package io.github.muntashirakon.setedit;
+package io.github.ferreol.seteditplus;
 
 import android.Manifest;
 import android.content.SharedPreferences;
@@ -45,9 +45,9 @@ import java.util.List;
 import java.util.Locale;
 
 
-import io.github.muntashirakon.setedit.adapters.AbsRecyclerAdapter;
-import io.github.muntashirakon.setedit.adapters.AdapterProvider;
-import io.github.muntashirakon.setedit.adapters.SettingsRecyclerAdapter;
+import io.github.ferreol.seteditplus.adapters.AbsRecyclerAdapter;
+import io.github.ferreol.seteditplus.adapters.AdapterProvider;
+import io.github.ferreol.seteditplus.adapters.SettingsRecyclerAdapter;
 
 public class EditorActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener,
         SearchView.OnQueryTextListener {

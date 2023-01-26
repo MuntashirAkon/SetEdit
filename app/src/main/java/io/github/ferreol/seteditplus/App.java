@@ -1,4 +1,4 @@
-package io.github.muntashirakon.setedit;
+package io.github.ferreol.seteditplus;
 
 import android.app.Application;
 

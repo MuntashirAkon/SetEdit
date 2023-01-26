@@ -1,17 +1,12 @@
-package io.github.muntashirakon.setedit;
+package io.github.ferreol.seteditplus;
 
 
 
-
-import static android.Manifest.permission.WRITE_SETTINGS;
-import static androidx.core.content.ContextCompat.startActivity;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -23,7 +18,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.pm.ShortcutInfoCompat;
 import androidx.core.content.pm.ShortcutManagerCompat;
@@ -38,7 +32,7 @@ import org.json.JSONObject;
 import java.util.List;
 import java.util.UUID;
 
-import io.github.muntashirakon.setedit.adapters.SettingsRecyclerAdapter;
+import io.github.ferreol.seteditplus.adapters.SettingsRecyclerAdapter;
 
 public class EditorUtils {
 

@@ -1,4 +1,4 @@
-package io.github.muntashirakon.setedit.adapters;
+package io.github.ferreol.seteditplus.adapters;
 
 import android.content.Context;
 import android.content.Intent;
@@ -22,8 +22,8 @@ import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.List;
 
-import io.github.muntashirakon.setedit.EditorUtils;
-import io.github.muntashirakon.setedit.R;
+import io.github.ferreol.seteditplus.EditorUtils;
+import io.github.ferreol.seteditplus.R;
 
 public abstract class AbsRecyclerAdapter extends RecyclerView.Adapter<AbsRecyclerAdapter.ViewHolder> {
     protected final Context context;

@@ -1,4 +1,4 @@
-package io.github.muntashirakon.setedit.cursor;
+package io.github.ferreol.seteditplus.cursor;
 
 import android.annotation.TargetApi;
 import android.content.ContentResolver;

@@ -1,4 +1,4 @@
-package io.github.muntashirakon.setedit.adapters;
+package io.github.ferreol.seteditplus.adapters;
 
 import android.content.Context;
 import android.text.TextUtils;
@@ -8,47 +8,55 @@ import androidx.annotation.NonNull;
 import androidx.core.util.Pair;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Properties;
+import java.util.Set;
 
-import io.github.muntashirakon.setedit.Native;
-
-class AndroidPropertiesRecyclerAdapter extends AbsRecyclerAdapter {
-    private final List<String[]> propertyList = new ArrayList<>();
-    private final List<Integer> matchedIndexes = new ArrayList<>();
+class JavaPropertiesRecyclerAdapter extends AbsRecyclerAdapter {
+    private final Properties PROPERTIES = System.getProperties();
+    private final String[] propertyNames;
+    private final List<Integer> matchedIndexes = new ArrayList<>(PROPERTIES.size());
     private Filter filter;
 
-    public AndroidPropertiesRecyclerAdapter(Context context) {
+    public JavaPropertiesRecyclerAdapter(Context context) {
         super(context);
-        Native.setPropertyList(propertyList);
+        Set<String> stringPropertyNames = PROPERTIES.stringPropertyNames();
+        int size = stringPropertyNames.size();
+        propertyNames = new String[size];
+        Iterator<String> it = stringPropertyNames.iterator();
+        for (int i = 0; i < size; i++) propertyNames[i] = it.next();
+        Arrays.sort(propertyNames, String.CASE_INSENSITIVE_ORDER);
         getFilter().filter(null);
     }
 
     @NonNull
     @Override
     public List<Pair<String, String>> getAllItems() {
-        List<Pair<String, String>> items = new ArrayList<>(propertyList.size());
-        for (String[] pair : propertyList) {
-            items.add(new Pair<>(pair[0], pair[0]));
+        List<Pair<String, String>> items = new ArrayList<>(propertyNames.length);
+        for (String key : propertyNames) {
+            items.add(new Pair<>(key, PROPERTIES.getProperty(key)));
         }
         return items;
     }
 
     @Override
     public int getListType() {
-        return 3;
+        return 4;
     }
 
     @Override
     public Pair<String, String> getItem(int position) {
-        String[] property = propertyList.get(matchedIndexes.get(position));
-        return new Pair<>(property[0], property[1]);
+        String key = this.propertyNames[matchedIndexes.get(position)];
+        String property = PROPERTIES.getProperty(key);
+        return new Pair<>(key, property);
     }
 
     @Override
     public long getItemId(int position) {
-        String[] property = propertyList.get(matchedIndexes.get(position));
-        return property[0].hashCode();
+        return this.propertyNames[matchedIndexes.get(position)].hashCode();
     }
 
     @Override
@@ -63,13 +71,12 @@ class AndroidPropertiesRecyclerAdapter extends AbsRecyclerAdapter {
                 @Override
                 protected FilterResults performFiltering(CharSequence constraint) {
                     FilterResults results = new FilterResults();
-                    List<Integer> matchedIndexes = new ArrayList<>(propertyList.size());
+                    List<Integer> matchedIndexes = new ArrayList<>(propertyNames.length);
                     if (TextUtils.isEmpty(constraint)) {
-                        for (int i = 0; i < propertyList.size(); ++i) matchedIndexes.add(i);
+                        for (int i = 0; i < propertyNames.length; ++i) matchedIndexes.add(i);
                     } else {
-                        for (int i = 0; i < propertyList.size(); ++i) {
-                            String key = propertyList.get(i)[0];
-                            if (key.toLowerCase(Locale.ROOT).contains(constraint)) {
+                        for (int i = 0; i < propertyNames.length; ++i) {
+                            if (propertyNames[i].toLowerCase(Locale.ROOT).contains(constraint)) {
                                 matchedIndexes.add(i);
                             }
                         }

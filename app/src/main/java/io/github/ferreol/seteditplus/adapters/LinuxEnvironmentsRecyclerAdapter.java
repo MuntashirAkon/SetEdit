@@ -1,4 +1,4 @@
-package io.github.muntashirakon.setedit.adapters;
+package io.github.ferreol.seteditplus.adapters;
 
 import android.content.Context;
 import android.text.TextUtils;
