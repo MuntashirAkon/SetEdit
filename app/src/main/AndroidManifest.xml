@@ -28,7 +28,7 @@
         android:banner="@mipmap/ic_banner"
         tools:ignore="UnusedAttribute">
         <activity
-            android:label="SetEdit"
+            android:label="SetEditPlus"
             android:name=".EditorActivity"
             android:exported="true">
             <intent-filter>

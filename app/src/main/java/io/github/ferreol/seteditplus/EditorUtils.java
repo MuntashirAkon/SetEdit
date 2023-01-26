@@ -47,15 +47,22 @@ public class EditorUtils {
     public static Boolean checkSettingsWritePermission(@NonNull Context context, @NonNull String tableType) {
         String permission = "system".equals(tableType) ? Manifest.permission.WRITE_SETTINGS : Manifest.permission.WRITE_SECURE_SETTINGS;
         if ("system".equals(tableType) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.System.canWrite(context)) {
-            try {
-                Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS)
-                        .setData(Uri.parse("package:" + context.getPackageName()));
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-                intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-                context.startActivity(intent);
-            } catch (Exception ignore) {
-            }
+            new AlertDialog.Builder(context)
+                    .setTitle("Permission needed")
+                    .setMessage("You have to enable SetEditPlus for Modify system settings")
+                    .setPositiveButton("ok", (dialog, which) -> {
+                        try {
+                            Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS)
+                                    .setData(Uri.parse("package:" + context.getPackageName()));
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+                            context.startActivity(intent);
+                        } catch (Exception ignore) {
+                        }
+                    })
+                    .setNegativeButton("cancel", (dialog, which) -> dialog.dismiss())
+                    .create().show();
             return null;
         }
         return ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED;
