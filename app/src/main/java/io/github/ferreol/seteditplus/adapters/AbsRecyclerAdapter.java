@@ -1,8 +1,11 @@
 package io.github.ferreol.seteditplus.adapters;
 
+
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -20,14 +23,21 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.List;
 
+import io.github.ferreol.seteditplus.EditorActivity;
 import io.github.ferreol.seteditplus.EditorUtils;
 import io.github.ferreol.seteditplus.R;
 
 public abstract class AbsRecyclerAdapter extends RecyclerView.Adapter<AbsRecyclerAdapter.ViewHolder> {
+    private static final int PICK_IMAGE = 1;
     protected final Context context;
     private String constraint;
+    private View editDialogView;
+    private Uri shortcutIconUri;
+
 
 
     public AbsRecyclerAdapter(Context context) {
@@ -77,8 +87,9 @@ public abstract class AbsRecyclerAdapter extends RecyclerView.Adapter<AbsRecycle
         holder.keyValue.setText(keyValue);
         holder.itemView.setBackgroundColor(ContextCompat.getColor(context, position % 2 == 1 ? android.R.color.transparent : R.color.semi_transparent));
         holder.itemView.setOnClickListener(v -> {
-            View editDialogView = LayoutInflater.from(context).inflate(R.layout.dialog_edit, null);
+            editDialogView = LayoutInflater.from(context).inflate(R.layout.dialog_edit, null);
             editDialogView.findViewById(R.id.button_help).setOnClickListener(v2 -> openHelp(keyName));
+            editDialogView.findViewById(R.id.button_icon).setOnClickListener(v2 -> openIconPiker());
             ((TextView) editDialogView.findViewById(R.id.title)).setText(keyName);
             TextInputEditText editText = editDialogView.findViewById(R.id.txt);
             EditText keyShortcutView = editDialogView.findViewById(R.id.txtEditShortcut);
@@ -100,7 +111,8 @@ public abstract class AbsRecyclerAdapter extends RecyclerView.Adapter<AbsRecycle
                     if (isGranted) {
                         Editable keyShortcut = keyShortcutView.getText();
                         if (!TextUtils.isEmpty(keyShortcut) || keyShortcut != null) {
-                            EditorUtils.createDesktopShortcut(context, settingsAdapter, keyName, NewKeyValue.toString(), keyShortcut.toString());
+                            EditorUtils.createDesktopShortcut(context, settingsAdapter, keyName, NewKeyValue.toString(),
+                                    keyShortcut.toString(), shortcutIconUri);
                         } else {
                             settingsAdapter.updateValueForName(keyName, NewKeyValue.toString());
                         }
@@ -126,9 +138,34 @@ public abstract class AbsRecyclerAdapter extends RecyclerView.Adapter<AbsRecycle
                 .show();
     }
 
+    public void openIconPiker() {
+
+        Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        getIntent.setType("image/*");
+        Intent pickIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        pickIntent.setType("image/*");
+        Intent chooserIntent = Intent.createChooser(getIntent, "Select Image");
+        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[] {pickIntent});
+        EditorActivity editorActivity =(EditorActivity)context;
+        editorActivity.startActivityForResult(chooserIntent,PICK_IMAGE);
+
+
+    }
+
+    public void setIconPiker(Uri uri) {
+        try {
+            InputStream inputStream = context.getContentResolver().openInputStream(uri);
+            Drawable shortcutIconDrawable = Drawable.createFromStream(inputStream, uri.toString());
+            editDialogView.findViewById(R.id.button_icon).setBackground(shortcutIconDrawable);
+            shortcutIconUri = uri;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void openHelp(String keyName) {
         String str;
-        StringBuilder sb = new StringBuilder("https://search.disroot.org/?q=android+");
+        StringBuilder sb = new StringBuilder("https://duckduckgo.com/q=android+");
         switch (getListType()) {
             case 0:
                 str = "settings put system \"";

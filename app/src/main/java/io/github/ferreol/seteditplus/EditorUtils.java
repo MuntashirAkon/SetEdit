@@ -1,8 +1,6 @@
 package io.github.ferreol.seteditplus;
 
 
-
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -95,11 +93,12 @@ public class EditorUtils {
         return jsonObject.toString(4);
     }
 
-    public static void createDesktopShortcut(@NonNull Context context,@NonNull SettingsRecyclerAdapter settingsAdapter,
-                                             String keyName, String keyValue, String keyShortcut) {
+    public static void createDesktopShortcut(@NonNull Context context, @NonNull SettingsRecyclerAdapter settingsAdapter,
+                                             String keyName, String keyValue, String keyShortcut, Uri shortcutIconUri) {
 
         SetActivity setActivity = new SetActivity();
         Intent shortcutIntent = new Intent(context,
+
                 SetActivity.class);
         shortcutIntent.putExtra("duplicate", false);
         shortcutIntent.setAction(Intent.ACTION_RUN);
@@ -107,10 +106,16 @@ public class EditorUtils {
         shortcutIntent.putExtra("keyName", keyName);
         shortcutIntent.putExtra("KeyValue", keyValue);
         shortcutIntent.setComponent(setActivity.SetActivityShortcut());
+        IconCompat shortcutIcon;
+        if (shortcutIconUri == null) {
+            shortcutIcon = IconCompat.createWithResource(context, R.drawable.ic_launcher_foreground);
+        } else {
+            shortcutIcon = IconCompat.createWithContentUri(shortcutIconUri);
+        }
         if (ShortcutManagerCompat.isRequestPinShortcutSupported(context)) {
             ShortcutInfoCompat shortcut = new ShortcutInfoCompat.Builder(context, UUID.randomUUID().toString())
                     .setShortLabel(keyShortcut)
-                    .setIcon(IconCompat.createWithResource(context, R.drawable.ic_launcher_foreground))
+                    .setIcon(shortcutIcon)
                     .setIntent(shortcutIntent)
                     .build();
             boolean ShortcutCreated = ShortcutManagerCompat.requestPinShortcut(context, shortcut, null);
@@ -124,7 +129,7 @@ public class EditorUtils {
                             if (!shortcutPermissionIsAsking) {
                                 checkShortcutPermission(context);
                             }
-                            createDesktopShortcut(context,settingsAdapter, keyName, keyValue, keyShortcut);
+                            createDesktopShortcut(context,settingsAdapter, keyName, keyValue, keyShortcut,shortcutIconUri);
                             dialog.dismiss();
 
                         })
@@ -133,6 +138,7 @@ public class EditorUtils {
             }
         }
     }
+
     /**
      * Check whether the shortcut permission has been granted
      */
@@ -145,6 +151,7 @@ public class EditorUtils {
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         context.startActivity(intent);
-
     }
+
+
 }

@@ -27,5 +27,4 @@
     <string name="theme_battery">Follow battery saver</string>
     <string name="theme">Theme</string>
     <string name="shortcut">Shortcut</string>
-    <string name="shortcut_not_supported">Shortcut not suported!</string>
 </resources>

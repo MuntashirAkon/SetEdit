@@ -1,8 +1,10 @@
 package io.github.ferreol.seteditplus;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -33,7 +35,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 
-
 import org.json.JSONException;
 
 import java.io.File;
@@ -43,7 +44,6 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
 
 import io.github.ferreol.seteditplus.adapters.AbsRecyclerAdapter;
 import io.github.ferreol.seteditplus.adapters.AdapterProvider;
@@ -261,5 +261,18 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
         String jsonString = EditorUtils.getJson(adapter.getAllItems(), adapter instanceof SettingsRecyclerAdapter ?
                 ((SettingsRecyclerAdapter) adapter).getSettingsType() : null);
         os.write(jsonString.getBytes());
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (data.getData() != null) {
+            Uri uri = data.getData();
+            adapter.setIconPiker(uri);
+
+
+        }
     }
 }
