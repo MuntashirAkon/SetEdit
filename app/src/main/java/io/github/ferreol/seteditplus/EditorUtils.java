@@ -9,9 +9,12 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
+import android.provider.MediaStore;
 import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -35,6 +38,7 @@ import io.github.ferreol.seteditplus.adapters.SettingsRecyclerAdapter;
 public class EditorUtils {
 
     private static boolean shortcutPermissionIsAsking=false;
+    private static final int PICK_IMAGE = 1;
 
     /**
      * Check whether the settings write permission has been granted
@@ -93,18 +97,21 @@ public class EditorUtils {
         return jsonObject.toString(4);
     }
 
-    public static void createDesktopShortcut(@NonNull Context context, @NonNull SettingsRecyclerAdapter settingsAdapter,
-                                             String keyName, String keyValue, String keyShortcut, Uri shortcutIconUri) {
+    private static void createDesktopShortcut(@NonNull Context context, @NonNull SettingsRecyclerAdapter settingsAdapter,
+                                             String keyName, String keyValue, String keyShortcut,Uri shortcutIconUri,boolean isDeleteAction) {
 
         SetActivity setActivity = new SetActivity();
-        Intent shortcutIntent = new Intent(context,
-
-                SetActivity.class);
+        Intent shortcutIntent = new Intent(context,SetActivity.class);
         shortcutIntent.putExtra("duplicate", false);
         shortcutIntent.setAction(Intent.ACTION_RUN);
-        shortcutIntent.putExtra("settingsType", settingsAdapter.getSettingsType());
-        shortcutIntent.putExtra("keyName", keyName);
-        shortcutIntent.putExtra("KeyValue", keyValue);
+        shortcutIntent.putExtra("settingsType0", settingsAdapter.getSettingsType());
+        shortcutIntent.putExtra("keyName0", keyName);
+        if (isDeleteAction){
+            shortcutIntent.putExtra("delete0", true);
+        } else {
+            shortcutIntent.putExtra("KeyValue0", keyValue);
+        }
+
         shortcutIntent.setComponent(setActivity.SetActivityShortcut());
         IconCompat shortcutIcon;
         if (shortcutIconUri == null) {
@@ -129,7 +136,7 @@ public class EditorUtils {
                             if (!shortcutPermissionIsAsking) {
                                 checkShortcutPermission(context);
                             }
-                            createDesktopShortcut(context,settingsAdapter, keyName, keyValue, keyShortcut,shortcutIconUri);
+                            createDesktopShortcut(context,settingsAdapter, keyName, keyValue, keyShortcut,shortcutIconUri,isDeleteAction);
                             dialog.dismiss();
 
                         })
@@ -138,6 +145,16 @@ public class EditorUtils {
             }
         }
     }
+    public static void createDesktopShortcutEdit(@NonNull Context context, @NonNull SettingsRecyclerAdapter settingsAdapter,
+                                                 String keyName, String keyValue, String keyShortcut,Uri shortcutIconUri) {
+        createDesktopShortcut(context,settingsAdapter, keyName, keyValue, keyShortcut,shortcutIconUri,false);
+    }
+
+    public static void createDesktopShortcutDelete(@NonNull Context context, @NonNull SettingsRecyclerAdapter settingsAdapter,
+                                                   String keyName, String keyShortcut,Uri shortcutIconUri) {
+        createDesktopShortcut(context,settingsAdapter, keyName, "", keyShortcut,shortcutIconUri,true);
+    }
+
 
     /**
      * Check whether the shortcut permission has been granted
@@ -154,4 +171,74 @@ public class EditorUtils {
     }
 
 
+    public static void updateDesktopShortcutEdit(Context context, SettingsRecyclerAdapter settingsAdapter,
+                                                 String keyName, String keyValue, String idShortcut, boolean isDeleteAction) {
+        List<ShortcutInfoCompat> shortcutList = ShortcutManagerCompat.getShortcuts(context, ShortcutManagerCompat.FLAG_MATCH_PINNED);
+        for (int i = 0; i < shortcutList.size(); i++) {
+            if (shortcutList.get(i).getId() == idShortcut) {
+                ShortcutInfoCompat shortcut = shortcutList.get(i);
+                Intent shortcutIntent = shortcut.getIntent();
+                int y=0;
+                while (!shortcutIntent.getExtras().getString("settingsType"+i).isEmpty()){
+                y++;
+                }
+                shortcutIntent.putExtra("settingsType"+y, settingsAdapter.getSettingsType());
+                shortcutIntent.putExtra("keyName"+y, keyName);
+                if (isDeleteAction){
+                    shortcutIntent.putExtra("delete"+y, true);
+                } else {
+                    shortcutIntent.putExtra("KeyValue"+y, keyValue);
+                }
+            }
+
+        }
+}
+
+
+    public static void onSwitchLayoutShortcut(@NonNull View v,Context context) {
+        RadioGroup existingShortcutLayout = v.findViewById(R.id.existingShortcutRadioGroup);
+        existingShortcutLayout.removeAllViews();
+        if (v.findViewById(R.id.layout_shortcut).getVisibility() == View.GONE) {
+            v.findViewById(R.id.layout_shortcut).setVisibility(View.VISIBLE);
+            List<ShortcutInfoCompat> shortcutList = ShortcutManagerCompat.getShortcuts(context, ShortcutManagerCompat.FLAG_MATCH_PINNED);
+            for (int i = 0; i < shortcutList.size(); i++) {
+                RadioButton radioButton = new RadioButton(context);
+                ShortcutInfoCompat shortcut = shortcutList.get(i);
+                radioButton.setText(shortcut.getShortLabel());
+                radioButton.setTag(shortcut.getId());
+                existingShortcutLayout.addView(radioButton);
+                radioButton.setOnClickListener(v2 -> selectShortcutRadioButton(v));
+            }
+
+        } else {
+            v.findViewById(R.id.layout_shortcut).setVisibility(View.GONE);
+        }
+    }
+
+    private static void selectShortcutRadioButton(@NonNull View v) {
+        v.findViewById(R.id.layout_shortcut).setVisibility(View.GONE);
+    }
+
+    public static void openIconPiker(Context context) {
+
+        Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        getIntent.setType("image/*");
+        Intent pickIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        pickIntent.setType("image/*");
+        Intent chooserIntent = Intent.createChooser(getIntent, "Select Image");
+        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent});
+        EditorActivity editorActivity = (EditorActivity) context;
+        editorActivity.startActivityForResult(chooserIntent, PICK_IMAGE);
+
+
+    }
+
+
+
+    //todo
+    private static void resetSwitchLayoutShortcut(@NonNull View v) {
+        RadioGroup existingShortcutLayout = v.findViewById(R.id.existingShortcutRadioGroup);
+        existingShortcutLayout.removeAllViews();
+        v.findViewById(R.id.layout_shortcut).setVisibility(View.GONE);
+    }
 }

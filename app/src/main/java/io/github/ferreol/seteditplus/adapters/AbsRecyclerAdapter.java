@@ -1,11 +1,10 @@
 package io.github.ferreol.seteditplus.adapters;
 
 
+
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -13,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Filter;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -23,20 +24,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.util.List;
 
-import io.github.ferreol.seteditplus.EditorActivity;
 import io.github.ferreol.seteditplus.EditorUtils;
 import io.github.ferreol.seteditplus.R;
 
 public abstract class AbsRecyclerAdapter extends RecyclerView.Adapter<AbsRecyclerAdapter.ViewHolder> {
-    private static final int PICK_IMAGE = 1;
+
     protected final Context context;
     private String constraint;
-    private View editDialogView;
-    private Uri shortcutIconUri;
+    public Uri shortcutIconUri;
+    public View editDialogView;
 
 
 
@@ -89,7 +87,8 @@ public abstract class AbsRecyclerAdapter extends RecyclerView.Adapter<AbsRecycle
         holder.itemView.setOnClickListener(v -> {
             editDialogView = LayoutInflater.from(context).inflate(R.layout.dialog_edit, null);
             editDialogView.findViewById(R.id.button_help).setOnClickListener(v2 -> openHelp(keyName));
-            editDialogView.findViewById(R.id.button_icon).setOnClickListener(v2 -> openIconPiker());
+            editDialogView.findViewById(R.id.switchLayoutShortcut).setOnClickListener(v2 -> EditorUtils.onSwitchLayoutShortcut(editDialogView,context));
+            editDialogView.findViewById(R.id.button_icon).setOnClickListener(v2 -> EditorUtils.openIconPiker(context));
             ((TextView) editDialogView.findViewById(R.id.title)).setText(keyName);
             TextInputEditText editText = editDialogView.findViewById(R.id.txt);
             EditText keyShortcutView = editDialogView.findViewById(R.id.txtEditShortcut);
@@ -109,19 +108,48 @@ public abstract class AbsRecyclerAdapter extends RecyclerView.Adapter<AbsRecycle
                     Boolean isGranted = EditorUtils.checkSettingsWritePermission(context, settingsAdapter.getSettingsType());
                     if (isGranted == null) return;
                     if (isGranted) {
-                        Editable keyShortcut = keyShortcutView.getText();
-                        if (!TextUtils.isEmpty(keyShortcut) || keyShortcut != null) {
-                            EditorUtils.createDesktopShortcut(context, settingsAdapter, keyName, NewKeyValue.toString(),
-                                    keyShortcut.toString(), shortcutIconUri);
-                        } else {
+                        if (editDialogView.findViewById(R.id.layout_shortcut).getVisibility() == View.GONE) {
                             settingsAdapter.updateValueForName(keyName, NewKeyValue.toString());
+                        } else {
+                            RadioGroup existingShortcutRadioGroup = editDialogView.findViewById(R.id.existingShortcutRadioGroup);
+                            if (!existingShortcutRadioGroup.isSelected()) {
+                                Editable keyShortcut = keyShortcutView.getText();
+                                if (!TextUtils.isEmpty(keyShortcut) || keyShortcut != null) {
+                                    EditorUtils.createDesktopShortcutEdit(context, settingsAdapter, keyName, NewKeyValue.toString(),
+                                            keyShortcut.toString(),shortcutIconUri);
+                                }
+                            } else {
+                                int radioButtonId = existingShortcutRadioGroup.getCheckedRadioButtonId();
+                                RadioButton radioButton = editDialogView.findViewById(radioButtonId);
+                                String idShortcut = (String) radioButton.getTag();
+                                EditorUtils.updateDesktopShortcutEdit(context, settingsAdapter, keyName, NewKeyValue.toString(),idShortcut,false);
+                            }
                         }
                     } else {
                         EditorUtils.displayUnsupportedMessage(context);
                     }
                 }).setNeutralButton(R.string.delete, (dialog, which) -> {
                     SettingsRecyclerAdapter settingsAdapter = (SettingsRecyclerAdapter) this;
-                    settingsAdapter.deleteEntryByName(keyName);
+                    if (editDialogView.findViewById(R.id.layout_shortcut).getVisibility() == View.GONE) {
+                        settingsAdapter.deleteEntryByName(keyName);
+                    } else {
+                        RadioGroup existingShortcutRadioGroup = editDialogView.findViewById(R.id.existingShortcutRadioGroup);
+                        if (!existingShortcutRadioGroup.isSelected()) {
+                            Editable keyShortcut = keyShortcutView.getText();
+                            if (!TextUtils.isEmpty(keyShortcut) || keyShortcut != null) {
+                                EditorUtils.createDesktopShortcutDelete(context, settingsAdapter,keyValue.toString(),
+                                        keyShortcut.toString(),shortcutIconUri);
+                            }
+                        } else {
+                            int radioButtonId = existingShortcutRadioGroup.getCheckedRadioButtonId();
+                            RadioButton radioButton = editDialogView.findViewById(radioButtonId);
+                            String idShortcut = (String) radioButton.getTag();
+                            EditorUtils.updateDesktopShortcutEdit(context, settingsAdapter, "", keyValue.toString(),
+                                    idShortcut,true);
+                        }
+
+                    }
+
                 });
             } else {
                 editText.setKeyListener(null);
@@ -130,7 +158,6 @@ public abstract class AbsRecyclerAdapter extends RecyclerView.Adapter<AbsRecycle
         });
     }
 
-
     protected void setMessage(CharSequence charSequence) {
         new MaterialAlertDialogBuilder(context)
                 .setMessage(charSequence)
@@ -138,30 +165,7 @@ public abstract class AbsRecyclerAdapter extends RecyclerView.Adapter<AbsRecycle
                 .show();
     }
 
-    public void openIconPiker() {
 
-        Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
-        getIntent.setType("image/*");
-        Intent pickIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        pickIntent.setType("image/*");
-        Intent chooserIntent = Intent.createChooser(getIntent, "Select Image");
-        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[] {pickIntent});
-        EditorActivity editorActivity =(EditorActivity)context;
-        editorActivity.startActivityForResult(chooserIntent,PICK_IMAGE);
-
-
-    }
-
-    public void setIconPiker(Uri uri) {
-        try {
-            InputStream inputStream = context.getContentResolver().openInputStream(uri);
-            Drawable shortcutIconDrawable = Drawable.createFromStream(inputStream, uri.toString());
-            editDialogView.findViewById(R.id.button_icon).setBackground(shortcutIconDrawable);
-            shortcutIconUri = uri;
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
 
     private void openHelp(String keyName) {
         String str;
@@ -197,6 +201,7 @@ public abstract class AbsRecyclerAdapter extends RecyclerView.Adapter<AbsRecycle
         } catch (Exception ignore) {
         }
     }
+
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public final TextView keyName;

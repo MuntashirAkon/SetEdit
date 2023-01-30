@@ -25,9 +25,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_weight="1"
+                android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textIsSelectable="true"
                 android:textStyle="normal"
-                android:textAppearance="?android:attr/textAppearanceLarge"
                 tools:text="@tools:sample/lorem[2]" />
 
             <com.google.android.material.button.MaterialButton
@@ -36,14 +36,14 @@
                 android:layout_height="40dp"
                 android:layout_gravity="center"
                 android:layout_weight="0"
-                app:icon="@drawable/ic_outline_help_outline_24"
-                app:iconPadding="0dp"
-                app:iconGravity="textStart"
-                app:iconTint="?attr/colorAccent"
-                app:iconSize="30dp"
-                android:text="@null"
                 android:background="?selectableItemBackgroundBorderless"
-                android:contentDescription="@string/help" />
+                android:contentDescription="@string/help"
+                android:text="@null"
+                app:icon="@drawable/ic_outline_help_outline_24"
+                app:iconGravity="textStart"
+                app:iconPadding="0dp"
+                app:iconSize="30dp"
+                app:iconTint="?attr/colorAccent" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -70,6 +70,41 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switchLayoutShortcut"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/create_or_add_to_an_existing_shortcut_rather_than_apply"
+                 />
+
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/existingShortcutLinearLayoutCompat"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <RadioGroup
+                android:id="@+id/existingShortcutRadioGroup"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:isScrollContainer="true"
+                android:orientation="vertical">
+
+            </RadioGroup>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/layout_shortcut"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.Material3.TextInputLayout.OutlinedBox.Dense"
                 android:layout_width="wrap_content"
@@ -78,15 +113,15 @@
                 android:layout_weight="1"
                 android:hint="@string/shortcut">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/txtEditShortcut"
-                style="@style/TextAppearance.MaterialComponents.Subtitle1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textMultiLine"
-                android:textIsSelectable="true"
-                android:textSize="16sp"
-                tools:text="@tools:sample/lorem[7]" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/txtEditShortcut"
+                    style="@style/TextAppearance.MaterialComponents.Subtitle1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textMultiLine"
+                    android:textIsSelectable="true"
+                    android:textSize="16sp"
+                    tools:text="@tools:sample/lorem[7]" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -95,12 +130,12 @@
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:layout_gravity="center"
-                android:background="@drawable/ic_action_name"
                 android:layout_weight="0"
+                android:background="@drawable/ic_action_name"
+                android:contentDescription="@string/icon_picker"
                 android:text="@null"
                 app:iconGravity="textStart"
-                app:iconTint="?attr/colorAccent"
-                android:contentDescription="@string/icon_picker"/>
+                app:iconTint="?attr/colorAccent" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 

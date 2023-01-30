@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,7 +17,10 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
+
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -38,8 +42,10 @@ import com.google.android.material.floatingactionbutton.ExtendedFloatingActionBu
 import org.json.JSONException;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,6 +70,8 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
     private AbsRecyclerAdapter adapter;
     private RecyclerView listView;
     private SharedPreferences preferences;
+    private View editorDialogView;
+    public Uri shortcutIconUri;
 
     private final ActivityResultLauncher<String> pre21StoragePermissionLauncher = registerForActivityResult(
             new ActivityResultContracts.RequestPermission(), granted -> saveAsJsonLegacy());
@@ -94,9 +102,12 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
     }
 
     public void addNewItemDialog() {
-        View editorDialogView = getLayoutInflater().inflate(R.layout.dialog_new, null);
+        editorDialogView = getLayoutInflater().inflate(R.layout.dialog_new, null);
+        editorDialogView.findViewById(R.id.switchLayoutShortcut).setOnClickListener(v2 -> EditorUtils.onSwitchLayoutShortcut(editorDialogView,this));
+        editorDialogView.findViewById(R.id.button_icon).setOnClickListener(v2 -> EditorUtils.openIconPiker(this));
         EditText keyNameView = editorDialogView.findViewById(R.id.txtName);
         EditText keyValueView = editorDialogView.findViewById(R.id.txtValue);
+        EditText keyShortcutView = editorDialogView.findViewById(R.id.txtEditShortcut);
         keyNameView.requestFocus();
         new MaterialAlertDialogBuilder(this)
                 .setView(editorDialogView)
@@ -107,7 +118,25 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
                     Editable keyValue = keyValueView.getText();
                     if (TextUtils.isEmpty(keyName) || keyValue == null) return;
                     SettingsRecyclerAdapter settingsAdapter = (SettingsRecyclerAdapter) adapter;
-                    settingsAdapter.updateValueForName(keyName.toString(), keyValue.toString());
+                    if (editorDialogView.findViewById(R.id.layout_shortcut).getVisibility() == View.GONE) {
+                        settingsAdapter.updateValueForName(keyName.toString(), keyValue.toString());
+                    } else {
+                        RadioGroup existingShortcutRadioGroup = editorDialogView.findViewById(R.id.existingShortcutRadioGroup);
+                        if (!existingShortcutRadioGroup.isSelected()) {
+                            Editable keyShortcut = keyShortcutView.getText();
+                            if (!TextUtils.isEmpty(keyShortcut) || keyShortcut != null) {
+                                EditorUtils.createDesktopShortcutEdit(this, settingsAdapter, keyName.toString(), keyValue.toString(),
+                                        keyShortcut.toString(),shortcutIconUri);
+                            }
+                        } else {
+                            int radioButtonId = existingShortcutRadioGroup.getCheckedRadioButtonId();
+                            RadioButton radioButton = editorDialogView.findViewById(radioButtonId);
+                            String idShortcut = (String) radioButton.getTag();
+                            EditorUtils.updateDesktopShortcutEdit(this, settingsAdapter, keyName.toString(), keyValue.toString(),
+                                    idShortcut,false);
+                        }
+                    }
+
                 }))
                 .setNegativeButton(android.R.string.cancel, null)
                 .show();
@@ -267,12 +296,25 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         if (data.getData() != null) {
             Uri uri = data.getData();
-            adapter.setIconPiker(uri);
+            setIconPiker(uri);
+        }
+    }
 
-
+    private void setIconPiker(Uri uri) {
+        try {
+            InputStream inputStream = getContentResolver().openInputStream(uri);
+            Drawable shortcutIconDrawable = Drawable.createFromStream(inputStream, uri.toString());
+            if (editorDialogView.isActivated()) {
+                editorDialogView.findViewById(R.id.button_icon).setBackground(shortcutIconDrawable);
+                shortcutIconUri = uri;
+            } else if (adapter.editDialogView.isActivated()){
+            adapter.editDialogView.findViewById(R.id.button_icon).setBackground(shortcutIconDrawable);
+            adapter.shortcutIconUri = uri;
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
     }
 }
