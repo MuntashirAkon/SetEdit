@@ -1,6 +1,7 @@
 package io.github.ferreol.seteditplus;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -103,7 +104,7 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
 
     public void addNewItemDialog() {
         ViewGroup parent = (ViewGroup) findViewById(R.id.recycler_view);
-        editorDialogView = getLayoutInflater().inflate(R.layout.dialog_new, parent,false);
+        editorDialogView = getLayoutInflater().inflate(R.layout.dialog_new, parent, false);
         editorDialogView.findViewById(R.id.switchLayoutShortcut).setOnClickListener(v2 -> EditorUtils.onSwitchLayoutShortcut(editorDialogView, this));
         editorDialogView.findViewById(R.id.button_icon).setOnClickListener(v2 -> EditorUtils.openIconPiker(this));
         EditText keyNameView = editorDialogView.findViewById(R.id.txtName);
@@ -296,15 +297,18 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
         os.write(jsonString.getBytes());
     }
 
+    public ActivityResultLauncher<Intent> openIconPikerResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    Intent data = result.getData();
+                    if (data != null) {
+                        Uri uri = data.getData();
+                        setIconPiker(uri);
+                    }
+                }
+            });
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (data.getData() != null) {
-            Uri uri = data.getData();
-            setIconPiker(uri);
-        }
-    }
 
     private void setIconPiker(Uri uri) {
         try {

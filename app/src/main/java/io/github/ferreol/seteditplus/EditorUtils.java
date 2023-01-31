@@ -3,6 +3,7 @@ package io.github.ferreol.seteditplus;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +18,10 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
@@ -38,7 +43,6 @@ import io.github.ferreol.seteditplus.adapters.SettingsRecyclerAdapter;
 public class EditorUtils {
 
     private static boolean shortcutPermissionIsAsking = false;
-    private static final int PICK_IMAGE = 1;
 
     /**
      * Check whether the settings write permission has been granted
@@ -225,9 +229,8 @@ public class EditorUtils {
         pickIntent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,"image/*");
         Intent chooserIntent = Intent.createChooser(pickIntent, "Select Image");
         EditorActivity editorActivity = (EditorActivity) context;
-        editorActivity.startActivityForResult(chooserIntent, PICK_IMAGE);
+        editorActivity.openIconPikerResultLauncher.launch(chooserIntent);
     }
-
 
     //todo
     private static void resetSwitchLayoutShortcut(@NonNull View v) {
