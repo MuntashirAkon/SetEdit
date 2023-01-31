@@ -1,11 +1,7 @@
 package io.github.muntashirakon.setedit;
 
-import android.Manifest;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -20,13 +16,11 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.appcompat.widget.SearchView;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -35,8 +29,6 @@ import com.google.android.material.floatingactionbutton.ExtendedFloatingActionBu
 
 import org.json.JSONException;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -64,9 +56,6 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
     private RecyclerView listView;
     private SharedPreferences preferences;
 
-    private final ActivityResultLauncher<String> pre21StoragePermissionLauncher = registerForActivityResult(
-            new ActivityResultContracts.RequestPermission(), granted -> saveAsJsonLegacy());
-    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     private final ActivityResultLauncher<String> post21SaveLauncher = registerForActivityResult(
             new ActivityResultContracts.CreateDocument(),
             uri -> {
@@ -166,9 +155,7 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_export) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                post21SaveLauncher.launch(getFileName());
-            } else saveAsJsonLegacy();
+            post21SaveLauncher.launch(getFileName());
             return true;
         } else if (id == R.id.action_theme) {
             List<Integer> themeMap = new ArrayList<>(4);
@@ -238,23 +225,6 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
 
     private String getFileName() {
         return "SetEdit-" + System.currentTimeMillis() + ".json";
-    }
-
-    private void saveAsJsonLegacy() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            pre21StoragePermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-            return;
-        }
-        @SuppressWarnings("deprecation")
-        File file = new File(Environment.getExternalStorageDirectory(), getFileName());
-        try (OutputStream os = new FileOutputStream(file)) {
-            saveAsJson(os);
-            Toast.makeText(this, getString(R.string.saved_to_file, file.getAbsolutePath()), Toast.LENGTH_LONG).show();
-        } catch (Throwable th) {
-            th.printStackTrace();
-            Toast.makeText(this, R.string.failed, Toast.LENGTH_SHORT).show();
-        }
     }
 
     private void saveAsJson(OutputStream os) throws JSONException, IOException {
