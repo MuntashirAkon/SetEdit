@@ -14,6 +14,7 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -76,7 +77,7 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
             new ActivityResultContracts.RequestPermission(), granted -> saveAsJsonLegacy());
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     private final ActivityResultLauncher<String> post21SaveLauncher = registerForActivityResult(
-            new ActivityResultContracts.CreateDocument(),
+            new ActivityResultContracts.CreateDocument("document/json"),
             uri -> {
                 if (uri == null) return;
                 try (OutputStream os = getContentResolver().openOutputStream(uri)) {
@@ -101,7 +102,8 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
     }
 
     public void addNewItemDialog() {
-        editorDialogView = getLayoutInflater().inflate(R.layout.dialog_new, null);
+        ViewGroup parent = (ViewGroup) findViewById(R.id.recycler_view);
+        editorDialogView = getLayoutInflater().inflate(R.layout.dialog_new, parent,false);
         editorDialogView.findViewById(R.id.switchLayoutShortcut).setOnClickListener(v2 -> EditorUtils.onSwitchLayoutShortcut(editorDialogView, this));
         editorDialogView.findViewById(R.id.button_icon).setOnClickListener(v2 -> EditorUtils.openIconPiker(this));
         EditText keyNameView = editorDialogView.findViewById(R.id.txtName);

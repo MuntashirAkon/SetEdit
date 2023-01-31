@@ -25,6 +25,7 @@ import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.List;
 
+import io.github.ferreol.seteditplus.EditorActivity;
 import io.github.ferreol.seteditplus.EditorUtils;
 import io.github.ferreol.seteditplus.R;
 
@@ -79,11 +80,12 @@ public abstract class AbsRecyclerAdapter extends RecyclerView.Adapter<AbsRecycle
     protected abstract Filter getFilter();
 
     private void onBindViewHolder(@NonNull ViewHolder holder, String keyName, String keyValue, int position) {
+        ViewGroup parent = (ViewGroup) ((EditorActivity)context).findViewById(R.id.recycler_view);
         holder.keyName.setText(keyName);
         holder.keyValue.setText(keyValue);
         holder.itemView.setBackgroundColor(ContextCompat.getColor(context, position % 2 == 1 ? android.R.color.transparent : R.color.semi_transparent));
         holder.itemView.setOnClickListener(v -> {
-            editDialogView = LayoutInflater.from(context).inflate(R.layout.dialog_edit, null);
+            editDialogView = LayoutInflater.from(context).inflate(R.layout.dialog_edit, parent,false);
             editDialogView.findViewById(R.id.button_help).setOnClickListener(v2 -> openHelp(keyName));
             editDialogView.findViewById(R.id.switchLayoutShortcut).setOnClickListener(v2 -> EditorUtils.onSwitchLayoutShortcut(editDialogView, context));
             editDialogView.findViewById(R.id.button_icon).setOnClickListener(v2 -> EditorUtils.openIconPiker(context));
