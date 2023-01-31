@@ -306,10 +306,10 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
         try {
             InputStream inputStream = getContentResolver().openInputStream(uri);
             Drawable shortcutIconDrawable = Drawable.createFromStream(inputStream, uri.toString());
-            if (editorDialogView.isActivated()) {
+            if (editorDialogView != null && editorDialogView.isAttachedToWindow()) {
                 editorDialogView.findViewById(R.id.button_icon).setBackground(shortcutIconDrawable);
                 shortcutIconUri = uri;
-            } else if (adapter.editDialogView.isActivated()){
+            } else if (adapter.editDialogView != null && adapter.editDialogView.isAttachedToWindow()){
             adapter.editDialogView.findViewById(R.id.button_icon).setBackground(shortcutIconDrawable);
             adapter.shortcutIconUri = uri;
             }

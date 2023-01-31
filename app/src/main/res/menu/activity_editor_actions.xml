@@ -7,6 +7,9 @@
         android:title="@android:string/search_go"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="always" />
+    <item
+        android:id="@+id/action_edit_shortcuts"
+        android:title="@string/edit_shortcuts" />
 
     <item
         android:id="@+id/action_export"
@@ -15,4 +18,5 @@
     <item
         android:id="@+id/action_theme"
         android:title="@string/theme" />
+
 </menu>
