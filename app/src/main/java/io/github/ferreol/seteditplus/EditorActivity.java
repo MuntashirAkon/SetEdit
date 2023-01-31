@@ -216,7 +216,11 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
                         dialog.dismiss();
                     })
                     .show();
+        } else if (id == R.id.action_edit_shortcuts) {
+            //todo
+
         }
+
         return super.onOptionsItemSelected(item);
     }
 
