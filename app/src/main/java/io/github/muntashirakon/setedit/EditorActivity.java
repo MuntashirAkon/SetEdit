@@ -46,6 +46,7 @@ import java.util.Locale;
 import io.github.muntashirakon.setedit.adapters.AbsRecyclerAdapter;
 import io.github.muntashirakon.setedit.adapters.AdapterProvider;
 import io.github.muntashirakon.setedit.adapters.SettingsRecyclerAdapter;
+import io.github.muntashirakon.util.UiUtils;
 
 public class EditorActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener,
         SearchView.OnQueryTextListener {
@@ -146,6 +147,7 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
                 }
             }
         });
+        UiUtils.applyWindowInsetsAsMargin(addNewItem);
         // Display warning if it's the first time
         displayOneTimeWarningDialog();
     }

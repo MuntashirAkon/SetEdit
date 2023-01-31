@@ -6,39 +6,35 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <com.google.android.material.appbar.AppBarLayout
+    <io.github.muntashirakon.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
+        app:liftOnScroll="true"
+        app:liftOnScrollTargetViewId="@id/recycler_view">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-    </com.google.android.material.appbar.AppBarLayout>
+    </io.github.muntashirakon.widget.AppBarLayout>
 
-    <LinearLayout
-        android:orientation="vertical"
+    <io.github.muntashirakon.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:fitsSystemWindows="true"
+        android:clipToPadding="false"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:weightSum="1"
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view"
-            android:clipToPadding="false"
-            android:layout_width="match_parent"
-            android:layout_height="0px"
-            android:layout_weight="1"
-            android:scrollbars="vertical"
-            tools:listitem="@layout/item_setting" />
-
-    </LinearLayout>
+        android:scrollbars="vertical"
+        tools:listitem="@layout/item_setting"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/efab"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
+        android:fitsSystemWindows="true"
         android:clickable="true"
         android:focusable="true"
         style="@style/Widget.Material3.FloatingActionButton.Primary"
