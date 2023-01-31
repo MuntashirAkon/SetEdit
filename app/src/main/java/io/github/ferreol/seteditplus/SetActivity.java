@@ -15,18 +15,17 @@ public class SetActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        int i=0;
-        while (!getIntent().getExtras().getString("settingsType"+i).isEmpty()){
-        settingsType = getIntent().getExtras().getString("settingsType"+i);
-            keyName = getIntent().getExtras().getString("keyName"+i);
-        if (getIntent().getExtras().getBoolean("delete"+i)) {
-
-
-        } else {
-            KeyValue = getIntent().getExtras().getString("KeyValue"+i);
-            SetActivityShortcutUpdate();
-        }
-        i++;
+        int i = 0;
+        while (!getIntent().getExtras().getString("settingsType" + i).isEmpty()) {
+            settingsType = getIntent().getExtras().getString("settingsType" + i);
+            keyName = getIntent().getExtras().getString("keyName" + i);
+            if (getIntent().getExtras().getBoolean("delete" + i)) {
+                SetActivityShortcutDelete();
+            } else {
+                KeyValue = getIntent().getExtras().getString("KeyValue" + i);
+                SetActivityShortcutUpdate();
+            }
+            i++;
         }
     }
 
@@ -34,7 +33,7 @@ public class SetActivity extends Activity {
         return null;
     }
 
-    private void  SetActivityShortcutUpdate() {
+    private void SetActivityShortcutUpdate() {
         if (settingsType != null) {
             Context context = this.getBaseContext();
             Boolean isGranted = EditorUtils.checkSettingsWritePermission(context, settingsType);
@@ -45,7 +44,8 @@ public class SetActivity extends Activity {
             }
         }
     }
-    private void  SetActivityShortcutDelete() {
+
+    private void SetActivityShortcutDelete() {
         if (settingsType != null) {
             Context context = this.getBaseContext();
             Boolean isGranted = EditorUtils.checkSettingsWritePermission(context, settingsType);

@@ -1,7 +1,6 @@
 package io.github.ferreol.seteditplus.adapters;
 
 
-
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -35,7 +34,6 @@ public abstract class AbsRecyclerAdapter extends RecyclerView.Adapter<AbsRecycle
     private String constraint;
     public Uri shortcutIconUri;
     public View editDialogView;
-
 
 
     public AbsRecyclerAdapter(Context context) {
@@ -87,7 +85,7 @@ public abstract class AbsRecyclerAdapter extends RecyclerView.Adapter<AbsRecycle
         holder.itemView.setOnClickListener(v -> {
             editDialogView = LayoutInflater.from(context).inflate(R.layout.dialog_edit, null);
             editDialogView.findViewById(R.id.button_help).setOnClickListener(v2 -> openHelp(keyName));
-            editDialogView.findViewById(R.id.switchLayoutShortcut).setOnClickListener(v2 -> EditorUtils.onSwitchLayoutShortcut(editDialogView,context));
+            editDialogView.findViewById(R.id.switchLayoutShortcut).setOnClickListener(v2 -> EditorUtils.onSwitchLayoutShortcut(editDialogView, context));
             editDialogView.findViewById(R.id.button_icon).setOnClickListener(v2 -> EditorUtils.openIconPiker(context));
             ((TextView) editDialogView.findViewById(R.id.title)).setText(keyName);
             TextInputEditText editText = editDialogView.findViewById(R.id.txt);
@@ -112,17 +110,18 @@ public abstract class AbsRecyclerAdapter extends RecyclerView.Adapter<AbsRecycle
                             settingsAdapter.updateValueForName(keyName, NewKeyValue.toString());
                         } else {
                             RadioGroup existingShortcutRadioGroup = editDialogView.findViewById(R.id.existingShortcutRadioGroup);
+                            if (keyName == null) return;
                             if (!existingShortcutRadioGroup.isSelected()) {
                                 Editable keyShortcut = keyShortcutView.getText();
                                 if (!TextUtils.isEmpty(keyShortcut) || keyShortcut != null) {
                                     EditorUtils.createDesktopShortcutEdit(context, settingsAdapter, keyName, NewKeyValue.toString(),
-                                            keyShortcut.toString(),shortcutIconUri);
+                                            keyShortcut.toString(), shortcutIconUri);
                                 }
                             } else {
                                 int radioButtonId = existingShortcutRadioGroup.getCheckedRadioButtonId();
                                 RadioButton radioButton = editDialogView.findViewById(radioButtonId);
                                 String idShortcut = (String) radioButton.getTag();
-                                EditorUtils.updateDesktopShortcutEdit(context, settingsAdapter, keyName, NewKeyValue.toString(),idShortcut,false);
+                                EditorUtils.updateDesktopShortcutEdit(context, settingsAdapter, keyName, NewKeyValue.toString(), idShortcut, false);
                             }
                         }
                     } else {
@@ -137,15 +136,15 @@ public abstract class AbsRecyclerAdapter extends RecyclerView.Adapter<AbsRecycle
                         if (!existingShortcutRadioGroup.isSelected()) {
                             Editable keyShortcut = keyShortcutView.getText();
                             if (!TextUtils.isEmpty(keyShortcut) || keyShortcut != null) {
-                                EditorUtils.createDesktopShortcutDelete(context, settingsAdapter,keyValue.toString(),
-                                        keyShortcut.toString(),shortcutIconUri);
+                                EditorUtils.createDesktopShortcutDelete(context, settingsAdapter, keyValue,
+                                        keyShortcut.toString(), shortcutIconUri);
                             }
                         } else {
                             int radioButtonId = existingShortcutRadioGroup.getCheckedRadioButtonId();
                             RadioButton radioButton = editDialogView.findViewById(radioButtonId);
                             String idShortcut = (String) radioButton.getTag();
-                            EditorUtils.updateDesktopShortcutEdit(context, settingsAdapter, "", keyValue.toString(),
-                                    idShortcut,true);
+                            EditorUtils.updateDesktopShortcutEdit(context, settingsAdapter, "", keyValue,
+                                    idShortcut, true);
                         }
 
                     }
@@ -164,7 +163,6 @@ public abstract class AbsRecyclerAdapter extends RecyclerView.Adapter<AbsRecycle
                 .setNegativeButton(R.string.close, null)
                 .show();
     }
-
 
 
     private void openHelp(String keyName) {

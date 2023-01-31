@@ -21,7 +21,6 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
-
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -103,7 +102,7 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
 
     public void addNewItemDialog() {
         editorDialogView = getLayoutInflater().inflate(R.layout.dialog_new, null);
-        editorDialogView.findViewById(R.id.switchLayoutShortcut).setOnClickListener(v2 -> EditorUtils.onSwitchLayoutShortcut(editorDialogView,this));
+        editorDialogView.findViewById(R.id.switchLayoutShortcut).setOnClickListener(v2 -> EditorUtils.onSwitchLayoutShortcut(editorDialogView, this));
         editorDialogView.findViewById(R.id.button_icon).setOnClickListener(v2 -> EditorUtils.openIconPiker(this));
         EditText keyNameView = editorDialogView.findViewById(R.id.txtName);
         EditText keyValueView = editorDialogView.findViewById(R.id.txtValue);
@@ -126,14 +125,14 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
                             Editable keyShortcut = keyShortcutView.getText();
                             if (!TextUtils.isEmpty(keyShortcut) || keyShortcut != null) {
                                 EditorUtils.createDesktopShortcutEdit(this, settingsAdapter, keyName.toString(), keyValue.toString(),
-                                        keyShortcut.toString(),shortcutIconUri);
+                                        keyShortcut.toString(), shortcutIconUri);
                             }
                         } else {
                             int radioButtonId = existingShortcutRadioGroup.getCheckedRadioButtonId();
                             RadioButton radioButton = editorDialogView.findViewById(radioButtonId);
                             String idShortcut = (String) radioButton.getTag();
                             EditorUtils.updateDesktopShortcutEdit(this, settingsAdapter, keyName.toString(), keyValue.toString(),
-                                    idShortcut,false);
+                                    idShortcut, false);
                         }
                     }
 
@@ -279,7 +278,6 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
             pre21StoragePermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE);
             return;
         }
-        @SuppressWarnings("deprecation")
         File file = new File(Environment.getExternalStorageDirectory(), getFileName());
         try (OutputStream os = new FileOutputStream(file)) {
             saveAsJson(os);
@@ -313,9 +311,9 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
             if (editorDialogView != null && editorDialogView.isAttachedToWindow()) {
                 editorDialogView.findViewById(R.id.button_icon).setBackground(shortcutIconDrawable);
                 shortcutIconUri = uri;
-            } else if (adapter.editDialogView != null && adapter.editDialogView.isAttachedToWindow()){
-            adapter.editDialogView.findViewById(R.id.button_icon).setBackground(shortcutIconDrawable);
-            adapter.shortcutIconUri = uri;
+            } else if (adapter.editDialogView != null && adapter.editDialogView.isAttachedToWindow()) {
+                adapter.editDialogView.findViewById(R.id.button_icon).setBackground(shortcutIconDrawable);
+                adapter.shortcutIconUri = uri;
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();

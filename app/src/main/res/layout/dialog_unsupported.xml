@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="16dp"
-        android:text="@string/error_no_support"/>
+        android:text="@string/error_no_support" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/txt"

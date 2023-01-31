@@ -84,7 +84,7 @@ public class SettingsCursor implements Cursor {
 
     @Override
     public int getColumnIndex(String str) {
-        return  cursor == null ? -1 : cursor.getColumnIndex(str);
+        return cursor == null ? -1 : cursor.getColumnIndex(str);
     }
 
     @Override
@@ -133,7 +133,6 @@ public class SettingsCursor implements Cursor {
         return cursor == null ? Long.MIN_VALUE : cursor.getLong(i);
     }
 
-    @TargetApi(19)
     @Override
     public Uri getNotificationUri() {
         return cursor == null ? null : cursor.getNotificationUri();

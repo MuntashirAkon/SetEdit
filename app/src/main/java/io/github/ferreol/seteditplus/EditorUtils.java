@@ -37,7 +37,7 @@ import io.github.ferreol.seteditplus.adapters.SettingsRecyclerAdapter;
 
 public class EditorUtils {
 
-    private static boolean shortcutPermissionIsAsking=false;
+    private static boolean shortcutPermissionIsAsking = false;
     private static final int PICK_IMAGE = 1;
 
     /**
@@ -98,15 +98,15 @@ public class EditorUtils {
     }
 
     private static void createDesktopShortcut(@NonNull Context context, @NonNull SettingsRecyclerAdapter settingsAdapter,
-                                             String keyName, String keyValue, String keyShortcut,Uri shortcutIconUri,boolean isDeleteAction) {
+                                              String keyName, String keyValue, String keyShortcut, Uri shortcutIconUri, boolean isDeleteAction) {
 
         SetActivity setActivity = new SetActivity();
-        Intent shortcutIntent = new Intent(context,SetActivity.class);
+        Intent shortcutIntent = new Intent(context, SetActivity.class);
         shortcutIntent.putExtra("duplicate", false);
         shortcutIntent.setAction(Intent.ACTION_RUN);
         shortcutIntent.putExtra("settingsType0", settingsAdapter.getSettingsType());
         shortcutIntent.putExtra("keyName0", keyName);
-        if (isDeleteAction){
+        if (isDeleteAction) {
             shortcutIntent.putExtra("delete0", true);
         } else {
             shortcutIntent.putExtra("KeyValue0", keyValue);
@@ -136,7 +136,7 @@ public class EditorUtils {
                             if (!shortcutPermissionIsAsking) {
                                 checkShortcutPermission(context);
                             }
-                            createDesktopShortcut(context,settingsAdapter, keyName, keyValue, keyShortcut,shortcutIconUri,isDeleteAction);
+                            createDesktopShortcut(context, settingsAdapter, keyName, keyValue, keyShortcut, shortcutIconUri, isDeleteAction);
                             dialog.dismiss();
 
                         })
@@ -145,22 +145,23 @@ public class EditorUtils {
             }
         }
     }
+
     public static void createDesktopShortcutEdit(@NonNull Context context, @NonNull SettingsRecyclerAdapter settingsAdapter,
-                                                 String keyName, String keyValue, String keyShortcut,Uri shortcutIconUri) {
-        createDesktopShortcut(context,settingsAdapter, keyName, keyValue, keyShortcut,shortcutIconUri,false);
+                                                 String keyName, String keyValue, String keyShortcut, Uri shortcutIconUri) {
+        createDesktopShortcut(context, settingsAdapter, keyName, keyValue, keyShortcut, shortcutIconUri, false);
     }
 
     public static void createDesktopShortcutDelete(@NonNull Context context, @NonNull SettingsRecyclerAdapter settingsAdapter,
-                                                   String keyName, String keyShortcut,Uri shortcutIconUri) {
-        createDesktopShortcut(context,settingsAdapter, keyName, "", keyShortcut,shortcutIconUri,true);
+                                                   String keyName, String keyShortcut, Uri shortcutIconUri) {
+        createDesktopShortcut(context, settingsAdapter, keyName, "", keyShortcut, shortcutIconUri, true);
     }
 
 
     /**
      * Check whether the shortcut permission has been granted
      */
-    public static void  checkShortcutPermission(@NonNull Context context) {
-        shortcutPermissionIsAsking= true;
+    public static void checkShortcutPermission(@NonNull Context context) {
+        shortcutPermissionIsAsking = true;
         Intent intent = new Intent();
         intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
         intent.addCategory(Intent.CATEGORY_DEFAULT);
@@ -175,27 +176,27 @@ public class EditorUtils {
                                                  String keyName, String keyValue, String idShortcut, boolean isDeleteAction) {
         List<ShortcutInfoCompat> shortcutList = ShortcutManagerCompat.getShortcuts(context, ShortcutManagerCompat.FLAG_MATCH_PINNED);
         for (int i = 0; i < shortcutList.size(); i++) {
-            if (shortcutList.get(i).getId() == idShortcut) {
+            if (shortcutList.get(i).getId().equals(idShortcut)) {
                 ShortcutInfoCompat shortcut = shortcutList.get(i);
                 Intent shortcutIntent = shortcut.getIntent();
-                int y=0;
-                while (!shortcutIntent.getExtras().getString("settingsType"+i).isEmpty()){
-                y++;
+                int y = 0;
+                while (!shortcutIntent.getExtras().getString("settingsType" + i).isEmpty()) {
+                    y++;
                 }
-                shortcutIntent.putExtra("settingsType"+y, settingsAdapter.getSettingsType());
-                shortcutIntent.putExtra("keyName"+y, keyName);
-                if (isDeleteAction){
-                    shortcutIntent.putExtra("delete"+y, true);
+                shortcutIntent.putExtra("settingsType" + y, settingsAdapter.getSettingsType());
+                shortcutIntent.putExtra("keyName" + y, keyName);
+                if (isDeleteAction) {
+                    shortcutIntent.putExtra("delete" + y, true);
                 } else {
-                    shortcutIntent.putExtra("KeyValue"+y, keyValue);
+                    shortcutIntent.putExtra("KeyValue" + y, keyValue);
                 }
             }
 
         }
-}
+    }
 
 
-    public static void onSwitchLayoutShortcut(@NonNull View v,Context context) {
+    public static void onSwitchLayoutShortcut(@NonNull View v, Context context) {
         RadioGroup existingShortcutLayout = v.findViewById(R.id.existingShortcutRadioGroup);
         existingShortcutLayout.removeAllViews();
         if (v.findViewById(R.id.layout_shortcut).getVisibility() == View.GONE) {
@@ -220,19 +221,12 @@ public class EditorUtils {
     }
 
     public static void openIconPiker(Context context) {
-
-        Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
-        getIntent.setType("image/*");
-        Intent pickIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        pickIntent.setType("image/*");
-        Intent chooserIntent = Intent.createChooser(getIntent, "Select Image");
-        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent});
+        Intent pickIntent = new Intent(Intent.ACTION_PICK);
+        pickIntent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,"image/*");
+        Intent chooserIntent = Intent.createChooser(pickIntent, "Select Image");
         EditorActivity editorActivity = (EditorActivity) context;
         editorActivity.startActivityForResult(chooserIntent, PICK_IMAGE);
-
-
     }
-
 
 
     //todo
