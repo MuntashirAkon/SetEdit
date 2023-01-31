@@ -7,7 +7,7 @@ android {
 
     defaultConfig {
         applicationId "io.github.muntashirakon.setedit"
-        minSdk 19
+        minSdk 21
         //noinspection ExpiredTargetSdkVersion
         targetSdk 22
         versionCode 7
