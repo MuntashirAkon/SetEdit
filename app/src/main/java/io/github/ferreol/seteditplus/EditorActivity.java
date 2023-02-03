@@ -15,12 +15,13 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TableRow;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -33,7 +34,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.appcompat.widget.SearchView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.pm.ShortcutInfoCompat;
+import androidx.core.content.pm.ShortcutManagerCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -103,8 +107,7 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
     }
 
     public void addNewItemDialog() {
-        ViewGroup parent = (ViewGroup) findViewById(R.id.recycler_view);
-        editorDialogView = getLayoutInflater().inflate(R.layout.dialog_new, parent, false);
+        editorDialogView = getLayoutInflater().inflate(R.layout.dialog_new, listView, false);
         editorDialogView.findViewById(R.id.switchLayoutShortcut).setOnClickListener(v2 -> EditorUtils.onSwitchLayoutShortcut(editorDialogView, this));
         editorDialogView.findViewById(R.id.button_icon).setOnClickListener(v2 -> EditorUtils.openIconPiker(this));
         EditText keyNameView = editorDialogView.findViewById(R.id.txtName);
@@ -120,14 +123,14 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
                     Editable keyValue = keyValueView.getText();
                     if (TextUtils.isEmpty(keyName) || keyValue == null) return;
                     SettingsRecyclerAdapter settingsAdapter = (SettingsRecyclerAdapter) adapter;
-                    if (editorDialogView.findViewById(R.id.layout_shortcut).getVisibility() == View.GONE) {
+                    if (editorDialogView.findViewById(R.id.layout_new_shortcut).getVisibility() == View.GONE) {
                         settingsAdapter.updateValueForName(keyName.toString(), keyValue.toString());
                     } else {
                         RadioGroup existingShortcutRadioGroup = editorDialogView.findViewById(R.id.existingShortcutRadioGroup);
                         if (!existingShortcutRadioGroup.isSelected()) {
                             Editable keyShortcut = keyShortcutView.getText();
                             if (!TextUtils.isEmpty(keyShortcut) || keyShortcut != null) {
-                                EditorUtils.createDesktopShortcutEdit(this, settingsAdapter, keyName.toString(), keyValue.toString(),
+                                EditorUtils.createDesktopShortcut(this, settingsAdapter, keyName.toString(), keyValue.toString(),
                                         keyShortcut.toString(), shortcutIconUri);
                             }
                         } else {
@@ -218,10 +221,7 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
                         dialog.dismiss();
                     })
                     .show();
-        } else if (id == R.id.action_edit_shortcuts) {
-            //todo
-
-        }
+    }
 
         return super.onOptionsItemSelected(item);
     }

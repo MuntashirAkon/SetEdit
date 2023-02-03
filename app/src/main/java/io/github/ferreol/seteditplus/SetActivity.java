@@ -16,9 +16,10 @@ public class SetActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         int i = 0;
-        while (!getIntent().getExtras().getString("settingsType" + i).isEmpty()) {
+        while (getIntent().getExtras().getString("settingsType"+i) != null &&
+                !getIntent().getExtras().getString("settingsType" + i).isEmpty()) {
             settingsType = getIntent().getExtras().getString("settingsType" + i);
-            keyName = getIntent().getExtras().getString("keyName" + i);
+            keyName = getIntent().getExtras().getString("MyKeyName" + i);
             if (getIntent().getExtras().getBoolean("delete" + i)) {
                 SetActivityShortcutDelete();
             } else {

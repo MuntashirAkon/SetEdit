@@ -7,6 +7,7 @@
         <item>@string/android_properties</item>
         <item>@string/java_properties</item>
         <item>@string/linux_environment</item>
+        <item>@string/edit_shortcuts</item>
     </string-array>
     <string-array name="theme_options">
         <item>@string/theme_system</item>

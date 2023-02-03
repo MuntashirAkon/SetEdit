@@ -54,7 +54,7 @@
             android:hint="@string/value">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/txt"
+                android:id="@+id/txtValue"
                 style="@style/TextAppearance.MaterialComponents.Subtitle1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -74,8 +74,27 @@
                 android:id="@+id/switchLayoutShortcut"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/create_or_add_to_an_existing_shortcut_rather_than_apply" />
+
+                android:text="@string/create_or_append_to_an_existing_shortcut_rather_than_apply" />
+
+
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/switchLayoutAppendShortcut"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:orientation="horizontal">
+
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switchAppendShortcut"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+
+                android:text="@string/append" />
 
 
         </androidx.appcompat.widget.LinearLayoutCompat>
@@ -98,7 +117,7 @@
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/layout_shortcut"
+            android:id="@+id/layout_new_shortcut"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"

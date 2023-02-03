@@ -23,6 +23,8 @@ public class AdapterProvider {
                 return new JavaPropertiesRecyclerAdapter(context);
             case 5:
                 return new LinuxEnvironmentsRecyclerAdapter(context);
+            case 6:
+                return new ShortcutEditAdapter(context);
             default:
                 throw new IllegalArgumentException("Invalid position " + position);
         }
