@@ -20,8 +20,6 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TableRow;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -34,10 +32,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.appcompat.widget.SearchView;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.pm.ShortcutInfoCompat;
-import androidx.core.content.pm.ShortcutManagerCompat;
+import androidx.core.graphics.drawable.IconCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -59,6 +56,7 @@ import java.util.Locale;
 import io.github.ferreol.seteditplus.adapters.AbsRecyclerAdapter;
 import io.github.ferreol.seteditplus.adapters.AdapterProvider;
 import io.github.ferreol.seteditplus.adapters.SettingsRecyclerAdapter;
+import io.github.ferreol.util.UiUtils;
 
 public class EditorActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener,
         SearchView.OnQueryTextListener {
@@ -78,9 +76,6 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
     private View editorDialogView;
     public Uri shortcutIconUri;
 
-    private final ActivityResultLauncher<String> pre21StoragePermissionLauncher = registerForActivityResult(
-            new ActivityResultContracts.RequestPermission(), granted -> saveAsJsonLegacy());
-    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     private final ActivityResultLauncher<String> post21SaveLauncher = registerForActivityResult(
             new ActivityResultContracts.CreateDocument("document/json"),
             uri -> {
@@ -170,7 +165,7 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
         listView = findViewById(R.id.recycler_view);
         listView.setLayoutManager(new LinearLayoutManager(this));
         // Add efab
-        addNewItem = findViewById(R.id.efab);
+        addNewItem = findViewById(R.id.newItemExtendedFloatingActionButton);
         addNewItem.setOnClickListener(v -> {
             if (adapter instanceof SettingsRecyclerAdapter) {
                 Boolean isGranted = EditorUtils.checkSettingsWritePermission(this, ((SettingsRecyclerAdapter) adapter).getSettingsType());
@@ -182,6 +177,7 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
                 }
             }
         });
+        UiUtils.applyWindowInsetsAsMargin(addNewItem);
         // Display warning if it's the first time
         displayOneTimeWarningDialog();
     }
@@ -200,9 +196,7 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_export) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                post21SaveLauncher.launch(getFileName());
-            } else saveAsJsonLegacy();
+            post21SaveLauncher.launch(getFileName());
             return true;
         } else if (id == R.id.action_theme) {
             List<Integer> themeMap = new ArrayList<>(4);
@@ -273,22 +267,6 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
 
     private String getFileName() {
         return "SetEdit-" + System.currentTimeMillis() + ".json";
-    }
-
-    private void saveAsJsonLegacy() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            pre21StoragePermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-            return;
-        }
-        File file = new File(Environment.getExternalStorageDirectory(), getFileName());
-        try (OutputStream os = new FileOutputStream(file)) {
-            saveAsJson(os);
-            Toast.makeText(this, getString(R.string.saved_to_file, file.getAbsolutePath()), Toast.LENGTH_LONG).show();
-        } catch (Throwable th) {
-            th.printStackTrace();
-            Toast.makeText(this, R.string.failed, Toast.LENGTH_SHORT).show();
-        }
     }
 
     private void saveAsJson(OutputStream os) throws JSONException, IOException {
