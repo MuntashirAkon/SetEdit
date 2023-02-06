@@ -59,6 +59,7 @@ public class EditorUtils {
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                             intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+                            EditorActivity editorActivity = (EditorActivity) context;
                             context.startActivity(intent);
                         } catch (Exception ignore) {
                         }
@@ -180,7 +181,7 @@ public class EditorUtils {
                 ShortcutInfoCompat shortcut = shortcutList.get(i);
                 Intent shortcutIntent = shortcut.getIntent();
                 int y = 0;
-                while (!shortcutIntent.getExtras().getString("settingsType" + i).isEmpty()) {
+                while (shortcutIntent.getExtras().getString("settingsType" + y) != null) {
                     y++;
                 }
                 shortcutIntent.putExtra("settingsType" + y, settingsAdapter.getSettingsType());
@@ -190,6 +191,7 @@ public class EditorUtils {
                 } else {
                     shortcutIntent.putExtra("KeyValue" + y, keyValue);
                 }
+                ShortcutManagerCompat.updateShortcuts(context,shortcutList);
             }
 
         }
@@ -197,10 +199,12 @@ public class EditorUtils {
 
 
     public static void onSwitchLayoutShortcut(@NonNull View v, Context context) {
-        SwitchCompat switchLayoutShortcut = ((SwitchCompat) v.findViewById(R.id.switchLayoutShortcut));
+        SwitchCompat switchLayoutShortcut = v.findViewById(R.id.switchLayoutShortcut);
         if (switchLayoutShortcut.isChecked()) {
-            v.findViewById(R.id.switchLayoutAppendShortcut).setVisibility(View.VISIBLE);
             v.findViewById(R.id.layout_new_shortcut).setVisibility(View.VISIBLE);
+            if (ShortcutManagerCompat.getShortcuts(context, ShortcutManagerCompat.FLAG_MATCH_PINNED).size() > 0) {
+                v.findViewById(R.id.switchLayoutAppendShortcut).setVisibility(View.VISIBLE);
+            }
         } else {
             v.findViewById(R.id.switchLayoutAppendShortcut).setVisibility(View.GONE);
             v.findViewById(R.id.layout_new_shortcut).setVisibility(View.GONE);
@@ -222,7 +226,7 @@ public class EditorUtils {
                 radioButton.setOnClickListener(v2 -> selectShortcutRadioButton(v));
             }
 
-        } else  {
+        } else {
             existingShortcutLayout.removeAllViews();
             v.findViewById(R.id.switchLayoutShortcut).setEnabled(true);
             v.findViewById(R.id.layout_new_shortcut).setVisibility(View.VISIBLE);

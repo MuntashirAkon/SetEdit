@@ -287,7 +287,6 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
                 }
             });
 
-
     private void setIconPiker(Uri uri) {
         try {
             InputStream inputStream = getContentResolver().openInputStream(uri);
@@ -303,4 +302,17 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
             e.printStackTrace();
         }
     }
+/*
+    public ActivityResultLauncher<Intent> openPermissionResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    /*Intent data = result.getData();
+                    if (data != null) {
+                        Uri uri = data.getData();
+                        setIconPiker(uri);
+                    }
+                }
+            });
+*/
 }
