@@ -1,20 +1,17 @@
 package io.github.ferreol.seteditplus;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -26,15 +23,11 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.appcompat.widget.SearchView;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.pm.ShortcutInfoCompat;
-import androidx.core.graphics.drawable.IconCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -43,9 +36,7 @@ import com.google.android.material.floatingactionbutton.ExtendedFloatingActionBu
 
 import org.json.JSONException;
 
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -56,7 +47,7 @@ import java.util.Locale;
 import io.github.ferreol.seteditplus.adapters.AbsRecyclerAdapter;
 import io.github.ferreol.seteditplus.adapters.AdapterProvider;
 import io.github.ferreol.seteditplus.adapters.SettingsRecyclerAdapter;
-import io.github.ferreol.util.UiUtils;
+
 
 public class EditorActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener,
         SearchView.OnQueryTextListener {
@@ -166,6 +157,11 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
         listView.setLayoutManager(new LinearLayoutManager(this));
         // Add efab
         addNewItem = findViewById(R.id.newItemExtendedFloatingActionButton);
+        int navigationBarHeight = EditorUtils.hasNavigationBarHeight(this);
+        if (navigationBarHeight != 0) {
+            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) addNewItem.getLayoutParams();
+            params.bottomMargin = navigationBarHeight;
+        }
         addNewItem.setOnClickListener(v -> {
             if (adapter instanceof SettingsRecyclerAdapter) {
                 Boolean isGranted = EditorUtils.checkSettingsWritePermission(this, ((SettingsRecyclerAdapter) adapter).getSettingsType());
@@ -177,7 +173,6 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
                 }
             }
         });
-        UiUtils.applyWindowInsetsAsMargin(addNewItem);
         // Display warning if it's the first time
         displayOneTimeWarningDialog();
     }
@@ -215,7 +210,7 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
                         dialog.dismiss();
                     })
                     .show();
-    }
+        }
 
         return super.onOptionsItemSelected(item);
     }

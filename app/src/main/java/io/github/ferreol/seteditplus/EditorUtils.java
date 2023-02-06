@@ -3,14 +3,17 @@ package io.github.ferreol.seteditplus;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.RadioButton;
@@ -191,7 +194,7 @@ public class EditorUtils {
                 } else {
                     shortcutIntent.putExtra("KeyValue" + y, keyValue);
                 }
-                ShortcutManagerCompat.updateShortcuts(context,shortcutList);
+                ShortcutManagerCompat.updateShortcuts(context, shortcutList);
             }
 
         }
@@ -252,5 +255,13 @@ public class EditorUtils {
         RadioGroup existingShortcutLayout = v.findViewById(R.id.existingShortcutRadioGroup);
         existingShortcutLayout.removeAllViews();
         v.findViewById(R.id.layout_new_shortcut).setVisibility(View.GONE);
+    }
+
+    public static int hasNavigationBarHeight(Activity activity) {
+        Rect rectangle = new Rect();
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        activity.getWindow().getDecorView().getWindowVisibleDisplayFrame(rectangle);
+        activity.getWindowManager().getDefaultDisplay().getRealMetrics(displayMetrics);
+        return displayMetrics.heightPixels - (rectangle.top + rectangle.height());
     }
 }

@@ -94,7 +94,6 @@ public abstract class AbsRecyclerAdapter extends RecyclerView.Adapter<AbsRecycle
             editDialogView.findViewById(R.id.button_icon).setOnClickListener(v2 -> EditorUtils.openIconPiker(context));
             ((TextView) editDialogView.findViewById(R.id.title)).setText(keyName);
             TextInputEditText editTextValue = editDialogView.findViewById(R.id.txtValue);
-            TextInputEditText keyShortcutLabel = editDialogView.findViewById(R.id.txtEditShortcut);
             editTextValue.setText(keyValue);
             editTextValue.requestFocus();
             if (keyValue != null) {
@@ -104,63 +103,73 @@ public abstract class AbsRecyclerAdapter extends RecyclerView.Adapter<AbsRecycle
                     .setView(editDialogView)
                     .setNegativeButton(R.string.close, null);
             if (this instanceof SettingsRecyclerAdapter) {
-                builder.setPositiveButton(R.string.save, (dialog, which) -> {
-                    Editable NewKeyValue = editTextValue.getText();
-                    if (NewKeyValue == null) return;
-                    SettingsRecyclerAdapter settingsAdapter = (SettingsRecyclerAdapter) this;
-                    Boolean isGranted = EditorUtils.checkSettingsWritePermission(context, settingsAdapter.getSettingsType());
-                    if (isGranted == null) return;
-                    if (isGranted) {
-                        if (keyName == null) return;
-                        if (!switchLayoutShortcut.isChecked()) {
-                            settingsAdapter.updateValueForName(keyName, NewKeyValue.toString());
-                        } else {
-                            RadioGroup existingShortcutRadioGroup = editDialogView.findViewById(R.id.existingShortcutRadioGroup);
-                            if (existingShortcutRadioGroup.getCheckedRadioButtonId() !=-1) {
-                                int radioButtonId = existingShortcutRadioGroup.getCheckedRadioButtonId();
-                                RadioButton radioButton = editDialogView.findViewById(radioButtonId);
-                                String idShortcut = (String) radioButton.getTag();
-                                EditorUtils.updateDesktopShortcutEdit(context, settingsAdapter, keyName, NewKeyValue.toString(), idShortcut, false);
-                            } else {
-                                Editable keyShortcut = keyShortcutLabel.getText();
-                                if (!TextUtils.isEmpty(keyShortcut) || keyShortcut != null) {
-                                    EditorUtils.createDesktopShortcut(context, settingsAdapter, keyName, NewKeyValue.toString(),
-                                            keyShortcut.toString(), shortcutIconUri);
-                                }
-                            }
-                        }
-                    } else {
-                        EditorUtils.displayUnsupportedMessage(context);
-                    }
-                }).setNeutralButton(R.string.delete, (dialog, which) -> {
-                    SettingsRecyclerAdapter settingsAdapter = (SettingsRecyclerAdapter) this;
-                    if (editDialogView.findViewById(R.id.layout_new_shortcut).getVisibility() == View.GONE) {
-                        settingsAdapter.deleteEntryByName(keyName);
-                    } else {
-                        RadioGroup existingShortcutRadioGroup = editDialogView.findViewById(R.id.existingShortcutRadioGroup);
-                        if (!existingShortcutRadioGroup.isSelected()) {
-                            Editable keyShortcut = keyShortcutLabel.getText();
-                            if (!TextUtils.isEmpty(keyShortcut) || keyShortcut != null) {
-                                EditorUtils.createDesktopShortcutDelete(context, settingsAdapter, keyValue,
-                                        keyShortcut.toString(), shortcutIconUri);
-                            }
-                        } else {
-                            int radioButtonId = existingShortcutRadioGroup.getCheckedRadioButtonId();
-                            RadioButton radioButton = editDialogView.findViewById(radioButtonId);
-                            String idShortcut = (String) radioButton.getTag();
-                            EditorUtils.updateDesktopShortcutEdit(context, settingsAdapter, "", keyValue,
-                                    idShortcut, true);
-                        }
-
-                    }
-
-                });
+                builder.setPositiveButton(R.string.save, (dialog, which) ->
+                            setEditDialogViewPositiveButton(editTextValue,keyName))
+                        .setNeutralButton(R.string.delete, (dialog, which) ->
+                                setEditDialogViewNeutralButton(keyName,keyValue));
             } else {
                 editTextValue.setKeyListener(null);
             }
             builder.show();
         });
     }
+
+    private void setEditDialogViewPositiveButton (TextInputEditText editTextValue, String keyName){
+        Editable NewKeyValue = editTextValue.getText();
+        if (NewKeyValue == null) return;
+        SettingsRecyclerAdapter settingsAdapter = (SettingsRecyclerAdapter) this;
+        Boolean isGranted = EditorUtils.checkSettingsWritePermission(context, settingsAdapter.getSettingsType());
+        if (isGranted == null) return;
+        if (isGranted) {
+            if (keyName == null) return;
+            SwitchCompat switchLayoutShortcut = editDialogView.findViewById(R.id.switchLayoutShortcut);
+            if (!switchLayoutShortcut.isChecked()) {
+                settingsAdapter.updateValueForName(keyName, NewKeyValue.toString());
+            } else {
+                RadioGroup existingShortcutRadioGroup = editDialogView.findViewById(R.id.existingShortcutRadioGroup);
+                if (existingShortcutRadioGroup.getCheckedRadioButtonId() !=-1) {
+                    int radioButtonId = existingShortcutRadioGroup.getCheckedRadioButtonId();
+                    RadioButton radioButton = editDialogView.findViewById(radioButtonId);
+                    String idShortcut = (String) radioButton.getTag();
+                    EditorUtils.updateDesktopShortcutEdit(context, settingsAdapter, keyName, NewKeyValue.toString(), idShortcut, false);
+                } else {
+                    TextInputEditText keyShortcutLabel = editDialogView.findViewById(R.id.txtEditShortcut);
+                    Editable keyShortcut = keyShortcutLabel.getText();
+                    if (!TextUtils.isEmpty(keyShortcut) || keyShortcut != null) {
+                        EditorUtils.createDesktopShortcut(context, settingsAdapter, keyName, NewKeyValue.toString(),
+                                keyShortcut.toString(), shortcutIconUri);
+                    }
+                }
+            }
+        } else {
+            EditorUtils.displayUnsupportedMessage(context);
+        }
+    }
+
+    private void setEditDialogViewNeutralButton(String keyName, String keyValue){
+        SettingsRecyclerAdapter settingsAdapter = (SettingsRecyclerAdapter) this;
+        if (editDialogView.findViewById(R.id.layout_new_shortcut).getVisibility() == View.GONE) {
+            settingsAdapter.deleteEntryByName(keyName);
+        } else {
+            RadioGroup existingShortcutRadioGroup = editDialogView.findViewById(R.id.existingShortcutRadioGroup);
+            if (!existingShortcutRadioGroup.isSelected()) {
+                TextInputEditText keyShortcutLabel = editDialogView.findViewById(R.id.txtEditShortcut);
+                Editable keyShortcut = keyShortcutLabel.getText();
+                if (!TextUtils.isEmpty(keyShortcut) || keyShortcut != null) {
+                    EditorUtils.createDesktopShortcutDelete(context, settingsAdapter, keyValue,
+                            keyShortcut.toString(), shortcutIconUri);
+                }
+            } else {
+                int radioButtonId = existingShortcutRadioGroup.getCheckedRadioButtonId();
+                RadioButton radioButton = editDialogView.findViewById(radioButtonId);
+                String idShortcut = (String) radioButton.getTag();
+                EditorUtils.updateDesktopShortcutEdit(context, settingsAdapter, "", keyValue,
+                        idShortcut, true);
+            }
+
+        }
+    }
+
 
     protected void setMessage(CharSequence charSequence) {
         new MaterialAlertDialogBuilder(context)
