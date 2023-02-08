@@ -68,12 +68,29 @@
                 android:text="@string/create_or_append_to_an_existing_shortcut_rather_than_apply" />
 
 
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/switchLayoutAppendShortcut"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:orientation="horizontal">
+
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switchAppendShortcut"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/append" />
+
+
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/existingShortcutLinearLayoutCompat"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
             <RadioGroup
@@ -111,21 +128,22 @@
                     android:textIsSelectable="true"
                     android:textSize="16sp"
                     tools:text="@tools:sample/lorem[7]" />
+
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.button.MaterialButton
+            <ImageView
                 android:id="@+id/button_icon"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:layout_gravity="center"
                 android:layout_weight="0"
-                android:background="@drawable/ic_action_name"
+                android:background="@drawable/iconspiker"
                 android:contentDescription="@string/icon_picker"
                 android:text="@null"
-                app:iconGravity="textStart"
-                app:iconTint="?attr/colorAccent" />
+                app:iconGravity="textStart"/>
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
     </androidx.appcompat.widget.LinearLayoutCompat>
+
 </ScrollView>

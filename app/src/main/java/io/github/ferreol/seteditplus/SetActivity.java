@@ -5,6 +5,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.os.Bundle;
 
+import io.github.ferreol.seteditplus.Utils.EditorUtils;
 import io.github.ferreol.seteditplus.adapters.SettingsRecyclerAdapter;
 
 public class SetActivity extends Activity {

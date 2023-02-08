@@ -19,7 +19,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-import io.github.ferreol.seteditplus.EditorUtils;
+import io.github.ferreol.seteditplus.Utils.EditorUtils;
 import io.github.ferreol.seteditplus.R;
 import io.github.ferreol.seteditplus.cursor.SettingsCursor;
 

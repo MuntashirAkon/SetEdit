@@ -26,15 +26,16 @@ import com.google.android.material.textfield.TextInputEditText;
 import java.util.List;
 
 import io.github.ferreol.seteditplus.EditorActivity;
-import io.github.ferreol.seteditplus.EditorUtils;
+import io.github.ferreol.seteditplus.Utils.EditorUtils;
 import io.github.ferreol.seteditplus.R;
+import io.github.ferreol.seteditplus.Utils.ShortcutIcons;
 
 public abstract class AbsRecyclerAdapter extends RecyclerView.Adapter<AbsRecyclerAdapter.ViewHolder> {
 
     protected final Context context;
     private String constraint;
-    public Uri shortcutIconUri;
-    public View editDialogView;
+  //  public Uri shortcutIconUri;
+  //  public View editDialogView;
 
 
     public AbsRecyclerAdapter(Context context) {
@@ -80,19 +81,20 @@ public abstract class AbsRecyclerAdapter extends RecyclerView.Adapter<AbsRecycle
     protected abstract Filter getFilter();
 
     private void onBindViewHolder(@NonNull ViewHolder holder, String keyName, String keyValue, int position) {
-        ViewGroup parent = (ViewGroup) ((EditorActivity) context).findViewById(R.id.recycler_view);
+        ViewGroup parent =  ((EditorActivity) context).findViewById(R.id.recycler_view);
         holder.keyName.setText(keyName);
         holder.keyValue.setText(keyValue);
         holder.itemView.setBackgroundColor(ContextCompat.getColor(context, position % 2 == 1 ? android.R.color.transparent : R.color.semi_transparent));
         holder.itemView.setOnClickListener(v -> {
-            editDialogView = LayoutInflater.from(context).inflate(R.layout.dialog_edit, parent, false);
+            View editDialogView = LayoutInflater.from(context).inflate(R.layout.dialog_edit, parent, false);
+            ((EditorActivity) context).setCurrentEditorDialogView(editDialogView);
             editDialogView.findViewById(R.id.button_help).setOnClickListener(v2 -> openHelp(keyName));
             SwitchCompat switchLayoutShortcut = editDialogView.findViewById(R.id.switchLayoutShortcut);
-            switchLayoutShortcut.setOnClickListener(v2 -> EditorUtils.onSwitchLayoutShortcut(editDialogView, context));
+            switchLayoutShortcut.setOnClickListener(v2 -> ShortcutIcons.onSwitchLayoutShortcut(context));
             SwitchCompat switchLayoutAppendShortcut = editDialogView.findViewById(R.id.switchAppendShortcut);
-            switchLayoutAppendShortcut.setOnClickListener(v2 -> EditorUtils.onSwitchAppendShortcut(editDialogView, context));
-            editDialogView.findViewById(R.id.button_icon).setOnClickListener(v2 -> EditorUtils.openIconPiker(context));
-            ((TextView) editDialogView.findViewById(R.id.title)).setText(keyName);
+            switchLayoutAppendShortcut.setOnClickListener(v2 -> ShortcutIcons.onSwitchAppendShortcut(context));
+            editDialogView.findViewById(R.id.button_icon).setOnClickListener(v2 -> ShortcutIcons.openIconPiker(context));
+            ((TextView) editDialogView.findViewById(R.id.txtName)).setText(keyName);
             TextInputEditText editTextValue = editDialogView.findViewById(R.id.txtValue);
             editTextValue.setText(keyValue);
             editTextValue.requestFocus();
@@ -104,9 +106,9 @@ public abstract class AbsRecyclerAdapter extends RecyclerView.Adapter<AbsRecycle
                     .setNegativeButton(R.string.close, null);
             if (this instanceof SettingsRecyclerAdapter) {
                 builder.setPositiveButton(R.string.save, (dialog, which) ->
-                            setEditDialogViewPositiveButton(editTextValue,keyName))
+                            setEditDialogViewPositiveButton(editDialogView))
                         .setNeutralButton(R.string.delete, (dialog, which) ->
-                                setEditDialogViewNeutralButton(keyName,keyValue));
+                                setEditDialogViewNeutralButton(editDialogView));
             } else {
                 editTextValue.setKeyListener(null);
             }
@@ -114,30 +116,39 @@ public abstract class AbsRecyclerAdapter extends RecyclerView.Adapter<AbsRecycle
         });
     }
 
-    private void setEditDialogViewPositiveButton (TextInputEditText editTextValue, String keyName){
-        Editable NewKeyValue = editTextValue.getText();
-        if (NewKeyValue == null) return;
+    public void setEditDialogViewPositiveButton (@NonNull View editDialogView){
+        TextView editTextValue = editDialogView.findViewById(R.id.txtValue);
+        if (editTextValue.getText().toString().isEmpty()) return;
+        String NewKeyValue = editTextValue.getText().toString();
+        TextView editTextName = editDialogView.findViewById(R.id.txtName);
+        if (editTextName.getText().toString().isEmpty()) return;
+        String keyName = editTextName.getText().toString();
         SettingsRecyclerAdapter settingsAdapter = (SettingsRecyclerAdapter) this;
         Boolean isGranted = EditorUtils.checkSettingsWritePermission(context, settingsAdapter.getSettingsType());
         if (isGranted == null) return;
         if (isGranted) {
-            if (keyName == null) return;
+
             SwitchCompat switchLayoutShortcut = editDialogView.findViewById(R.id.switchLayoutShortcut);
             if (!switchLayoutShortcut.isChecked()) {
-                settingsAdapter.updateValueForName(keyName, NewKeyValue.toString());
+                settingsAdapter.updateValueForName(keyName, NewKeyValue);
             } else {
                 RadioGroup existingShortcutRadioGroup = editDialogView.findViewById(R.id.existingShortcutRadioGroup);
                 if (existingShortcutRadioGroup.getCheckedRadioButtonId() !=-1) {
                     int radioButtonId = existingShortcutRadioGroup.getCheckedRadioButtonId();
                     RadioButton radioButton = editDialogView.findViewById(radioButtonId);
                     String idShortcut = (String) radioButton.getTag();
-                    EditorUtils.updateDesktopShortcutEdit(context, settingsAdapter, keyName, NewKeyValue.toString(), idShortcut, false);
+                    ShortcutIcons.updateDesktopShortcutEdit(context, settingsAdapter, keyName, NewKeyValue, idShortcut, false);
                 } else {
-                    TextInputEditText keyShortcutLabel = editDialogView.findViewById(R.id.txtEditShortcut);
-                    Editable keyShortcut = keyShortcutLabel.getText();
-                    if (!TextUtils.isEmpty(keyShortcut) || keyShortcut != null) {
-                        EditorUtils.createDesktopShortcut(context, settingsAdapter, keyName, NewKeyValue.toString(),
-                                keyShortcut.toString(), shortcutIconUri);
+                    TextView keyShortcutLabel = editDialogView.findViewById(R.id.txtEditShortcut);
+                    if (keyShortcutLabel.getText().toString().isEmpty()) return;
+                    String keyShortcut = keyShortcutLabel.getText().toString();
+                    if (!keyShortcut.equals("")) {
+                        Uri shortcutIconUri=null;
+                        if (editDialogView.findViewById(R.id.button_icon).getTag() instanceof Uri){
+                            shortcutIconUri = (Uri) editDialogView.findViewById(R.id.button_icon).getTag();
+                        }
+                        ShortcutIcons.createDesktopShortcut(context, settingsAdapter, keyName, NewKeyValue,
+                                keyShortcut, shortcutIconUri);
                     }
                 }
             }
@@ -146,8 +157,9 @@ public abstract class AbsRecyclerAdapter extends RecyclerView.Adapter<AbsRecycle
         }
     }
 
-    private void setEditDialogViewNeutralButton(String keyName, String keyValue){
+    private void setEditDialogViewNeutralButton(@NonNull View editDialogView){
         SettingsRecyclerAdapter settingsAdapter = (SettingsRecyclerAdapter) this;
+        String keyName = ((TextView) editDialogView.findViewById(R.id.txtName)).getText().toString();
         if (editDialogView.findViewById(R.id.layout_new_shortcut).getVisibility() == View.GONE) {
             settingsAdapter.deleteEntryByName(keyName);
         } else {
@@ -156,14 +168,18 @@ public abstract class AbsRecyclerAdapter extends RecyclerView.Adapter<AbsRecycle
                 TextInputEditText keyShortcutLabel = editDialogView.findViewById(R.id.txtEditShortcut);
                 Editable keyShortcut = keyShortcutLabel.getText();
                 if (!TextUtils.isEmpty(keyShortcut) || keyShortcut != null) {
-                    EditorUtils.createDesktopShortcutDelete(context, settingsAdapter, keyValue,
+                    Uri shortcutIconUri=null;
+                    if (editDialogView.findViewById(R.id.button_icon).getTag() instanceof Uri){
+                    shortcutIconUri = (Uri) editDialogView.findViewById(R.id.button_icon).getTag();
+                    }
+                    ShortcutIcons.createDesktopShortcutDelete(context, settingsAdapter, keyName,
                             keyShortcut.toString(), shortcutIconUri);
                 }
             } else {
                 int radioButtonId = existingShortcutRadioGroup.getCheckedRadioButtonId();
                 RadioButton radioButton = editDialogView.findViewById(radioButtonId);
                 String idShortcut = (String) radioButton.getTag();
-                EditorUtils.updateDesktopShortcutEdit(context, settingsAdapter, "", keyValue,
+                ShortcutIcons.updateDesktopShortcutEdit(context, settingsAdapter, keyName, "",
                         idShortcut, true);
             }
 

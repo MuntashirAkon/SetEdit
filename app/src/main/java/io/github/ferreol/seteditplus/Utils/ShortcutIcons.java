@@ -1,108 +1,41 @@
-package io.github.ferreol.seteditplus;
+package io.github.ferreol.seteditplus.Utils;
 
-
-import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
 import android.provider.MediaStore;
 import android.provider.Settings;
-import android.util.DisplayMetrics;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SwitchCompat;
-import androidx.core.content.ContextCompat;
 import androidx.core.content.pm.ShortcutInfoCompat;
 import androidx.core.content.pm.ShortcutManagerCompat;
 import androidx.core.graphics.drawable.IconCompat;
-import androidx.core.util.Pair;
 
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.UUID;
 
+import io.github.ferreol.seteditplus.EditorActivity;
+import io.github.ferreol.seteditplus.R;
+import io.github.ferreol.seteditplus.SetActivity;
 import io.github.ferreol.seteditplus.adapters.SettingsRecyclerAdapter;
 
-public class EditorUtils {
+public class ShortcutIcons {
 
     private static boolean shortcutPermissionIsAsking = false;
 
-    /**
-     * Check whether the settings write permission has been granted
-     *
-     * @return {@code true} if granted, {@code null} if is being granted and {@code false} otherwise
-     */
-    @Nullable
-    public static Boolean checkSettingsWritePermission(@NonNull Context context, @NonNull String tableType) {
-        String permission = "system".equals(tableType) ? Manifest.permission.WRITE_SETTINGS : Manifest.permission.WRITE_SECURE_SETTINGS;
-        if ("system".equals(tableType) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.System.canWrite(context)) {
-            new AlertDialog.Builder(context)
-                    .setTitle("Permission needed")
-                    .setMessage("You have to enable SetEditPlus for Modify system settings")
-                    .setPositiveButton("ok", (dialog, which) -> {
-                        try {
-                            Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS)
-                                    .setData(Uri.parse("package:" + context.getPackageName()));
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-                            EditorActivity editorActivity = (EditorActivity) context;
-                            context.startActivity(intent);
-                        } catch (Exception ignore) {
-                        }
-                    })
-                    .setNegativeButton("cancel", (dialog, which) -> dialog.dismiss())
-                    .create().show();
-            return null;
-        }
-        return ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED;
-    }
-
-    @SuppressLint({"InflateParams", "SetTextI18n"})
-    public static void displayUnsupportedMessage(@NonNull Context context) {
-        View view = LayoutInflater.from(context).inflate(R.layout.dialog_unsupported, null);
-        TextView tv = view.findViewById(R.id.txt);
-        tv.setText("pm grant " + context.getPackageName() + " " + Manifest.permission.WRITE_SECURE_SETTINGS);
-        tv.setKeyListener(null);
-        tv.setSelectAllOnFocus(true);
-        tv.requestFocus();
-        new MaterialAlertDialogBuilder(context)
-                .setView(view)
-                .setNegativeButton(R.string.close, null)
-                .show();
-    }
-
-    @NonNull
-    public static String getJson(@NonNull List<Pair<String, String>> items, @Nullable String settingsType)
-            throws JSONException {
-        JSONObject jsonObject = new JSONObject();
-        if (settingsType != null) {
-            jsonObject.put("_settings_type", settingsType);
-        }
-        for (Pair<String, String> pair : items) {
-            jsonObject.put(pair.first, pair.second);
-        }
-        return jsonObject.toString(4);
-    }
 
     private static void createDesktopShortcut(@NonNull Context context, @NonNull SettingsRecyclerAdapter settingsAdapter,
-                                              String keyName, String keyValue, String keyShortcut, Uri shortcutIconUri, boolean isDeleteAction) {
+                                              String keyName, String keyValue, String keyShortcut, @Nullable Uri shortcutIconUri, boolean isDeleteAction) {
 
         SetActivity setActivity = new SetActivity();
         Intent shortcutIntent = new Intent(context, SetActivity.class);
@@ -118,10 +51,11 @@ public class EditorUtils {
 
         shortcutIntent.setComponent(setActivity.SetActivityShortcut());
         IconCompat shortcutIcon;
-        if (shortcutIconUri == null) {
-            shortcutIcon = IconCompat.createWithResource(context, R.drawable.ic_launcher_foreground);
+        View editorDialogView = ((EditorActivity) context).getCurrentEditorDialogView();
+        if (editorDialogView.findViewById(R.id.button_icon).getTag() instanceof Uri) {
+            shortcutIcon = IconCompat.createWithContentUri((Uri)editorDialogView.findViewById(R.id.button_icon).getTag());
         } else {
-            shortcutIcon = IconCompat.createWithContentUri(shortcutIconUri);
+            shortcutIcon = IconCompat.createWithResource(context, R.drawable.ic_launcher_foreground);
         }
         if (ShortcutManagerCompat.isRequestPinShortcutSupported(context)) {
             ShortcutInfoCompat shortcut = new ShortcutInfoCompat.Builder(context, UUID.randomUUID().toString())
@@ -151,12 +85,12 @@ public class EditorUtils {
     }
 
     public static void createDesktopShortcut(@NonNull Context context, @NonNull SettingsRecyclerAdapter settingsAdapter,
-                                             String keyName, String keyValue, String keyShortcut, Uri shortcutIconUri) {
+                                             String keyName, String keyValue, String keyShortcut,@Nullable Uri shortcutIconUri) {
         createDesktopShortcut(context, settingsAdapter, keyName, keyValue, keyShortcut, shortcutIconUri, false);
     }
 
     public static void createDesktopShortcutDelete(@NonNull Context context, @NonNull SettingsRecyclerAdapter settingsAdapter,
-                                                   String keyName, String keyShortcut, Uri shortcutIconUri) {
+                                                   String keyName, String keyShortcut, @Nullable Uri shortcutIconUri) {
         createDesktopShortcut(context, settingsAdapter, keyName, "", keyShortcut, shortcutIconUri, true);
     }
 
@@ -200,25 +134,26 @@ public class EditorUtils {
         }
     }
 
-
-    public static void onSwitchLayoutShortcut(@NonNull View v, Context context) {
-        SwitchCompat switchLayoutShortcut = v.findViewById(R.id.switchLayoutShortcut);
+    public static void onSwitchLayoutShortcut(Context context) {
+        View editorDialogView = ((EditorActivity) context).getCurrentEditorDialogView();
+        SwitchCompat switchLayoutShortcut = editorDialogView.findViewById(R.id.switchLayoutShortcut);
         if (switchLayoutShortcut.isChecked()) {
-            v.findViewById(R.id.layout_new_shortcut).setVisibility(View.VISIBLE);
+            editorDialogView.findViewById(R.id.layout_new_shortcut).setVisibility(View.VISIBLE);
             if (ShortcutManagerCompat.getShortcuts(context, ShortcutManagerCompat.FLAG_MATCH_PINNED).size() > 0) {
-                v.findViewById(R.id.switchLayoutAppendShortcut).setVisibility(View.VISIBLE);
+                editorDialogView.findViewById(R.id.switchLayoutAppendShortcut).setVisibility(View.VISIBLE);
             }
         } else {
-            v.findViewById(R.id.switchLayoutAppendShortcut).setVisibility(View.GONE);
-            v.findViewById(R.id.layout_new_shortcut).setVisibility(View.GONE);
+            editorDialogView.findViewById(R.id.switchLayoutAppendShortcut).setVisibility(View.GONE);
+            editorDialogView.findViewById(R.id.layout_new_shortcut).setVisibility(View.GONE);
         }
     }
 
-    public static void onSwitchAppendShortcut(@NonNull View v, Context context) {
-        RadioGroup existingShortcutLayout = v.findViewById(R.id.existingShortcutRadioGroup);
-        if (((SwitchCompat) v.findViewById(R.id.switchAppendShortcut)).isChecked()) {
-            v.findViewById(R.id.switchLayoutShortcut).setEnabled(false);
-            v.findViewById(R.id.layout_new_shortcut).setVisibility(View.GONE);
+    public static void onSwitchAppendShortcut(Context context) {
+        View editorDialogView = ((EditorActivity) context).getCurrentEditorDialogView();
+        RadioGroup existingShortcutLayout = editorDialogView.findViewById(R.id.existingShortcutRadioGroup);
+        if (((SwitchCompat) editorDialogView.findViewById(R.id.switchAppendShortcut)).isChecked()) {
+            editorDialogView.findViewById(R.id.switchLayoutShortcut).setEnabled(false);
+            editorDialogView.findViewById(R.id.layout_new_shortcut).setVisibility(View.GONE);
             List<ShortcutInfoCompat> shortcutList = ShortcutManagerCompat.getShortcuts(context, ShortcutManagerCompat.FLAG_MATCH_PINNED);
             for (int i = 0; i < shortcutList.size(); i++) {
                 RadioButton radioButton = new RadioButton(context);
@@ -226,13 +161,13 @@ public class EditorUtils {
                 radioButton.setText(shortcut.getShortLabel());
                 radioButton.setTag(shortcut.getId());
                 existingShortcutLayout.addView(radioButton);
-                radioButton.setOnClickListener(v2 -> selectShortcutRadioButton(v));
+                radioButton.setOnClickListener(v2 -> selectShortcutRadioButton(editorDialogView));
             }
 
         } else {
             existingShortcutLayout.removeAllViews();
-            v.findViewById(R.id.switchLayoutShortcut).setEnabled(true);
-            v.findViewById(R.id.layout_new_shortcut).setVisibility(View.VISIBLE);
+            editorDialogView.findViewById(R.id.switchLayoutShortcut).setEnabled(true);
+            editorDialogView.findViewById(R.id.layout_new_shortcut).setVisibility(View.VISIBLE);
 
         }
     }
@@ -242,7 +177,9 @@ public class EditorUtils {
         //  v.findViewById(R.id.layout_shortcut).setVisibility(View.GONE);
     }
 
+
     public static void openIconPiker(Context context) {
+
         Intent pickIntent = new Intent(Intent.ACTION_PICK);
         pickIntent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
         Intent chooserIntent = Intent.createChooser(pickIntent, "Select Image");
@@ -250,6 +187,22 @@ public class EditorUtils {
         editorActivity.openIconPikerResultLauncher.launch(chooserIntent);
     }
 
+    public static void setIconPiker(Uri uri, EditorActivity editorActivity) {
+
+        try {
+            InputStream inputStream = editorActivity.getContentResolver().openInputStream(uri);
+            Drawable shortcutIconDrawable = Drawable.createFromStream(inputStream, uri.toString());
+            View editorDialogView = editorActivity.getCurrentEditorDialogView();
+            if (editorDialogView != null && editorDialogView.isAttachedToWindow()) {
+                editorDialogView.findViewById(R.id.button_icon).setBackground(shortcutIconDrawable);
+                editorDialogView.findViewById(R.id.button_icon).setTag(uri);
+            }
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+    }
     //todo remove ?
     private static void resetSwitchLayoutShortcut(@NonNull View v) {
         RadioGroup existingShortcutLayout = v.findViewById(R.id.existingShortcutRadioGroup);
@@ -257,11 +210,4 @@ public class EditorUtils {
         v.findViewById(R.id.layout_new_shortcut).setVisibility(View.GONE);
     }
 
-    public static int hasNavigationBarHeight(Activity activity) {
-        Rect rectangle = new Rect();
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        activity.getWindow().getDecorView().getWindowVisibleDisplayFrame(rectangle);
-        activity.getWindowManager().getDefaultDisplay().getRealMetrics(displayMetrics);
-        return displayMetrics.heightPixels - (rectangle.top + rectangle.height());
-    }
 }
