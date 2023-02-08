@@ -1,6 +1,5 @@
 package io.github.ferreol.seteditplus.Utils;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -53,7 +52,7 @@ public class ShortcutIcons {
         IconCompat shortcutIcon;
         View editorDialogView = ((EditorActivity) context).getCurrentEditorDialogView();
         if (editorDialogView.findViewById(R.id.button_icon).getTag() instanceof Uri) {
-            shortcutIcon = IconCompat.createWithContentUri((Uri)editorDialogView.findViewById(R.id.button_icon).getTag());
+            shortcutIcon = IconCompat.createWithContentUri((Uri) editorDialogView.findViewById(R.id.button_icon).getTag());
         } else {
             shortcutIcon = IconCompat.createWithResource(context, R.drawable.ic_launcher_foreground);
         }
@@ -85,7 +84,7 @@ public class ShortcutIcons {
     }
 
     public static void createDesktopShortcut(@NonNull Context context, @NonNull SettingsRecyclerAdapter settingsAdapter,
-                                             String keyName, String keyValue, String keyShortcut,@Nullable Uri shortcutIconUri) {
+                                             String keyName, String keyValue, String keyShortcut, @Nullable Uri shortcutIconUri) {
         createDesktopShortcut(context, settingsAdapter, keyName, keyValue, keyShortcut, shortcutIconUri, false);
     }
 
@@ -203,6 +202,7 @@ public class ShortcutIcons {
         }
 
     }
+
     //todo remove ?
     private static void resetSwitchLayoutShortcut(@NonNull View v) {
         RadioGroup existingShortcutLayout = v.findViewById(R.id.existingShortcutRadioGroup);
