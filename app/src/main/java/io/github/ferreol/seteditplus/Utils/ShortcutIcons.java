@@ -32,10 +32,8 @@ public class ShortcutIcons {
 
     private static boolean shortcutPermissionIsAsking = false;
 
-
     private static void createDesktopShortcut(@NonNull Context context, @NonNull SettingsRecyclerAdapter settingsAdapter,
                                               String keyName, String keyValue, String keyShortcut, @Nullable Uri shortcutIconUri, boolean isDeleteAction) {
-
         SetActivity setActivity = new SetActivity();
         Intent shortcutIntent = new Intent(context, SetActivity.class);
         // shortcutIntent.putExtra("duplicate", false);
@@ -47,7 +45,6 @@ public class ShortcutIcons {
         } else {
             shortcutIntent.putExtra("KeyValue0", keyValue);
         }
-
         shortcutIntent.setComponent(setActivity.SetActivityShortcut());
         IconCompat shortcutIcon;
         View editorDialogView = ((EditorActivity) context).getCurrentEditorDialogView();
@@ -64,7 +61,6 @@ public class ShortcutIcons {
                     .build();
             boolean ShortcutCreated = ShortcutManagerCompat.requestPinShortcut(context, shortcut, null);
             if (!ShortcutCreated) {
-
                 new AlertDialog.Builder(context)
                         .setTitle("Permission needed")
                         .setMessage("You have to enable SetEditPlus for creating shortcut on desktop")
@@ -107,7 +103,6 @@ public class ShortcutIcons {
         intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         context.startActivity(intent);
     }
-
 
     public static void updateDesktopShortcutEdit(Context context, SettingsRecyclerAdapter settingsAdapter,
                                                  String keyName, String keyValue, String idShortcut, boolean isDeleteAction) {
@@ -171,11 +166,14 @@ public class ShortcutIcons {
         }
     }
 
-    //todo remove ?
-    private static void selectShortcutRadioButton(@NonNull View v) {
-        //  v.findViewById(R.id.layout_shortcut).setVisibility(View.GONE);
+    private static void selectShortcutRadioButton(@NonNull View editorDialogView) {
+        RadioGroup existingShortcutLayout = editorDialogView.findViewById(R.id.existingShortcutRadioGroup);
+        RadioButton radioButtonChecked =existingShortcutLayout.findViewById(existingShortcutLayout.getCheckedRadioButtonId());
+        existingShortcutLayout.removeAllViews();
+        radioButtonChecked.setOnClickListener(null);
+        existingShortcutLayout.addView(radioButtonChecked);
+        radioButtonChecked.setChecked(true);
     }
-
 
     public static void openIconPiker(Context context) {
 
@@ -201,13 +199,6 @@ public class ShortcutIcons {
             e.printStackTrace();
         }
 
-    }
-
-    //todo remove ?
-    private static void resetSwitchLayoutShortcut(@NonNull View v) {
-        RadioGroup existingShortcutLayout = v.findViewById(R.id.existingShortcutRadioGroup);
-        existingShortcutLayout.removeAllViews();
-        v.findViewById(R.id.layout_new_shortcut).setVisibility(View.GONE);
     }
 
 }

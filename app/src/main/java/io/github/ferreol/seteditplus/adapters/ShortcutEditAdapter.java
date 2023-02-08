@@ -21,7 +21,6 @@ public class ShortcutEditAdapter extends AbsRecyclerAdapter {
 
     public static final String[] columns = {"_id", "name", "value"};
 
-
     private final List<Integer> matchedPositions;
     private Cursor cursor;
     private boolean mDataValid;
@@ -29,7 +28,6 @@ public class ShortcutEditAdapter extends AbsRecyclerAdapter {
 
 
     public ShortcutEditAdapter(Context context) {
-
         super(context);
         matchedPositions = new ArrayList<>();
         swapCursor(getCursor(context));

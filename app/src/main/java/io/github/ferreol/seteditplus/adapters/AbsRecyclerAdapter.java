@@ -34,9 +34,6 @@ public abstract class AbsRecyclerAdapter extends RecyclerView.Adapter<AbsRecycle
 
     protected final Context context;
     private String constraint;
-    //  public Uri shortcutIconUri;
-    //  public View editDialogView;
-
 
     public AbsRecyclerAdapter(Context context) {
         setHasStableIds(true);
@@ -229,7 +226,6 @@ public abstract class AbsRecyclerAdapter extends RecyclerView.Adapter<AbsRecycle
         } catch (Exception ignore) {
         }
     }
-
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public final TextView keyName;
