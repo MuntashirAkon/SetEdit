@@ -29,7 +29,7 @@ import java.util.List;
 import io.github.ferreol.seteditplus.EditorActivity;
 import io.github.ferreol.seteditplus.R;
 import io.github.ferreol.seteditplus.Utils.EditorUtils;
-import io.github.ferreol.seteditplus.Utils.ShortcutIcons;
+import io.github.ferreol.seteditplus.Utils.Shortcut.ShortcutIcons;
 
 public abstract class AbsRecyclerAdapter extends RecyclerView.Adapter<AbsRecyclerAdapter.ViewHolder> {
 

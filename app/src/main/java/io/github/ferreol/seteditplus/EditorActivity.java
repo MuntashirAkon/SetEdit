@@ -39,7 +39,7 @@ import java.util.List;
 import java.util.Locale;
 
 import io.github.ferreol.seteditplus.Utils.EditorUtils;
-import io.github.ferreol.seteditplus.Utils.ShortcutIcons;
+import io.github.ferreol.seteditplus.Utils.Shortcut.ShortcutIcons;
 import io.github.ferreol.seteditplus.adapters.AbsRecyclerAdapter;
 import io.github.ferreol.seteditplus.adapters.AdapterProvider;
 import io.github.ferreol.seteditplus.adapters.SettingsRecyclerAdapter;

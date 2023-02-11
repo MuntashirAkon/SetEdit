@@ -1,4 +1,4 @@
-package io.github.ferreol.seteditplus.Utils;
+package io.github.ferreol.seteditplus.Utils.Shortcut;
 
 import android.app.AlertDialog;
 import android.content.Context;

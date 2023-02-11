@@ -1,4 +1,4 @@
-package io.github.ferreol.seteditplus.Utils;
+package io.github.ferreol.seteditplus.Utils.Shortcut;
 
 public class ShortcutEditItemModel {
     private final String Name;

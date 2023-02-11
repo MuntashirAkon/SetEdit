@@ -24,9 +24,9 @@ import java.util.Locale;
 import java.util.Objects;
 
 import io.github.ferreol.seteditplus.R;
-import io.github.ferreol.seteditplus.Utils.ShortcutEditItemModel;
-import io.github.ferreol.seteditplus.Utils.ShortcutEditRecyclerRowMoveCallback;
-import io.github.ferreol.seteditplus.Utils.ShortcutEditRecyclerViewAdapter;
+import io.github.ferreol.seteditplus.Utils.Shortcut.ShortcutEditItemModel;
+import io.github.ferreol.seteditplus.Utils.Shortcut.ShortcutEditRecyclerRowMoveCallback;
+import io.github.ferreol.seteditplus.Utils.Shortcut.ShortcutEditRecyclerViewAdapter;
 
 public class ShortcutEditAdapter extends AbsRecyclerAdapter {
 
