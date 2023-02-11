@@ -157,12 +157,10 @@ public class ShortcutIcons {
                 existingShortcutLayout.addView(radioButton);
                 radioButton.setOnClickListener(v2 -> selectShortcutRadioButton(editorDialogView));
             }
-
         } else {
             existingShortcutLayout.removeAllViews();
             editorDialogView.findViewById(R.id.switchLayoutShortcut).setEnabled(true);
             editorDialogView.findViewById(R.id.layout_new_shortcut).setVisibility(View.VISIBLE);
-
         }
     }
 

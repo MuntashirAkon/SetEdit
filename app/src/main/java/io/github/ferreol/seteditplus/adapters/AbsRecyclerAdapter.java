@@ -3,6 +3,7 @@ package io.github.ferreol.seteditplus.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -34,10 +35,12 @@ public abstract class AbsRecyclerAdapter extends RecyclerView.Adapter<AbsRecycle
 
     protected final Context context;
     private String constraint;
+    private static Resources resources;
 
     public AbsRecyclerAdapter(Context context) {
         setHasStableIds(true);
         this.context = context;
+        resources = context.getResources();
     }
 
     @NonNull
@@ -92,26 +95,46 @@ public abstract class AbsRecyclerAdapter extends RecyclerView.Adapter<AbsRecycle
             switchLayoutAppendShortcut.setOnClickListener(v2 -> ShortcutIcons.onSwitchAppendShortcut(context));
             editDialogView.findViewById(R.id.button_icon).setOnClickListener(v2 -> ShortcutIcons.openIconPiker(context));
             ((TextView) editDialogView.findViewById(R.id.txtName)).setText(keyName);
-            TextInputEditText editTextValue = editDialogView.findViewById(R.id.txtValue);
-            editTextValue.setText(keyValue);
-            editTextValue.requestFocus();
-            if (keyValue != null) {
-                editTextValue.setSelection(0, keyValue.length());
-            }
+
+
             MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context)
                     .setView(editDialogView)
                     .setNegativeButton(R.string.close, null);
-            if (this instanceof SettingsRecyclerAdapter) {
+            if (this instanceof ShortcutEditAdapter) {
+                ((ShortcutEditAdapter) this).setShortcutEditAdapterView(editDialogView,position);
+                String neutralButtonString = resources.getString(R.string.disable);
+                if (keyName.endsWith(" ("+resources.getString(R.string.disabled)+")")) {
+                    neutralButtonString = resources.getString(R.string.enable);
+                }
                 builder.setPositiveButton(R.string.save, (dialog, which) ->
-                                setEditDialogViewPositiveButton(editDialogView))
-                        .setNeutralButton(R.string.delete, (dialog, which) ->
-                                setEditDialogViewNeutralButton(editDialogView));
+                                ((ShortcutEditAdapter) this).setShortcutEditDialogViewPositiveButton(editDialogView,position))
+                        .setNeutralButton(neutralButtonString, (dialog, which) ->
+                                ((ShortcutEditAdapter) this).setShortcutEditDialogViewNeutralButton(position));
             } else {
-                editTextValue.setKeyListener(null);
+                TextInputEditText editTextValue = editDialogView.findViewById(R.id.txtValue);
+                editTextValue.setText(keyValue);
+                editTextValue.requestFocus();
+                if (keyValue != null) {
+                    editTextValue.setSelection(0, keyValue.length());
+                }
+                if (this instanceof SettingsRecyclerAdapter) {
+                    switchLayoutShortcut.setVisibility(View.VISIBLE);
+                    builder.setPositiveButton(R.string.save, (dialog, which) ->
+                                    setEditDialogViewPositiveButton(editDialogView))
+                            .setNeutralButton(R.string.delete, (dialog, which) ->
+                                    setEditDialogViewNeutralButton(editDialogView));
+
+                } else {
+
+                    editTextValue.setKeyListener(null);
+                }
             }
             builder.show();
         });
     }
+
+
+
 
     public void setEditDialogViewPositiveButton(@NonNull View editDialogView) {
         TextView editTextValue = editDialogView.findViewById(R.id.txtValue);

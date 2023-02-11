@@ -32,4 +32,8 @@
     <string name="edit_shortcuts">Edit shortcuts</string>
     <string name="grant_secure_setting">Grant secure setting</string>
     <string name="append">Append</string>
+    <string name="disable">Disable</string>
+    <string name="enable">Enable</string>
+    <string name="disabled">Disabled</string>
+    <string name="delete_action">Delete Action</string>
 </resources>

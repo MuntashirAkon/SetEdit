@@ -137,7 +137,7 @@
                 android:layout_height="60dp"
                 android:layout_gravity="center"
                 android:layout_weight="0"
-                android:background="@drawable/iconspiker"
+                android:background="@drawable/icons_piker"
                 android:contentDescription="@string/icon_picker"
                 android:text="@null"
                 app:iconGravity="textStart"/>

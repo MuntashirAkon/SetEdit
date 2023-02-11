@@ -264,20 +264,4 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
     public void setCurrentEditorDialogView(View currentEditorDialogView) {
         this.currentEditorDialogView = currentEditorDialogView;
     }
-
-
-
-/*
-    public ActivityResultLauncher<Intent> openPermissionResultLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                if (result.getResultCode() == Activity.RESULT_OK) {
-                    /*Intent data = result.getData();
-                    if (data != null) {
-                        Uri uri = data.getData();
-                        setIconPiker(uri);
-                    }
-                }
-            });
-*/
 }

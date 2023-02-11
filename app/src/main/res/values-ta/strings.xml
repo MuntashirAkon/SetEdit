@@ -27,4 +27,13 @@
     <string name="theme_battery">Follow battery saver</string>
     <string name="theme">Theme</string>
     <string name="shortcut">Shortcut</string>
+    <string name="icon_picker">Icon Picker</string>
+    <string name="create_or_append_to_an_existing_shortcut_rather_than_apply">Create or append to an existing shortcut rather than applying it</string>
+    <string name="edit_shortcuts">Edit shortcuts</string>
+    <string name="grant_secure_setting">Grant secure setting</string>
+    <string name="append">Append</string>
+    <string name="disable">Disable</string>
+    <string name="enable">Enable</string>
+    <string name="disabled">Disabled</string>
+    <string name="delete_action">Delete Action</string>
 </resources>
