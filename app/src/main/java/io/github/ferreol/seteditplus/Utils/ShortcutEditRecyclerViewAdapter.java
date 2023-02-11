@@ -84,7 +84,7 @@ public class ShortcutEditRecyclerViewAdapter extends RecyclerView.Adapter<Shortc
         myViewHolder.cardView.setCardBackgroundColor(Color.parseColor("#12dddd"));
     }
 
-    class MyViewModel extends RecyclerView.ViewHolder{
+    static class MyViewModel extends RecyclerView.ViewHolder{
 
         TextView lblItemName,lblItemDetails;
         CardView cardView;

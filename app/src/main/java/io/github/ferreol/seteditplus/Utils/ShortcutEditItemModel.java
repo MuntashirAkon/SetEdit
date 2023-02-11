@@ -1,8 +1,8 @@
 package io.github.ferreol.seteditplus.Utils;
 
 public class ShortcutEditItemModel {
-    private String Name;
-    private String Detail;
+    private final String Name;
+    private final String Detail;
 
     public ShortcutEditItemModel(String name, String detail) {
         Name = name;

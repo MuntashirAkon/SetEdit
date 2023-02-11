@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class ShortcutEditRecyclerRowMoveCallback extends ItemTouchHelper.Callback {
 
-    private RecyclerViewRowTouchHelperContract touchHelperContract;
+    private final RecyclerViewRowTouchHelperContract touchHelperContract;
 
     public ShortcutEditRecyclerRowMoveCallback(RecyclerViewRowTouchHelperContract touchHelperContract){
         this.touchHelperContract = touchHelperContract;

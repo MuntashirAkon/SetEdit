@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.MatrixCursor;
-import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Filter;
@@ -22,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import io.github.ferreol.seteditplus.R;
 import io.github.ferreol.seteditplus.Utils.ShortcutEditItemModel;
@@ -223,7 +223,7 @@ public  ShortcutInfoCompat getShortcutByPosition(int position){
         recyclerViewListValue.setVisibility(View.VISIBLE);
         ShortcutInfoCompat shortcutInfoCompat = getShortcutByPosition(position);
         Intent shortcutIntent = shortcutInfoCompat.getIntent();
-        ArrayList<ShortcutEditItemModel> list = new ArrayList();
+        ArrayList<ShortcutEditItemModel> list = new ArrayList<>();
         int i = 0;
         while (shortcutIntent.getStringExtra("settingsType" + i) != null &&
                 !shortcutIntent.getStringExtra("settingsType" + i).isEmpty()) {
@@ -272,7 +272,7 @@ public  ShortcutInfoCompat getShortcutByPosition(int position){
         }
         RecyclerView recyclerViewListValue = editDialogView.findViewById(R.id.listValue);
         ShortcutEditRecyclerViewAdapter adapter = (ShortcutEditRecyclerViewAdapter)recyclerViewListValue.getAdapter();
-        List<ShortcutEditItemModel> list = adapter.getDataList();
+        List<ShortcutEditItemModel> list = Objects.requireNonNull(adapter).getDataList();
         i = 0;
         for (ShortcutEditItemModel shortcutEditItemModel:list)
         {
@@ -281,7 +281,7 @@ public  ShortcutInfoCompat getShortcutByPosition(int position){
             String KeyName = Key[0];
             String KeyValue = Key[1];
             shortcutIntent.putExtra("MyKeyName" + i,KeyName);
-            if (KeyValue == "["+ resources.getString(R.string.delete_action) + "]") {
+            if (KeyValue.equals("["+ resources.getString(R.string.delete_action) + "]")) {
                 shortcutIntent.putExtra("delete" + i,true);
             } else {
                 shortcutIntent.putExtra("KeyValue" + i,KeyValue);
@@ -302,7 +302,7 @@ public  ShortcutInfoCompat getShortcutByPosition(int position){
 
         ShortcutInfoCompat shortcut =getShortcutByPosition(position);
         if (shortcut.isEnabled()) {
-            List<String> shortcutListId = new ArrayList<String>();
+            List<String> shortcutListId = new ArrayList<>();
             shortcutListId.add(shortcut.getId());
             ShortcutManagerCompat.disableShortcuts(context,shortcutListId,null);
         } else {
