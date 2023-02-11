@@ -36,4 +36,5 @@
     <string name="enable">Enable</string>
     <string name="disabled">Disabled</string>
     <string name="delete_action">Delete Action</string>
+    <string name="cancel">Cancel</string>
 </resources>
