@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>   
+    <string name="save">Enregistrer</string>
+    <string name="error_no_support"><b>SetEdit</b> ne prend pas actuellement en charge l\'édition de ce tableau. Pour activer l\'édition, exécutez la commande suivante dans un shell root ou ADB :</string>
+    <string name="error_unexpected"><b>Échec inattendu:</b></string>
+    <string name="delete">Supprimer</string>
+    <string name="help">Obtenir de l\'aide</string>
+    <string name="system_table">Table du système</string>
+    <string name="secure_table">Table sécurisée</string>
+    <string name="global_table">Table globale</string>
+    <string name="android_properties">Propriétés d\'Android</string>
+    <string name="java_properties">Propriétés de Java</string>
+    <string name="linux_environment">Environnements Linux</string>
+    <string name="startup_warning"><b>Avertissement!</b> Nous ne garantissons pas que les problèmes causés par une mauvaise utilisation de cet utilitaire puissent être résolus, et nous ne sommes pas en mesure de vous aider à résoudre ces problèmes. Nous ne prenons en charge que cette application, pas votre appareil.</string>
+    <string name="save_as_json">Enregistrer en JSON</string>
+    <string name="new_item">Nouvel élément</string>
+    <string name="close">Fermer</string>
+    <string name="value">Valeur</string>
+    <string name="name">Nom</string>
+    <string name="saved">Enregistré</string>
+    <string name="failed">Échec de l\'opération</string>
+    <string name="saved_to_file">Sauvegardé à %s</string>
+    <string name="theme_system">Comme le système</string>
+    <string name="theme_day">Clair</string>
+    <string name="theme_night">Sombre</string>
+    <string name="theme_battery">Suivre l\'économiseur de batterie</string>
+    <string name="theme">Thème</string>
+    <string name="shortcut">Raccourci</string>
+    <string name="icon_picker">Sélecteur d\'icônes</string>
+    <string name="create_or_append_to_an_existing_shortcut_rather_than_apply">Créer ou ajouter à un raccourci existant plutôt que de l\'appliquer</string>
+    <string name="edit_shortcuts">Editer les raccourcis</string>
+    <string name="grant_secure_setting">Attribuer les droits de modification aux tables systémes sécurisé</string>
+    <string name="append">Ajouter à:</string>
+    <string name="disable">Désactiver</string>
+    <string name="enable">Activer</string>
+    <string name="disabled">Désactivé</string>
+    <string name="delete_action">Suppression de l\'elément</string>
+    <string name="cancel">Annuler</string>
+</resources>

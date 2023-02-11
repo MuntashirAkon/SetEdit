@@ -96,10 +96,9 @@ public abstract class AbsRecyclerAdapter extends RecyclerView.Adapter<AbsRecycle
             editDialogView.findViewById(R.id.button_icon).setOnClickListener(v2 -> ShortcutIcons.openIconPiker(context));
             ((TextView) editDialogView.findViewById(R.id.txtName)).setText(keyName);
 
-
             MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context)
                     .setView(editDialogView)
-                    .setNegativeButton(R.string.close, null);
+                    .setNegativeButton(R.string.cancel, null);
             if (this instanceof ShortcutEditAdapter) {
                 ((ShortcutEditAdapter) this).setShortcutEditAdapterView(editDialogView,position);
                 String neutralButtonString = resources.getString(R.string.disable);
@@ -132,8 +131,6 @@ public abstract class AbsRecyclerAdapter extends RecyclerView.Adapter<AbsRecycle
             builder.show();
         });
     }
-
-
 
 
     public void setEditDialogViewPositiveButton(@NonNull View editDialogView) {
