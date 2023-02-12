@@ -101,7 +101,6 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
                 .setTitle(R.string.new_item)
                 .setPositiveButton(R.string.save, ((dialog, which) -> {
                     if (!(adapter instanceof SettingsRecyclerAdapter)) return;
-                    TextInputEditText editTextValue = editorDialogView.findViewById(R.id.txtValue);
                     adapter.setEditDialogViewPositiveButton(editorDialogView);
                 }))
                 .setNegativeButton(android.R.string.cancel, null)
@@ -124,11 +123,12 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
             View actionBarView = actionBar.getCustomView();
             // Item view
             spinnerTable = actionBarView.findViewById(R.id.spinner);
-            spinnerTable.setOnItemSelectedListener(this);
+           // spinnerTable.setOnItemSelectedListener(this);
             spinnerTable.setAdapter(ArrayAdapter.createFromResource(this, R.array.settings_table, R.layout.item_spinner));
         }
         // List view
         listView = findViewById(R.id.recycler_view);
+        listView.setAdapter(adapter =  adapterProvider.getRecyclerAdapter(0));
         listView.setLayoutManager(new LinearLayoutManager(this));
         // Add efab
         addNewItem = findViewById(R.id.newItemExtendedFloatingActionButton);
