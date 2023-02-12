@@ -1,14 +1,16 @@
-package io.github.ferreol.seteditplus;
+package io.github.muntashirakon.setedit;
 
-import android.app.Activity;
-import android.content.Intent;
+import android.Manifest;
 import android.content.SharedPreferences;
-import android.net.Uri;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.text.Editable;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -18,32 +20,32 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.appcompat.widget.SearchView;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
-import com.google.android.material.textfield.TextInputEditText;
 
 import org.json.JSONException;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import io.github.ferreol.seteditplus.Utils.EditorUtils;
-import io.github.ferreol.seteditplus.Utils.Shortcut.ShortcutIcons;
-import io.github.ferreol.seteditplus.adapters.AbsRecyclerAdapter;
-import io.github.ferreol.seteditplus.adapters.AdapterProvider;
-import io.github.ferreol.seteditplus.adapters.SettingsRecyclerAdapter;
-
+import io.github.muntashirakon.setedit.adapters.AbsRecyclerAdapter;
+import io.github.muntashirakon.setedit.adapters.AdapterProvider;
+import io.github.muntashirakon.setedit.adapters.SettingsRecyclerAdapter;
 
 public class EditorActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener,
         SearchView.OnQueryTextListener {
@@ -60,11 +62,12 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
     private AbsRecyclerAdapter adapter;
     private RecyclerView listView;
     private SharedPreferences preferences;
-    private View currentEditorDialogView;
 
-
+    private final ActivityResultLauncher<String> pre21StoragePermissionLauncher = registerForActivityResult(
+            new ActivityResultContracts.RequestPermission(), granted -> saveAsJsonLegacy());
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     private final ActivityResultLauncher<String> post21SaveLauncher = registerForActivityResult(
-            new ActivityResultContracts.CreateDocument("document/json"),
+            new ActivityResultContracts.CreateDocument(),
             uri -> {
                 if (uri == null) return;
                 try (OutputStream os = getContentResolver().openOutputStream(uri)) {
@@ -186,7 +189,6 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
                     })
                     .show();
         }
-
         return super.onOptionsItemSelected(item);
     }
 

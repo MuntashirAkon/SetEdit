@@ -1,0 +1,3 @@
+- New language: Tamil
+- Support for Android 13
+- Fix status and navigation bar colors

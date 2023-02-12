@@ -1,16 +1,17 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 33
-
+    compileSdkVersion 32
+    buildToolsVersion "30.0.3"
 
     defaultConfig {
-        applicationId 'io.github.ferreol.seteditplus'
-        minSdkVersion 21
+        applicationId "io.github.muntashirakon.setedit"
+        minSdkVersion 19
         //noinspection ExpiredTargetSdkVersion
         targetSdkVersion 22
-        versionCode 1
-        versionName "1"
+        versionCode 7
+        versionName "2.2"
+        resConfig "en"
     }
 
     signingConfigs {
@@ -61,10 +62,10 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-    namespace 'io.github.ferreol.seteditplus'
 }
 
 dependencies {
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.8.0'
+    implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'com.google.android.material:material:1.6.0'
 }
