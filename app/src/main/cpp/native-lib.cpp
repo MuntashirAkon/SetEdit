@@ -3,26 +3,22 @@
 #include <cstdint>
 #include <jni.h>
 
-static void *libc;
-
+static void* libc;
 static int (*property_foreach)(
-        void (*callback)(const prop_info *pi, void *cookie),
-        void *cookie);
-
+        void (*callback)(const prop_info* pi, void* cookie),
+        void* cookie);
 static int (*property_read)(
-        const prop_info *pi,
-        char *name, char *value);
-
+        const prop_info* pi,
+        char* name, char* value);
 static void (*property_read_callback)(
-        const prop_info *pi,
-        void (*callback)(void *cookie, const char *name, const char *value, uint32_t serial),
-        void *cookie);
-
-static const prop_info *(*property_find_nth)(unsigned n);
+        const prop_info* pi,
+        void (*callback)(void* cookie, const char* name, const char* value, uint32_t serial),
+        void* cookie);
+static const prop_info* (*property_find_nth)(unsigned n);
 
 static void
-get_from_libc(const char *fn_name, void *fn_ptr) {
-    void **fn_ptr_ptr = static_cast<void **>(fn_ptr);
+get_from_libc(const char* fn_name, void* fn_ptr) {
+    void** fn_ptr_ptr = static_cast<void **>(fn_ptr);
     if (*fn_ptr_ptr == nullptr) {
         if (!libc) {
             libc = dlopen("libc.so", RTLD_LAZY);
@@ -36,15 +32,15 @@ static char gName[PROP_NAME_MAX];
 static char gValue[PROP_VALUE_MAX];
 
 struct JNICookie {
-    _JNIEnv *env;
+    JNIEnv *env;
     jclass clazz;
     jobject callback;
 };
 
 static void
-handle_property(void *cookie, const char *name, const char *value, uint32_t  __unused serial) {
+handle_property(void* cookie, const char* name, const char* value, uint32_t  __unused serial) {
     auto *jniCookie = static_cast<struct JNICookie *>(cookie);
-    _JNIEnv *env = jniCookie->env;
+    JNIEnv *env = jniCookie->env;
     jmethodID handleProperty = env->GetMethodID(jniCookie->clazz,
                                                 "handleProperty",
                                                 "(Ljava/lang/String;Ljava/lang/String;)V");
@@ -63,8 +59,7 @@ handle_property(const prop_info *propInfo, void *cookie) {
 }
 
 extern "C" JNIEXPORT void JNICALL
-Java_io_github_ferreol_seteditplus_Native_readAndroidPropertiesPost26(_JNIEnv *env, jclass clazz,
-                                                                      jobject property_callback) {
+Java_io_github_muntashirakon_setedit_Native_readAndroidPropertiesPost26(JNIEnv *env, jclass clazz, jobject property_callback) {
     get_from_libc("__system_property_foreach", &property_foreach);
     if (property_foreach == nullptr) return;
     struct JNICookie jniCookie = {
@@ -77,9 +72,7 @@ Java_io_github_ferreol_seteditplus_Native_readAndroidPropertiesPost26(_JNIEnv *e
 
 
 extern "C" JNIEXPORT jboolean JNICALL
-Java_io_github_ferreol_seteditplus_Native_readAndroidPropertyPre26(_JNIEnv *env,
-                                                                   jclass __unused clazz, jint n,
-                                                                   jobjectArray property) {
+Java_io_github_muntashirakon_setedit_Native_readAndroidPropertyPre26(JNIEnv *env, jclass __unused clazz, jint n, jobjectArray property) {
     get_from_libc("__system_property_find_nth", &property_find_nth);
     if (property_find_nth == nullptr) return 0;
     const prop_info *propInfo = property_find_nth(n);

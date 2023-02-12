@@ -1,2 +1,2 @@
 include ':app'
-rootProject.name = "SetEditPlus"
+rootProject.name = "SetEdit"
