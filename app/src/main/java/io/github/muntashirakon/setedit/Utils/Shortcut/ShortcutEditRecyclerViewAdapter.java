@@ -1,10 +1,11 @@
-package io.github.ferreol.seteditplus.Utils.Shortcut;
+package io.github.muntashirakon.setedit.Utils.Shortcut;
 
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,25 +13,25 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.Collections;
 import java.util.List;
 
-import io.github.ferreol.seteditplus.R;
+import io.github.muntashirakon.setedit.R;
 
 public class ShortcutEditRecyclerViewAdapter extends RecyclerView.Adapter<ShortcutEditRecyclerViewAdapter.MyViewModel>
-        implements ShortcutEditRecyclerRowMoveCallback.RecyclerViewRowTouchHelperContract{
+        implements ShortcutEditRecyclerRowMoveCallback.RecyclerViewRowTouchHelperContract {
 
     private List<ShortcutEditItemModel> dataList;
 
-    public void setDataList(List<ShortcutEditItemModel> dataList){
-        this.dataList =  dataList;
+    public void setDataList(List<ShortcutEditItemModel> dataList) {
+        this.dataList = dataList;
     }
 
-    public List<ShortcutEditItemModel> getDataList(){
+    public List<ShortcutEditItemModel> getDataList() {
         return this.dataList;
     }
 
     @NonNull
     @Override
     public MyViewModel onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.shortcut_edit_recycler_row,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.shortcut_edit_recycler_row, parent, false);
 
         return new MyViewModel(view);
     }
@@ -48,28 +49,23 @@ public class ShortcutEditRecyclerViewAdapter extends RecyclerView.Adapter<Shortc
 
     @Override
     public void onRowMoved(int from, int to) {
-        if(from < to)
-        {
-            for(int i=from; i<to; i++)
-            {
-                Collections.swap(dataList,i,i+1);
+        if (from < to) {
+            for (int i = from; i < to; i++) {
+                Collections.swap(dataList, i, i + 1);
+            }
+        } else {
+            for (int i = from; i > to; i--) {
+                Collections.swap(dataList, i, i - 1);
             }
         }
-        else
-        {
-            for(int i=from; i>to; i--)
-            {
-                Collections.swap(dataList,i,i-1);
-            }
-        }
-        notifyItemMoved(from,to);
+        notifyItemMoved(from, to);
     }
 
     @Override
     public void onSwiped(MyViewModel myViewHolder, int direction) {
-                int position = myViewHolder.getAdapterPosition();
-                dataList.remove(position);
-                notifyItemRemoved(position);
+        int position = myViewHolder.getAdapterPosition();
+        dataList.remove(position);
+        notifyItemRemoved(position);
     }
 
 
@@ -83,9 +79,9 @@ public class ShortcutEditRecyclerViewAdapter extends RecyclerView.Adapter<Shortc
         myViewHolder.cardView.setCardBackgroundColor(Color.parseColor("#12dddd"));
     }
 
-    static class MyViewModel extends RecyclerView.ViewHolder{
+    static class MyViewModel extends RecyclerView.ViewHolder {
 
-        TextView lblItemName,lblItemDetails;
+        TextView lblItemName, lblItemDetails;
         CardView cardView;
 
         public MyViewModel(@NonNull View itemView) {

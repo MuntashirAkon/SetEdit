@@ -2,8 +2,6 @@ package io.github.muntashirakon.setedit;
 
 import android.os.Build;
 
-import androidx.annotation.Keep;
-
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;

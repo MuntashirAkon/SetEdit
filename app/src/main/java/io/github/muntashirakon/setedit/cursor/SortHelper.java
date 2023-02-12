@@ -1,4 +1,4 @@
-package io.github.ferreol.seteditplus.cursor;
+package io.github.muntashirakon.setedit.cursor;
 
 import android.database.Cursor;
 

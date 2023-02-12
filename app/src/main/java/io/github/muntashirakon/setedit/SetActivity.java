@@ -1,12 +1,12 @@
-package io.github.ferreol.seteditplus;
+package io.github.muntashirakon.setedit;
 
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.os.Bundle;
 
-import io.github.ferreol.seteditplus.Utils.EditorUtils;
-import io.github.ferreol.seteditplus.adapters.SettingsRecyclerAdapter;
+import io.github.muntashirakon.setedit.Utils.EditorUtils;
+import io.github.muntashirakon.setedit.adapters.SettingsRecyclerAdapter;
 
 public class SetActivity extends Activity {
     private String settingsType;
@@ -18,7 +18,7 @@ public class SetActivity extends Activity {
         super.onCreate(savedInstanceState);
         Bundle bundle = getIntent().getExtras();
         int i = 0;
-        while (bundle.getString("settingsType"+i) != null &&
+        while (bundle.getString("settingsType" + i) != null &&
                 !bundle.getString("settingsType" + i).isEmpty()) {
             settingsType = bundle.getString("settingsType" + i);
             keyName = bundle.getString("MyKeyName" + i);

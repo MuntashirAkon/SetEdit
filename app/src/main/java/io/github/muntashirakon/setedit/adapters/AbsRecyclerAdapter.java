@@ -1,4 +1,4 @@
-package io.github.ferreol.seteditplus.adapters;
+package io.github.muntashirakon.setedit.adapters;
 
 
 import android.content.Context;
@@ -26,10 +26,10 @@ import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.List;
 
-import io.github.ferreol.seteditplus.EditorActivity;
-import io.github.ferreol.seteditplus.R;
-import io.github.ferreol.seteditplus.Utils.EditorUtils;
-import io.github.ferreol.seteditplus.Utils.Shortcut.ShortcutIcons;
+import io.github.muntashirakon.setedit.EditorActivity;
+import io.github.muntashirakon.setedit.R;
+import io.github.muntashirakon.setedit.Utils.EditorUtils;
+import io.github.muntashirakon.setedit.Utils.Shortcut.ShortcutIcons;
 
 public abstract class AbsRecyclerAdapter extends RecyclerView.Adapter<AbsRecyclerAdapter.ViewHolder> {
 
@@ -100,13 +100,13 @@ public abstract class AbsRecyclerAdapter extends RecyclerView.Adapter<AbsRecycle
                     .setView(editDialogView)
                     .setNegativeButton(R.string.cancel, null);
             if (this instanceof ShortcutEditAdapter) {
-                ((ShortcutEditAdapter) this).setShortcutEditAdapterView(editDialogView,position);
+                ((ShortcutEditAdapter) this).setShortcutEditAdapterView(editDialogView, position);
                 String neutralButtonString = resources.getString(R.string.disable);
-                if (keyName.endsWith(" ("+resources.getString(R.string.disabled)+")")) {
+                if (keyName.endsWith(" (" + resources.getString(R.string.disabled) + ")")) {
                     neutralButtonString = resources.getString(R.string.enable);
                 }
                 builder.setPositiveButton(R.string.save, (dialog, which) ->
-                                ((ShortcutEditAdapter) this).setShortcutEditDialogViewPositiveButton(editDialogView,position))
+                                ((ShortcutEditAdapter) this).setShortcutEditDialogViewPositiveButton(editDialogView, position))
                         .setNeutralButton(neutralButtonString, (dialog, which) ->
                                 ((ShortcutEditAdapter) this).setShortcutEditDialogViewNeutralButton(position));
             } else {

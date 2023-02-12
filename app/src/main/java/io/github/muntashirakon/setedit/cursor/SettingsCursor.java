@@ -1,4 +1,4 @@
-package io.github.ferreol.seteditplus.cursor;
+package io.github.muntashirakon.setedit.cursor;
 
 import android.annotation.TargetApi;
 import android.content.ContentResolver;
@@ -133,6 +133,7 @@ public class SettingsCursor implements Cursor {
         return cursor == null ? Long.MIN_VALUE : cursor.getLong(i);
     }
 
+    @TargetApi(19)
     @Override
     public Uri getNotificationUri() {
         return cursor == null ? null : cursor.getNotificationUri();

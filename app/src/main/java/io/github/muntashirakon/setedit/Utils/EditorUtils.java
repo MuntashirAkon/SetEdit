@@ -1,33 +1,22 @@
-package io.github.ferreol.seteditplus.Utils;
+package io.github.muntashirakon.setedit.Utils;
 
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Bundle;
-import android.provider.MediaStore;
 import android.provider.Settings;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.pm.ShortcutInfoCompat;
-import androidx.core.content.pm.ShortcutManagerCompat;
-import androidx.core.graphics.drawable.IconCompat;
 import androidx.core.util.Pair;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -36,15 +25,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
-import java.util.UUID;
 
-import io.github.ferreol.seteditplus.EditorActivity;
-import io.github.ferreol.seteditplus.R;
-import io.github.ferreol.seteditplus.SetActivity;
-import io.github.ferreol.seteditplus.adapters.SettingsRecyclerAdapter;
+import io.github.muntashirakon.setedit.EditorActivity;
+import io.github.muntashirakon.setedit.R;
 
 public class EditorUtils {
-
 
 
     /**
@@ -105,30 +90,4 @@ public class EditorUtils {
         return jsonObject.toString(4);
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    public static int hasNavigationBarHeight(Activity activity) {
-        Rect rectangle = new Rect();
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        activity.getWindow().getDecorView().getWindowVisibleDisplayFrame(rectangle);
-        activity.getWindowManager().getDefaultDisplay().getRealMetrics(displayMetrics);
-        return displayMetrics.heightPixels - (rectangle.top + rectangle.height());
-    }
 }

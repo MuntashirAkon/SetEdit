@@ -1,4 +1,4 @@
-package io.github.ferreol.seteditplus.Utils.Shortcut;
+package io.github.muntashirakon.setedit.Utils.Shortcut;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -9,7 +9,7 @@ public class ShortcutEditRecyclerRowMoveCallback extends ItemTouchHelper.Callbac
 
     private final RecyclerViewRowTouchHelperContract touchHelperContract;
 
-    public ShortcutEditRecyclerRowMoveCallback(RecyclerViewRowTouchHelperContract touchHelperContract){
+    public ShortcutEditRecyclerRowMoveCallback(RecyclerViewRowTouchHelperContract touchHelperContract) {
         this.touchHelperContract = touchHelperContract;
     }
 
@@ -26,10 +26,10 @@ public class ShortcutEditRecyclerRowMoveCallback extends ItemTouchHelper.Callbac
 
     @Override
     public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-        if(direction == ItemTouchHelper.END || direction == ItemTouchHelper.START)
-            if(viewHolder instanceof ShortcutEditRecyclerViewAdapter.MyViewModel){
-                ShortcutEditRecyclerViewAdapter.MyViewModel myViewHolder = (ShortcutEditRecyclerViewAdapter.MyViewModel)viewHolder;
-                touchHelperContract.onSwiped(myViewHolder,direction);
+        if (direction == ItemTouchHelper.END || direction == ItemTouchHelper.START)
+            if (viewHolder instanceof ShortcutEditRecyclerViewAdapter.MyViewModel) {
+                ShortcutEditRecyclerViewAdapter.MyViewModel myViewHolder = (ShortcutEditRecyclerViewAdapter.MyViewModel) viewHolder;
+                touchHelperContract.onSwiped(myViewHolder, direction);
             }
     }
 
@@ -47,16 +47,15 @@ public class ShortcutEditRecyclerRowMoveCallback extends ItemTouchHelper.Callbac
 
     @Override
     public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-        this.touchHelperContract.onRowMoved(viewHolder.getAdapterPosition(),target.getAdapterPosition());
+        this.touchHelperContract.onRowMoved(viewHolder.getAdapterPosition(), target.getAdapterPosition());
         return false;
     }
 
     @Override
     public void onSelectedChanged(@Nullable RecyclerView.ViewHolder viewHolder, int actionState) {
-        if(actionState != ItemTouchHelper.ACTION_STATE_IDLE)
-        {
-            if(viewHolder instanceof ShortcutEditRecyclerViewAdapter.MyViewModel){
-                ShortcutEditRecyclerViewAdapter.MyViewModel myViewHolder = (ShortcutEditRecyclerViewAdapter.MyViewModel)viewHolder;
+        if (actionState != ItemTouchHelper.ACTION_STATE_IDLE) {
+            if (viewHolder instanceof ShortcutEditRecyclerViewAdapter.MyViewModel) {
+                ShortcutEditRecyclerViewAdapter.MyViewModel myViewHolder = (ShortcutEditRecyclerViewAdapter.MyViewModel) viewHolder;
                 touchHelperContract.onRowSelected(myViewHolder);
             }
         }
@@ -67,18 +66,20 @@ public class ShortcutEditRecyclerRowMoveCallback extends ItemTouchHelper.Callbac
     public void clearView(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
         super.clearView(recyclerView, viewHolder);
 
-        if(viewHolder instanceof ShortcutEditRecyclerViewAdapter.MyViewModel){
-            ShortcutEditRecyclerViewAdapter.MyViewModel myViewHolder = (ShortcutEditRecyclerViewAdapter.MyViewModel)viewHolder;
+        if (viewHolder instanceof ShortcutEditRecyclerViewAdapter.MyViewModel) {
+            ShortcutEditRecyclerViewAdapter.MyViewModel myViewHolder = (ShortcutEditRecyclerViewAdapter.MyViewModel) viewHolder;
             touchHelperContract.onRowClear(myViewHolder);
         }
     }
 
 
+    public interface RecyclerViewRowTouchHelperContract {
+        void onRowMoved(int from, int to);
 
-    public interface RecyclerViewRowTouchHelperContract{
-        void onRowMoved(int from,int to);
         void onSwiped(ShortcutEditRecyclerViewAdapter.MyViewModel myViewHolder, int direction);
+
         void onRowSelected(ShortcutEditRecyclerViewAdapter.MyViewModel myViewHolder);
+
         void onRowClear(ShortcutEditRecyclerViewAdapter.MyViewModel myViewHolder);
     }
 }

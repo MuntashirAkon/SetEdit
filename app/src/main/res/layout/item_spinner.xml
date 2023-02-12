@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+<TextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:textAppearance="?android:attr/textAppearanceSmall"
     android:gravity="center"
     android:layout_width="match_parent"
     android:layout_height="40dp"
     android:paddingStart="5dp"
     android:paddingEnd="5dp"
-    android:singleLine="true" />
+    android:singleLine="true"/>

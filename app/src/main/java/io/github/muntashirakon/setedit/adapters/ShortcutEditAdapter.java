@@ -1,4 +1,4 @@
-package io.github.ferreol.seteditplus.adapters;
+package io.github.muntashirakon.setedit.adapters;
 
 import android.content.Context;
 import android.content.Intent;
@@ -23,14 +23,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
-import io.github.ferreol.seteditplus.R;
-import io.github.ferreol.seteditplus.Utils.Shortcut.ShortcutEditItemModel;
-import io.github.ferreol.seteditplus.Utils.Shortcut.ShortcutEditRecyclerRowMoveCallback;
-import io.github.ferreol.seteditplus.Utils.Shortcut.ShortcutEditRecyclerViewAdapter;
+import io.github.muntashirakon.setedit.R;
+import io.github.muntashirakon.setedit.Utils.Shortcut.ShortcutEditItemModel;
+import io.github.muntashirakon.setedit.Utils.Shortcut.ShortcutEditRecyclerRowMoveCallback;
+import io.github.muntashirakon.setedit.Utils.Shortcut.ShortcutEditRecyclerViewAdapter;
 
 public class ShortcutEditAdapter extends AbsRecyclerAdapter {
 
-    public static final String[] columns = {"_id", "name", "value","ShortcutInfoCompatIndex"};
+    public static final String[] columns = {"_id", "name", "value", "ShortcutInfoCompatIndex"};
 
     private final List<Integer> matchedPositions;
     private Cursor cursor;
@@ -162,33 +162,33 @@ public class ShortcutEditAdapter extends AbsRecyclerAdapter {
     }
 
     @NonNull
-public  ShortcutInfoCompat getShortcutByPosition(int position){
-    List<ShortcutInfoCompat> shortcutList = ShortcutManagerCompat.getShortcuts(context, ShortcutManagerCompat.FLAG_MATCH_PINNED);
-    if (!mDataValid) {
-        throw new IllegalStateException("Cannot lookup item id when cursor is in invalid state.");
+    public ShortcutInfoCompat getShortcutByPosition(int position) {
+        List<ShortcutInfoCompat> shortcutList = ShortcutManagerCompat.getShortcuts(context, ShortcutManagerCompat.FLAG_MATCH_PINNED);
+        if (!mDataValid) {
+            throw new IllegalStateException("Cannot lookup item id when cursor is in invalid state.");
+        }
+        int newPosition = matchedPositions.get(position);
+        if (!cursor.moveToPosition(newPosition)) {
+            throw new IllegalStateException("Could not move cursor to position " + newPosition + " when trying to get an item id");
+        }
+        return shortcutList.get(cursor.getInt(3));
     }
-    int newPosition = matchedPositions.get(position);
-    if (!cursor.moveToPosition(newPosition)) {
-        throw new IllegalStateException("Could not move cursor to position " + newPosition + " when trying to get an item id");
-    }
-    return shortcutList.get(cursor.getInt(3));
-}
 
     @NonNull
     private static Cursor getCursor(Context context) {
-        String[] columns = new String[]{"_id", "item", "description","ShortcutInfoCompatIndex"};
+        String[] columns = new String[]{"_id", "item", "description", "ShortcutInfoCompatIndex"};
         MatrixCursor matrixCursor = new MatrixCursor(columns);
         List<ShortcutInfoCompat> shortcutList = ShortcutManagerCompat.getShortcuts(context, ShortcutManagerCompat.FLAG_MATCH_PINNED);
         for (int y = 0; y < shortcutList.size(); y++) {
             ShortcutInfoCompat shortcutInfoCompat = shortcutList.get(y);
           /*  long id = context.getResources().getIdentifier(shortcutList.get(y).getId() ,
                     "ShortcutInfoCompat", context.getPackageName());*/
-            String sId =shortcutInfoCompat.getId();
-            String sId2 = "0x"+ sId.substring(sId.lastIndexOf("-")+1);
+            String sId = shortcutInfoCompat.getId();
+            String sId2 = "0x" + sId.substring(sId.lastIndexOf("-") + 1);
             long id = Long.decode(sId2);
             String shortcutLabel = shortcutInfoCompat.getShortLabel().toString();
             if (!shortcutInfoCompat.isEnabled()) {
-                shortcutLabel += " ("+resources.getString(R.string.disabled)+")";
+                shortcutLabel += " (" + resources.getString(R.string.disabled) + ")";
             }
             Intent shortcutIntent = shortcutInfoCompat.getIntent();
             StringBuilder shortcutContent = new StringBuilder();
@@ -203,7 +203,7 @@ public  ShortcutInfoCompat getShortcutByPosition(int position){
                 contentString += ": " + shortcutIntent.getStringExtra("MyKeyName" + i);
                 if (shortcutIntent.getBooleanExtra("delete" + i, false)) {
 
-                    contentString += " " + "["+ resources.getString(R.string.delete_action) + "]";
+                    contentString += " " + "[" + resources.getString(R.string.delete_action) + "]";
                 } else {
                     contentString += " " + shortcutIntent.getStringExtra("KeyValue" + i);
 
@@ -212,12 +212,12 @@ public  ShortcutInfoCompat getShortcutByPosition(int position){
                 i++;
 
             }
-            matrixCursor.addRow(new Object[]{id, shortcutLabel, shortcutContent,y});
+            matrixCursor.addRow(new Object[]{id, shortcutLabel, shortcutContent, y});
         }
         return matrixCursor;
     }
 
-    public void setShortcutEditAdapterView(@NonNull View editDialogView, int position){
+    public void setShortcutEditAdapterView(@NonNull View editDialogView, int position) {
         editDialogView.findViewById(R.id.txtValue).setVisibility(View.GONE);
         RecyclerView recyclerViewListValue = editDialogView.findViewById(R.id.listValue);
         recyclerViewListValue.setVisibility(View.VISIBLE);
@@ -231,12 +231,12 @@ public  ShortcutInfoCompat getShortcutByPosition(int position){
             String KeyAndValueString = shortcutIntent.getStringExtra("MyKeyName" + i);
             if (shortcutIntent.getBooleanExtra("delete" + i, false)) {
 
-                KeyAndValueString += " " + "["+ resources.getString(R.string.delete_action) + "]";
+                KeyAndValueString += " " + "[" + resources.getString(R.string.delete_action) + "]";
             } else {
                 KeyAndValueString += " " + shortcutIntent.getStringExtra("KeyValue" + i);
 
             }
-            ShortcutEditItemModel shortcutEditItemModel = new ShortcutEditItemModel(settingsType,KeyAndValueString);
+            ShortcutEditItemModel shortcutEditItemModel = new ShortcutEditItemModel(settingsType, KeyAndValueString);
             list.add(shortcutEditItemModel);
             i++;
         }
@@ -251,10 +251,9 @@ public  ShortcutInfoCompat getShortcutByPosition(int position){
     }
 
 
-
     public void setShortcutEditDialogViewPositiveButton(@NonNull View editDialogView, int position) {
         List<ShortcutInfoCompat> shortcutList = ShortcutManagerCompat.getShortcuts(context, ShortcutManagerCompat.FLAG_MATCH_PINNED);
-        ShortcutInfoCompat shortcutInfoCompat =shortcutList.get(cursor.getInt(3));
+        ShortcutInfoCompat shortcutInfoCompat = shortcutList.get(cursor.getInt(3));
         int shortcutIndex = shortcutList.indexOf(shortcutInfoCompat);
         Intent shortcutIntent = shortcutInfoCompat.getIntent();
         int i = 0;
@@ -271,44 +270,42 @@ public  ShortcutInfoCompat getShortcutByPosition(int position){
             i++;
         }
         RecyclerView recyclerViewListValue = editDialogView.findViewById(R.id.listValue);
-        ShortcutEditRecyclerViewAdapter adapter = (ShortcutEditRecyclerViewAdapter)recyclerViewListValue.getAdapter();
+        ShortcutEditRecyclerViewAdapter adapter = (ShortcutEditRecyclerViewAdapter) recyclerViewListValue.getAdapter();
         List<ShortcutEditItemModel> list = Objects.requireNonNull(adapter).getDataList();
         i = 0;
-        for (ShortcutEditItemModel shortcutEditItemModel:list)
-        {
-            shortcutIntent.putExtra("settingsType" + i,shortcutEditItemModel.getSettingsType());
-            String [] Key = shortcutEditItemModel.getDetail().split(" ");
+        for (ShortcutEditItemModel shortcutEditItemModel : list) {
+            shortcutIntent.putExtra("settingsType" + i, shortcutEditItemModel.getSettingsType());
+            String[] Key = shortcutEditItemModel.getDetail().split(" ");
             String KeyName = Key[0];
             String KeyValue = Key[1];
-            shortcutIntent.putExtra("MyKeyName" + i,KeyName);
-            if (KeyValue.equals("["+ resources.getString(R.string.delete_action) + "]")) {
-                shortcutIntent.putExtra("delete" + i,true);
+            shortcutIntent.putExtra("MyKeyName" + i, KeyName);
+            if (KeyValue.equals("[" + resources.getString(R.string.delete_action) + "]")) {
+                shortcutIntent.putExtra("delete" + i, true);
             } else {
-                shortcutIntent.putExtra("KeyValue" + i,KeyValue);
+                shortcutIntent.putExtra("KeyValue" + i, KeyValue);
             }
             i++;
         }
 
-        shortcutList.set(shortcutIndex,shortcutInfoCompat);
-        ShortcutManagerCompat.updateShortcuts(context,shortcutList);
+        shortcutList.set(shortcutIndex, shortcutInfoCompat);
+        ShortcutManagerCompat.updateShortcuts(context, shortcutList);
         notifyItemChanged(position);
         swapCursor(getCursor(context));
-
 
 
     }
 
     public void setShortcutEditDialogViewNeutralButton(int position) {
 
-        ShortcutInfoCompat shortcut =getShortcutByPosition(position);
+        ShortcutInfoCompat shortcut = getShortcutByPosition(position);
         if (shortcut.isEnabled()) {
             List<String> shortcutListId = new ArrayList<>();
             shortcutListId.add(shortcut.getId());
-            ShortcutManagerCompat.disableShortcuts(context,shortcutListId,null);
+            ShortcutManagerCompat.disableShortcuts(context, shortcutListId, null);
         } else {
-            List<ShortcutInfoCompat> shortcutList= new ArrayList<>();
+            List<ShortcutInfoCompat> shortcutList = new ArrayList<>();
             shortcutList.add(shortcut);
-            ShortcutManagerCompat.enableShortcuts(context,shortcutList);
+            ShortcutManagerCompat.enableShortcuts(context, shortcutList);
         }
         notifyItemChanged(position);
         swapCursor(getCursor(context));

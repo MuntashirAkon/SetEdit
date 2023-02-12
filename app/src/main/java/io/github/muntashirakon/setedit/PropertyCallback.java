@@ -1,4 +1,4 @@
-package io.github.ferreol.seteditplus;
+package io.github.muntashirakon.setedit;
 
 import androidx.annotation.Keep;
 

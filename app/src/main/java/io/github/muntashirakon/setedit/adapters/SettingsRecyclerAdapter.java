@@ -1,4 +1,4 @@
-package io.github.ferreol.seteditplus.adapters;
+package io.github.muntashirakon.setedit.adapters;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -19,9 +19,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-import io.github.ferreol.seteditplus.Utils.EditorUtils;
-import io.github.ferreol.seteditplus.R;
-import io.github.ferreol.seteditplus.cursor.SettingsCursor;
+import io.github.muntashirakon.setedit.R;
+import io.github.muntashirakon.setedit.Utils.EditorUtils;
+import io.github.muntashirakon.setedit.cursor.SettingsCursor;
 
 public class SettingsRecyclerAdapter extends AbsRecyclerAdapter {
     public static final String[] columns = {"_id", "name", "value"};

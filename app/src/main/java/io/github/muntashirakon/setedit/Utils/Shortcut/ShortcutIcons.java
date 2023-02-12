@@ -1,4 +1,4 @@
-package io.github.ferreol.seteditplus.Utils.Shortcut;
+package io.github.muntashirakon.setedit.Utils.Shortcut;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -23,10 +23,10 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.UUID;
 
-import io.github.ferreol.seteditplus.EditorActivity;
-import io.github.ferreol.seteditplus.R;
-import io.github.ferreol.seteditplus.SetActivity;
-import io.github.ferreol.seteditplus.adapters.SettingsRecyclerAdapter;
+import io.github.muntashirakon.setedit.EditorActivity;
+import io.github.muntashirakon.setedit.R;
+import io.github.muntashirakon.setedit.SetActivity;
+import io.github.muntashirakon.setedit.adapters.SettingsRecyclerAdapter;
 
 public class ShortcutIcons {
 
@@ -166,7 +166,7 @@ public class ShortcutIcons {
 
     private static void selectShortcutRadioButton(@NonNull View editorDialogView) {
         RadioGroup existingShortcutLayout = editorDialogView.findViewById(R.id.existingShortcutRadioGroup);
-        RadioButton radioButtonChecked =existingShortcutLayout.findViewById(existingShortcutLayout.getCheckedRadioButtonId());
+        RadioButton radioButtonChecked = existingShortcutLayout.findViewById(existingShortcutLayout.getCheckedRadioButtonId());
         existingShortcutLayout.removeAllViews();
         radioButtonChecked.setOnClickListener(null);
         existingShortcutLayout.addView(radioButtonChecked);
