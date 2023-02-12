@@ -123,7 +123,7 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
             View actionBarView = actionBar.getCustomView();
             // Item view
             spinnerTable = actionBarView.findViewById(R.id.spinner);
-           // spinnerTable.setOnItemSelectedListener(this);
+            spinnerTable.setOnItemSelectedListener(this);
             spinnerTable.setAdapter(ArrayAdapter.createFromResource(this, R.array.settings_table, R.layout.item_spinner));
         }
         // List view
