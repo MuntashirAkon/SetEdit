@@ -26,7 +26,7 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-import io.github.muntashirakon.setedit.EditorActivity;
+import io.github.muntashirakon.setedit.BuildConfig;
 import io.github.muntashirakon.setedit.R;
 
 public class EditorUtils {
@@ -47,11 +47,7 @@ public class EditorUtils {
                     .setPositiveButton("ok", (dialog, which) -> {
                         try {
                             Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS)
-                                    .setData(Uri.parse("package:" + context.getPackageName()));
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-                            EditorActivity editorActivity = (EditorActivity) context;
+                                    .setData(Uri.parse("package:" + BuildConfig.APPLICATION_ID));
                             context.startActivity(intent);
                         } catch (Exception ignore) {
                         }
@@ -67,7 +63,7 @@ public class EditorUtils {
     public static void displayUnsupportedMessage(@NonNull Context context) {
         View view = LayoutInflater.from(context).inflate(R.layout.dialog_unsupported, null);
         TextView tv = view.findViewById(R.id.txt);
-        tv.setText("pm grant " + context.getPackageName() + " " + Manifest.permission.WRITE_SECURE_SETTINGS);
+        tv.setText("pm grant " + BuildConfig.APPLICATION_ID + " " + Manifest.permission.WRITE_SECURE_SETTINGS);
         tv.setKeyListener(null);
         tv.setSelectAllOnFocus(true);
         tv.requestFocus();

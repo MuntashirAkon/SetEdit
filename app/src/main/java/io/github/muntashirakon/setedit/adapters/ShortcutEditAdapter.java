@@ -182,13 +182,13 @@ public class ShortcutEditAdapter extends AbsRecyclerAdapter {
         for (int y = 0; y < shortcutList.size(); y++) {
             ShortcutInfoCompat shortcutInfoCompat = shortcutList.get(y);
           /*  long id = context.getResources().getIdentifier(shortcutList.get(y).getId() ,
-                    "ShortcutInfoCompat", context.getPackageName());*/
+                    "ShortcutInfoCompat", BuildConfig.APPLICATION_ID);*/
             String sId = shortcutInfoCompat.getId();
             String sId2 = "0x" + sId.substring(sId.lastIndexOf("-") + 1);
             long id = Long.decode(sId2);
             String shortcutLabel = shortcutInfoCompat.getShortLabel().toString();
             if (!shortcutInfoCompat.isEnabled()) {
-                shortcutLabel += " (" + resources.getString(R.string.disabled) + ")";
+                shortcutLabel += " (" + resources.getString(R.string.status_disabled) + ")";
             }
             Intent shortcutIntent = shortcutInfoCompat.getIntent();
             StringBuilder shortcutContent = new StringBuilder();
@@ -275,7 +275,7 @@ public class ShortcutEditAdapter extends AbsRecyclerAdapter {
         i = 0;
         for (ShortcutEditItemModel shortcutEditItemModel : list) {
             shortcutIntent.putExtra("settingsType" + i, shortcutEditItemModel.getSettingsType());
-            String[] Key = shortcutEditItemModel.getDetail().split(" ");
+            String[] Key = shortcutEditItemModel.getShortcutContent().split(" ");
             String KeyName = Key[0];
             String KeyValue = Key[1];
             shortcutIntent.putExtra("MyKeyName" + i, KeyName);

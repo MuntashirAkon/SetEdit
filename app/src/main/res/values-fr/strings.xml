@@ -30,10 +30,10 @@
     <string name="create_or_append_to_an_existing_shortcut_rather_than_apply">Créer ou ajouter à un raccourci existant plutôt que de l\'appliquer</string>
     <string name="edit_shortcuts">Editer les raccourcis</string>
     <string name="grant_secure_setting">Attribuer les droits de modification aux tables systémes sécurisé</string>
-    <string name="append">Ajouter à:</string>
-    <string name="disable">Désactiver</string>
-    <string name="enable">Activer</string>
-    <string name="disabled">Désactivé</string>
+    <string name="action_append">Ajouter à:</string>
+    <string name="action_disable">Désactiver</string>
+    <string name="status_enable">Activer</string>
+    <string name="status_disabled">Désactivé</string>
     <string name="delete_action">Suppression de l\'elément</string>
-    <string name="cancel">Annuler</string>
+    <string name="cancel_action">Annuler</string>
 </resources>

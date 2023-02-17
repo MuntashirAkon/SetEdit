@@ -98,12 +98,12 @@ public abstract class AbsRecyclerAdapter extends RecyclerView.Adapter<AbsRecycle
 
             MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context)
                     .setView(editDialogView)
-                    .setNegativeButton(R.string.cancel, null);
+                    .setNegativeButton(R.string.cancel_action, null);
             if (this instanceof ShortcutEditAdapter) {
                 ((ShortcutEditAdapter) this).setShortcutEditAdapterView(editDialogView, position);
-                String neutralButtonString = resources.getString(R.string.disable);
-                if (keyName.endsWith(" (" + resources.getString(R.string.disabled) + ")")) {
-                    neutralButtonString = resources.getString(R.string.enable);
+                String neutralButtonString = resources.getString(R.string.action_disable);
+                if (keyName.endsWith(" (" + resources.getString(R.string.status_disabled) + ")")) {
+                    neutralButtonString = resources.getString(R.string.status_enable);
                 }
                 builder.setPositiveButton(R.string.save, (dialog, which) ->
                                 ((ShortcutEditAdapter) this).setShortcutEditDialogViewPositiveButton(editDialogView, position))

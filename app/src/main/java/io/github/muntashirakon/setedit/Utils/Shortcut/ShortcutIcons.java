@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.UUID;
 
+import io.github.muntashirakon.setedit.BuildConfig;
 import io.github.muntashirakon.setedit.EditorActivity;
 import io.github.muntashirakon.setedit.R;
 import io.github.muntashirakon.setedit.SetActivity;
@@ -45,7 +46,7 @@ public class ShortcutIcons {
         } else {
             shortcutIntent.putExtra("KeyValue0", keyValue);
         }
-        shortcutIntent.setComponent(setActivity.SetActivityShortcut());
+        shortcutIntent.setComponent(setActivity.setActivityShortcut());
         IconCompat shortcutIcon;
         View editorDialogView = ((EditorActivity) context).getCurrentEditorDialogView();
         if (editorDialogView.findViewById(R.id.button_icon).getTag() instanceof Uri) {
@@ -98,7 +99,7 @@ public class ShortcutIcons {
         Intent intent = new Intent();
         intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
         intent.addCategory(Intent.CATEGORY_DEFAULT);
-        intent.setData(Uri.parse("package:" + context.getPackageName()));
+        intent.setData(Uri.parse("package:" + BuildConfig.APPLICATION_ID));
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         context.startActivity(intent);

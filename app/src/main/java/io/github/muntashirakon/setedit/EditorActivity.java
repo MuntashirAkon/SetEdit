@@ -62,7 +62,7 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
 
 
     private final ActivityResultLauncher<String> post21SaveLauncher = registerForActivityResult(
-            new ActivityResultContracts.CreateDocument("document/json"),
+            new ActivityResultContracts.CreateDocument("application/json"),
             uri -> {
                 if (uri == null) return;
                 try (OutputStream os = getContentResolver().openOutputStream(uri)) {

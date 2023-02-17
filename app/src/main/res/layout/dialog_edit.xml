@@ -99,7 +99,7 @@
                 android:id="@+id/switchAppendShortcut"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/append" />
+                android:text="@string/action_append" />
 
 
         </androidx.appcompat.widget.LinearLayoutCompat>

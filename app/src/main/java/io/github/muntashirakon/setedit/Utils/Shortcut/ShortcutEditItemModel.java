@@ -1,20 +1,20 @@
 package io.github.muntashirakon.setedit.Utils.Shortcut;
 
 public class ShortcutEditItemModel {
-    private final String Name;
-    private final String Detail;
+    private final String shortcutName;
+    private final String shortcutContent;
 
     public ShortcutEditItemModel(String name, String detail) {
-        Name = name;
-        Detail = detail;
+        this.shortcutName = name;
+        this.shortcutContent = detail;
     }
 
     public String getSettingsType() {
-        return Name;
+        return shortcutName;
     }
 
-    public String getDetail() {
-        return Detail;
+    public String getShortcutContent() {
+        return shortcutContent;
     }
 
 }

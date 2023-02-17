@@ -39,7 +39,7 @@ public class ShortcutEditRecyclerViewAdapter extends RecyclerView.Adapter<Shortc
     @Override
     public void onBindViewHolder(@NonNull MyViewModel holder, int position) {
         holder.lblItemName.setText(dataList.get(position).getSettingsType());
-        holder.lblItemDetails.setText(dataList.get(position).getDetail());
+        holder.lblItemDetails.setText(dataList.get(position).getShortcutContent());
     }
 
     @Override

@@ -23,20 +23,20 @@ public class SetActivity extends Activity {
             settingsType = bundle.getString("settingsType" + i);
             keyName = bundle.getString("MyKeyName" + i);
             if (bundle.getBoolean("delete" + i)) {
-                SetActivityShortcutDelete();
+                setActivityShortcutDelete();
             } else {
                 KeyValue = bundle.getString("KeyValue" + i);
-                SetActivityShortcutUpdate();
+                setActivityShortcutUpdate();
             }
             i++;
         }
     }
 
-    public ComponentName SetActivityShortcut() {
+    public ComponentName setActivityShortcut() {
         return null;
     }
 
-    private void SetActivityShortcutUpdate() {
+    private void setActivityShortcutUpdate() {
         if (settingsType != null) {
             Context context = this.getBaseContext();
             Boolean isGranted = EditorUtils.checkSettingsWritePermission(context, settingsType);
@@ -48,7 +48,7 @@ public class SetActivity extends Activity {
         }
     }
 
-    private void SetActivityShortcutDelete() {
+    private void setActivityShortcutDelete() {
         if (settingsType != null) {
             Context context = this.getBaseContext();
             Boolean isGranted = EditorUtils.checkSettingsWritePermission(context, settingsType);
