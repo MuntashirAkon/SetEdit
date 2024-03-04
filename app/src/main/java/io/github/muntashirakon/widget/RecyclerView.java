@@ -11,7 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
-import io.github.muntashirakon.setedit.R;
+import com.google.android.material.R;
+
 import io.github.muntashirakon.util.UiUtils;
 
 // Copyright 2022 Muntashir Al-Islam

@@ -12,8 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.core.view.ViewCompat;
 
 import com.google.android.material.internal.ViewUtils;
-
-import io.github.muntashirakon.setedit.R;
+import com.google.android.material.R;
 
 // Copyright 2022 Muntashir Al-Islam
 public class AppBarLayout extends com.google.android.material.appbar.AppBarLayout {
