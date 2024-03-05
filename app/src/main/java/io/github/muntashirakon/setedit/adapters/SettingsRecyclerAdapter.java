@@ -14,6 +14,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.util.Pair;
 
+import com.topjohnwu.superuser.Shell;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -100,6 +102,17 @@ public class SettingsRecyclerAdapter extends AbsRecyclerAdapter {
 
     @Override
     public void update(String keyName, String newValue) {
+        if (Boolean.TRUE.equals(Shell.isAppGrantedRoot())) {
+            Shell.Result result = Shell.cmd("settings put " + mSettingsType + " " + keyName + " \"" + newValue + "\"").exec();
+            if (result.isSuccess()) {
+                refresh();
+            } else {
+                setMessage(new SpannableStringBuilder(context.getText(R.string.error_unexpected))
+                        .append(" ")
+                        .append(TextUtils.join("\n", result.getErr())));
+            }
+            return;
+        }
         Boolean isGranted = EditorUtils.checkSettingsPermission(context, mSettingsType);
         if (isGranted == null) return;
         if (!isGranted) {
@@ -123,6 +136,17 @@ public class SettingsRecyclerAdapter extends AbsRecyclerAdapter {
 
     @Override
     public void delete(String keyName) {
+        if (Boolean.TRUE.equals(Shell.isAppGrantedRoot())) {
+            Shell.Result result = Shell.cmd("settings delete " + mSettingsType + " " + keyName).exec();
+            if (result.isSuccess()) {
+                refresh();
+            } else {
+                setMessage(new SpannableStringBuilder(context.getText(R.string.error_unexpected))
+                        .append(" ")
+                        .append(TextUtils.join("\n", result.getErr())));
+            }
+            return;
+        }
         Boolean isGranted = EditorUtils.checkSettingsPermission(context, mSettingsType);
         if (isGranted == null) return;
         if (!isGranted) {

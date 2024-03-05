@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Process;
 import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.util.Pair;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.topjohnwu.superuser.Shell;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,16 +36,25 @@ public class EditorUtils {
     public static Boolean checkSettingsPermission(@NonNull Context context, @SettingsType String settingsType) {
         String permission = SettingsType.SYSTEM_SETTINGS.equals(settingsType)
                 ? Manifest.permission.WRITE_SETTINGS : Manifest.permission.WRITE_SECURE_SETTINGS;
-        if (SettingsType.SYSTEM_SETTINGS.equals(settingsType)
-                && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-                && !Settings.System.canWrite(context)) {
-            try {
-                Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS)
-                        .setData(Uri.parse("package:" + BuildConfig.APPLICATION_ID));
-                context.startActivity(intent);
-            } catch (Exception ignore) {
+        if (SettingsType.SYSTEM_SETTINGS.equals(settingsType)) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.System.canWrite(context)) {
+                if (Boolean.TRUE.equals(Shell.isAppGrantedRoot())) {
+                    Shell.cmd("appops set " + Process.myUid() + " 23 0",
+                            "appops set " + BuildConfig.APPLICATION_ID + " 23 0").exec();
+                }
+                if (!Settings.System.canWrite(context)) {
+                    try {
+                        Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS)
+                                .setData(Uri.parse("package:" + BuildConfig.APPLICATION_ID));
+                        context.startActivity(intent);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                }
             }
-            return null;
+        } else if (Boolean.TRUE.equals(Shell.isAppGrantedRoot())) {
+            Shell.cmd("pm grant " + BuildConfig.APPLICATION_ID + " " + permission).exec();
         }
         return ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED;
     }
