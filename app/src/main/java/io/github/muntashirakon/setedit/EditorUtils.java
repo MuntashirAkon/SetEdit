@@ -31,7 +31,7 @@ public class EditorUtils {
      * @return {@code true} if granted, {@code null} if is being granted and {@code false} otherwise
      */
     @Nullable
-    public static Boolean checkPermission(@NonNull Context context, @SettingsType String settingsType) {
+    public static Boolean checkSettingsPermission(@NonNull Context context, @SettingsType String settingsType) {
         String permission = SettingsType.SYSTEM_SETTINGS.equals(settingsType)
                 ? Manifest.permission.WRITE_SETTINGS : Manifest.permission.WRITE_SECURE_SETTINGS;
         if (SettingsType.SYSTEM_SETTINGS.equals(settingsType)
@@ -49,7 +49,7 @@ public class EditorUtils {
     }
 
     @SuppressLint({"InflateParams", "SetTextI18n"})
-    public static void displayUnsupportedMessage(@NonNull Context context) {
+    public static void displayGrantPermissionMessage(@NonNull Context context) {
         View view = LayoutInflater.from(context).inflate(R.layout.dialog_unsupported, null);
         TextView tv = view.findViewById(R.id.txt);
         tv.setText("pm grant " + BuildConfig.APPLICATION_ID + " " + Manifest.permission.WRITE_SECURE_SETTINGS);

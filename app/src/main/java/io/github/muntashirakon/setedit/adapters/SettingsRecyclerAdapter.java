@@ -79,6 +79,70 @@ public class SettingsRecyclerAdapter extends AbsRecyclerAdapter {
     }
 
     @Override
+    public boolean canCreate() {
+        return true;
+    }
+
+    @Override
+    public boolean canEdit() {
+        return true;
+    }
+
+    @Override
+    public boolean canDelete() {
+        return true;
+    }
+
+    @Override
+    public void create(String keyName, String newValue) {
+        update(keyName, newValue);
+    }
+
+    @Override
+    public void update(String keyName, String newValue) {
+        Boolean isGranted = EditorUtils.checkSettingsPermission(context, mSettingsType);
+        if (isGranted == null) return;
+        if (!isGranted) {
+            EditorUtils.displayGrantPermissionMessage(context);
+            return;
+        }
+        ContentResolver contentResolver = context.getContentResolver();
+        try {
+            ContentValues contentValues = new ContentValues(2);
+            contentValues.put("name", keyName);
+            contentValues.put("value", newValue);
+            contentResolver.insert(Uri.parse("content://settings/" + mSettingsType), contentValues);
+            refresh();
+        } catch (Throwable th) {
+            th.printStackTrace();
+            setMessage(new SpannableStringBuilder(context.getText(R.string.error_unexpected))
+                    .append(" ")
+                    .append(th.getMessage()));
+        }
+    }
+
+    @Override
+    public void delete(String keyName) {
+        Boolean isGranted = EditorUtils.checkSettingsPermission(context, mSettingsType);
+        if (isGranted == null) return;
+        if (!isGranted) {
+            EditorUtils.displayGrantPermissionMessage(context);
+            return;
+        }
+        ContentResolver contentResolver = context.getContentResolver();
+        try {
+            String[] strArr = {keyName};
+            contentResolver.delete(Uri.parse("content://settings/" + mSettingsType), "name = ?", strArr);
+            refresh();
+        } catch (Throwable th) {
+            th.printStackTrace();
+            setMessage(new SpannableStringBuilder(context.getText(R.string.error_unexpected))
+                    .append(" ")
+                    .append(th.getMessage()));
+        }
+    }
+
+    @Override
     public Pair<String, String> getItem(int position) {
         if (!mDataValid) {
             throw new IllegalStateException("Cannot lookup item id when cursor is in invalid state.");
@@ -109,42 +173,6 @@ public class SettingsRecyclerAdapter extends AbsRecyclerAdapter {
             throw new IllegalStateException("Could not move cursor to position " + newPosition + " when trying to get an item id");
         }
         return mCursor.getLong(0);
-    }
-
-    public void updateValueForName(String name, String value) {
-        ContentResolver contentResolver = context.getContentResolver();
-        try {
-            ContentValues contentValues = new ContentValues(2);
-            contentValues.put("name", name);
-            contentValues.put("value", value);
-            contentResolver.insert(Uri.parse("content://settings/" + mSettingsType), contentValues);
-            refresh();
-        } catch (Throwable th) {
-            th.printStackTrace();
-            setMessage(new SpannableStringBuilder(context.getText(R.string.error_unexpected))
-                    .append(" ")
-                    .append(th.getMessage()));
-        }
-    }
-
-    public void deleteEntryByName(String keyName) {
-        Boolean isGranted = EditorUtils.checkPermission(context, mSettingsType);
-        if (isGranted == null) return;
-        if (!isGranted) {
-            EditorUtils.displayUnsupportedMessage(context);
-            return;
-        }
-        ContentResolver contentResolver = context.getContentResolver();
-        try {
-            String[] strArr = {keyName};
-            contentResolver.delete(Uri.parse("content://settings/" + mSettingsType), "name = ?", strArr);
-            refresh();
-        } catch (Throwable th) {
-            th.printStackTrace();
-            setMessage(new SpannableStringBuilder(context.getText(R.string.error_unexpected))
-                    .append(" ")
-                    .append(th.getMessage()));
-        }
     }
 
     private void swapCursor(Cursor newCursor) {

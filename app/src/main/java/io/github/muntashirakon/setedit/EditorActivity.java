@@ -92,12 +92,10 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
                 .setView(editorDialogView)
                 .setTitle(R.string.new_item)
                 .setPositiveButton(R.string.save, ((dialog, which) -> {
-                    if (!(adapter instanceof SettingsRecyclerAdapter)) return;
                     Editable keyName = keyNameView.getText();
                     Editable keyValue = keyValueView.getText();
                     if (TextUtils.isEmpty(keyName) || keyValue == null) return;
-                    SettingsRecyclerAdapter settingsAdapter = (SettingsRecyclerAdapter) adapter;
-                    settingsAdapter.updateValueForName(keyName.toString(), keyValue.toString());
+                    adapter.create(keyName.toString(), keyValue.toString());
                 }))
                 .setNegativeButton(android.R.string.cancel, null)
                 .show();
@@ -129,12 +127,12 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
         addNewItem = findViewById(R.id.efab);
         addNewItem.setOnClickListener(v -> {
             if (adapter instanceof SettingsRecyclerAdapter) {
-                Boolean isGranted = EditorUtils.checkPermission(this, ((SettingsRecyclerAdapter) adapter).getSettingsType());
+                Boolean isGranted = EditorUtils.checkSettingsPermission(this, ((SettingsRecyclerAdapter) adapter).getSettingsType());
                 if (isGranted == null) return;
                 if (isGranted) {
                     addNewItemDialog();
                 } else {
-                    EditorUtils.displayUnsupportedMessage(this);
+                    EditorUtils.displayGrantPermissionMessage(this);
                 }
             }
         });
@@ -190,8 +188,9 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
         listView.setAdapter(adapter = adapterProvider.getRecyclerAdapter(position));
-        if (position < 3) addNewItem.setVisibility(View.VISIBLE);
-        else addNewItem.setVisibility(View.GONE);
+        if (adapter.canCreate()) {
+            addNewItem.show();
+        } else addNewItem.hide();
         if (searchView != null) {
             searchView.setQuery(null, false);
             searchView.clearFocus();

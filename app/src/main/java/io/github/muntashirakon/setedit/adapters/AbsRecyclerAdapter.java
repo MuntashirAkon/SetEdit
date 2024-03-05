@@ -22,7 +22,6 @@ import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.List;
 
-import io.github.muntashirakon.setedit.EditorUtils;
 import io.github.muntashirakon.setedit.R;
 
 public abstract class AbsRecyclerAdapter extends RecyclerView.Adapter<AbsRecyclerAdapter.ViewHolder> {
@@ -48,6 +47,27 @@ public abstract class AbsRecyclerAdapter extends RecyclerView.Adapter<AbsRecycle
 
     public void filter() {
         getFilter().filter(constraint);
+    }
+
+    public boolean canCreate() {
+        return false;
+    }
+
+    public boolean canEdit() {
+        return false;
+    }
+
+    public boolean canDelete() {
+        return false;
+    }
+
+    public void create(String keyName, String newValue) {
+    }
+
+    public void update(String keyName, String newValue) {
+    }
+
+    public void delete(String keyName) {
     }
 
     @NonNull
@@ -78,7 +98,6 @@ public abstract class AbsRecyclerAdapter extends RecyclerView.Adapter<AbsRecycle
         holder.keyValue.setText(keyValue);
         holder.itemView.setBackgroundColor(ContextCompat.getColor(context, position % 2 == 1 ? android.R.color.transparent : R.color.semi_transparent));
         holder.itemView.setOnClickListener(v -> {
-            boolean editableInput = this instanceof SettingsRecyclerAdapter;
             View editDialogView = View.inflate(context, R.layout.dialog_edit, null);
             editDialogView.findViewById(R.id.button_help).setOnClickListener(v2 -> openHelp(keyName));
             ((TextView) editDialogView.findViewById(R.id.title)).setText(keyName);
@@ -87,28 +106,23 @@ public abstract class AbsRecyclerAdapter extends RecyclerView.Adapter<AbsRecycle
             MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context)
                     .setView(editDialogView)
                     .setNegativeButton(R.string.close, null);
-            if (editableInput) {
+            if (canEdit()) {
                 builder.setPositiveButton(R.string.save, (dialog, which) -> {
                     Editable editable = editText.getText();
                     if (editable == null) return;
-                    SettingsRecyclerAdapter settingsAdapter = (SettingsRecyclerAdapter) this;
-                    Boolean isGranted = EditorUtils.checkPermission(context, settingsAdapter.getSettingsType());
-                    if (isGranted == null) return;
-                    if (isGranted) {
-                        settingsAdapter.updateValueForName(keyName, editable.toString());
-                    } else {
-                        EditorUtils.displayUnsupportedMessage(context);
-                    }
-                }).setNeutralButton(R.string.delete, (dialog, which) -> {
-                    SettingsRecyclerAdapter settingsAdapter = (SettingsRecyclerAdapter) this;
-                    settingsAdapter.deleteEntryByName(keyName);
+                    update(keyName, editable.toString());
                 });
             } else {
                 editText.setKeyListener(null);
             }
+            if (canDelete()) {
+                builder.setNeutralButton(R.string.delete, (dialog, which) -> {
+                    delete(keyName);
+                });
+            }
             AlertDialog dialog = builder.create();
             dialog.setOnShowListener(dialogInterface -> {
-                if (editableInput) {
+                if (canEdit()) {
                     editText.requestFocus();
                     editText.requestFocusFromTouch();
                     if (keyValue != null) {
