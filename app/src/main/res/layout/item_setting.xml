@@ -26,6 +26,7 @@
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:gravity="center_vertical"
+        android:singleLine="true"
         android:textColor="?android:attr/textColorSecondary"
         tools:text="@tools:sample/lorem[10]" />
 </androidx.appcompat.widget.LinearLayoutCompat>
