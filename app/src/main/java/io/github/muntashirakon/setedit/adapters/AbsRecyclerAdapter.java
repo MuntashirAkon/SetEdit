@@ -7,10 +7,12 @@ import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Filter;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.core.util.Pair;
 import androidx.recyclerview.widget.RecyclerView;
@@ -76,19 +78,16 @@ public abstract class AbsRecyclerAdapter extends RecyclerView.Adapter<AbsRecycle
         holder.keyValue.setText(keyValue);
         holder.itemView.setBackgroundColor(ContextCompat.getColor(context, position % 2 == 1 ? android.R.color.transparent : R.color.semi_transparent));
         holder.itemView.setOnClickListener(v -> {
-            View editDialogView = LayoutInflater.from(context).inflate(R.layout.dialog_edit, null);
+            boolean editableInput = this instanceof SettingsRecyclerAdapter;
+            View editDialogView = View.inflate(context, R.layout.dialog_edit, null);
             editDialogView.findViewById(R.id.button_help).setOnClickListener(v2 -> openHelp(keyName));
             ((TextView) editDialogView.findViewById(R.id.title)).setText(keyName);
             TextInputEditText editText = editDialogView.findViewById(R.id.txt);
             editText.setText(keyValue);
-            editText.requestFocus();
-            if (keyValue != null) {
-                editText.setSelection(0, keyValue.length());
-            }
             MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context)
                     .setView(editDialogView)
                     .setNegativeButton(R.string.close, null);
-            if (this instanceof SettingsRecyclerAdapter) {
+            if (editableInput) {
                 builder.setPositiveButton(R.string.save, (dialog, which) -> {
                     Editable editable = editText.getText();
                     if (editable == null) return;
@@ -107,7 +106,21 @@ public abstract class AbsRecyclerAdapter extends RecyclerView.Adapter<AbsRecycle
             } else {
                 editText.setKeyListener(null);
             }
-            builder.show();
+            AlertDialog dialog = builder.create();
+            dialog.setOnShowListener(dialogInterface -> {
+                if (editableInput) {
+                    editText.requestFocus();
+                    editText.requestFocusFromTouch();
+                    if (keyValue != null) {
+                        editText.setSelection(0, keyValue.length());
+                    }
+                    editText.postDelayed(() -> {
+                        InputMethodManager imm = (InputMethodManager) editText.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT);
+                    }, 200);
+                }
+            });
+            dialog.show();
         });
     }
 
