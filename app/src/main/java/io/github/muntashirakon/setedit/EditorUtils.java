@@ -31,9 +31,12 @@ public class EditorUtils {
      * @return {@code true} if granted, {@code null} if is being granted and {@code false} otherwise
      */
     @Nullable
-    public static Boolean checkPermission(@NonNull Context context, @NonNull String tableType) {
-        String permission = "system".equals(tableType) ? Manifest.permission.WRITE_SETTINGS : Manifest.permission.WRITE_SECURE_SETTINGS;
-        if ("system".equals(tableType) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.System.canWrite(context)) {
+    public static Boolean checkPermission(@NonNull Context context, @SettingsType String settingsType) {
+        String permission = SettingsType.SYSTEM_SETTINGS.equals(settingsType)
+                ? Manifest.permission.WRITE_SETTINGS : Manifest.permission.WRITE_SECURE_SETTINGS;
+        if (SettingsType.SYSTEM_SETTINGS.equals(settingsType)
+                && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                && !Settings.System.canWrite(context)) {
             try {
                 Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS)
                         .setData(Uri.parse("package:" + BuildConfig.APPLICATION_ID));

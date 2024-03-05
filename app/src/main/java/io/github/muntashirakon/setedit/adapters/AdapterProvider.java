@@ -2,6 +2,8 @@ package io.github.muntashirakon.setedit.adapters;
 
 import android.content.Context;
 
+import io.github.muntashirakon.setedit.SettingsType;
+
 public class AdapterProvider {
     private final Context context;
 
@@ -12,11 +14,11 @@ public class AdapterProvider {
     public AbsRecyclerAdapter getRecyclerAdapter(int position) {
         switch (position) {
             case 0:
-                return new SettingsRecyclerAdapter(context, "system");
+                return new SettingsRecyclerAdapter(context, SettingsType.SYSTEM_SETTINGS);
             case 1:
-                return new SettingsRecyclerAdapter(context, "secure");
+                return new SettingsRecyclerAdapter(context, SettingsType.SECURE_SETTINGS);
             case 2:
-                return new SettingsRecyclerAdapter(context, "global");
+                return new SettingsRecyclerAdapter(context, SettingsType.GLOBAL_SETTINGS);
             case 3:
                 return new AndroidPropertiesRecyclerAdapter(context);
             case 4:
