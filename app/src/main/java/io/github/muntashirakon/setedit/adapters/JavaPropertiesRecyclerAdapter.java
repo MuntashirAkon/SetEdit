@@ -8,36 +8,37 @@ import androidx.annotation.NonNull;
 import androidx.core.util.Pair;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
-import java.util.Set;
 
 class JavaPropertiesRecyclerAdapter extends AbsRecyclerAdapter {
-    private final Properties PROPERTIES = System.getProperties();
-    private final String[] propertyNames;
-    private final List<Integer> matchedIndexes = new ArrayList<>(PROPERTIES.size());
-    private Filter filter;
+    private Properties mProperties;
+    private final List<String> mPropertyNames = new ArrayList<>();
+    private final List<Integer> mMatchedIndexes = new ArrayList<>();
+    private Filter mFilter;
 
     public JavaPropertiesRecyclerAdapter(Context context) {
         super(context);
-        Set<String> stringPropertyNames = PROPERTIES.stringPropertyNames();
-        int size = stringPropertyNames.size();
-        propertyNames = new String[size];
-        Iterator<String> it = stringPropertyNames.iterator();
-        for (int i = 0; i < size; i++) propertyNames[i] = it.next();
-        Arrays.sort(propertyNames, String.CASE_INSENSITIVE_ORDER);
+        refresh();
+    }
+
+    @Override
+    public void refresh() {
+        mProperties = System.getProperties();
+        mPropertyNames.clear();
+        mPropertyNames.addAll(mProperties.stringPropertyNames());
+        Collections.sort(mPropertyNames);
         getFilter().filter(null);
     }
 
     @NonNull
     @Override
     public List<Pair<String, String>> getAllItems() {
-        List<Pair<String, String>> items = new ArrayList<>(propertyNames.length);
-        for (String key : propertyNames) {
-            items.add(new Pair<>(key, PROPERTIES.getProperty(key)));
+        List<Pair<String, String>> items = new ArrayList<>(mPropertyNames.size());
+        for (String key : mPropertyNames) {
+            items.add(new Pair<>(key, mProperties.getProperty(key)));
         }
         return items;
     }
@@ -49,34 +50,34 @@ class JavaPropertiesRecyclerAdapter extends AbsRecyclerAdapter {
 
     @Override
     public Pair<String, String> getItem(int position) {
-        String key = this.propertyNames[matchedIndexes.get(position)];
-        String property = PROPERTIES.getProperty(key);
+        String key = mPropertyNames.get(mMatchedIndexes.get(position));
+        String property = mProperties.getProperty(key);
         return new Pair<>(key, property);
     }
 
     @Override
     public long getItemId(int position) {
-        return this.propertyNames[matchedIndexes.get(position)].hashCode();
+        return mPropertyNames.get(mMatchedIndexes.get(position)).hashCode();
     }
 
     @Override
     public int getItemCount() {
-        return matchedIndexes.size();
+        return mMatchedIndexes.size();
     }
 
     @Override
     protected Filter getFilter() {
-        if (filter == null) {
-            filter = new Filter() {
+        if (mFilter == null) {
+            mFilter = new Filter() {
                 @Override
                 protected FilterResults performFiltering(CharSequence constraint) {
                     FilterResults results = new FilterResults();
-                    List<Integer> matchedIndexes = new ArrayList<>(propertyNames.length);
+                    List<Integer> matchedIndexes = new ArrayList<>(mPropertyNames.size());
                     if (TextUtils.isEmpty(constraint)) {
-                        for (int i = 0; i < propertyNames.length; ++i) matchedIndexes.add(i);
+                        for (int i = 0; i < mPropertyNames.size(); ++i) matchedIndexes.add(i);
                     } else {
-                        for (int i = 0; i < propertyNames.length; ++i) {
-                            if (propertyNames[i].toLowerCase(Locale.ROOT).contains(constraint)) {
+                        for (int i = 0; i < mPropertyNames.size(); ++i) {
+                            if (mPropertyNames.get(i).toLowerCase(Locale.ROOT).contains(constraint)) {
                                 matchedIndexes.add(i);
                             }
                         }
@@ -88,13 +89,13 @@ class JavaPropertiesRecyclerAdapter extends AbsRecyclerAdapter {
 
                 @Override
                 protected void publishResults(CharSequence constraint, FilterResults results) {
-                    matchedIndexes.clear();
                     //noinspection unchecked
-                    matchedIndexes.addAll((List<Integer>) results.values);
-                    notifyDataSetChanged();
+                    AdapterUtils.notifyDataSetChanged(JavaPropertiesRecyclerAdapter.this, mMatchedIndexes,
+                            (List<Integer>) results.values);
+
                 }
             };
         }
-        return filter;
+        return mFilter;
     }
 }

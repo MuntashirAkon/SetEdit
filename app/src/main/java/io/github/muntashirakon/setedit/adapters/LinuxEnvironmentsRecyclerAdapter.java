@@ -8,36 +8,37 @@ import androidx.annotation.NonNull;
 import androidx.core.util.Pair;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 class LinuxEnvironmentsRecyclerAdapter extends AbsRecyclerAdapter {
-    private final Map<String, String> ENV_VAR_MAP = System.getenv();
-    private final String[] envVars;
-    private final List<Integer> matchedIndexes = new ArrayList<>(ENV_VAR_MAP.size());
-    private Filter filter;
+    private Map<String, String> mEnvVarMap = Collections.emptyMap();
+    private final List<String> mEnvVars = new ArrayList<>();
+    private final List<Integer> mMatchedIndexes = new ArrayList<>();
+    private Filter mFilter;
 
     public LinuxEnvironmentsRecyclerAdapter(Context context) {
         super(context);
-        int size = this.ENV_VAR_MAP.size();
-        this.envVars = new String[size];
-        Iterator<String> it = this.ENV_VAR_MAP.keySet().iterator();
-        for (int i = 0; i < size; i++) {
-            this.envVars[i] = it.next();
-        }
-        Arrays.sort(this.envVars, String.CASE_INSENSITIVE_ORDER);
+        refresh();
+    }
+
+    @Override
+    public void refresh() {
+        mEnvVarMap = System.getenv();
+        mEnvVars.clear();
+        mEnvVars.addAll(mEnvVarMap.keySet());
+        Collections.sort(mEnvVars);
         getFilter().filter(null);
     }
 
     @NonNull
     @Override
     public List<Pair<String, String>> getAllItems() {
-        List<Pair<String, String>> items = new ArrayList<>(envVars.length);
-        for (String key : envVars) {
-            items.add(new Pair<>(key, ENV_VAR_MAP.get(key)));
+        List<Pair<String, String>> items = new ArrayList<>(mEnvVars.size());
+        for (String key : mEnvVars) {
+            items.add(new Pair<>(key, mEnvVarMap.get(key)));
         }
         return items;
     }
@@ -49,34 +50,34 @@ class LinuxEnvironmentsRecyclerAdapter extends AbsRecyclerAdapter {
 
     @Override
     public Pair<String, String> getItem(int position) {
-        String key = this.envVars[matchedIndexes.get(position)];
-        String value = this.ENV_VAR_MAP.get(key);
+        String key = mEnvVars.get(mMatchedIndexes.get(position));
+        String value = mEnvVarMap.get(key);
         return new Pair<>(key, value);
     }
 
     @Override
     public int getItemCount() {
-        return matchedIndexes.size();
+        return mMatchedIndexes.size();
     }
 
     @Override
     public long getItemId(int position) {
-        return this.envVars[matchedIndexes.get(position)].hashCode();
+        return mEnvVars.get(mMatchedIndexes.get(position)).hashCode();
     }
 
     @Override
     protected Filter getFilter() {
-        if (filter == null) {
-            filter = new Filter() {
+        if (mFilter == null) {
+            mFilter = new Filter() {
                 @Override
                 protected FilterResults performFiltering(CharSequence constraint) {
                     FilterResults results = new FilterResults();
-                    List<Integer> matchedIndexes = new ArrayList<>(envVars.length);
+                    List<Integer> matchedIndexes = new ArrayList<>(mEnvVars.size());
                     if (TextUtils.isEmpty(constraint)) {
-                        for (int i = 0; i < envVars.length; ++i) matchedIndexes.add(i);
+                        for (int i = 0; i < mEnvVars.size(); ++i) matchedIndexes.add(i);
                     } else {
-                        for (int i = 0; i < envVars.length; ++i) {
-                            if (envVars[i].toLowerCase(Locale.ROOT).contains(constraint)) {
+                        for (int i = 0; i < mEnvVars.size(); ++i) {
+                            if (mEnvVars.get(i).toLowerCase(Locale.ROOT).contains(constraint)) {
                                 matchedIndexes.add(i);
                             }
                         }
@@ -88,13 +89,12 @@ class LinuxEnvironmentsRecyclerAdapter extends AbsRecyclerAdapter {
 
                 @Override
                 protected void publishResults(CharSequence constraint, FilterResults results) {
-                    matchedIndexes.clear();
                     //noinspection unchecked
-                    matchedIndexes.addAll((List<Integer>) results.values);
-                    notifyDataSetChanged();
+                    AdapterUtils.notifyDataSetChanged(LinuxEnvironmentsRecyclerAdapter.this, mMatchedIndexes,
+                            (List<Integer>) results.values);
                 }
             };
         }
-        return filter;
+        return mFilter;
     }
 }

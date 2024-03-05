@@ -34,6 +34,8 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import io.github.muntashirakon.setedit.adapters.AbsRecyclerAdapter;
 import io.github.muntashirakon.setedit.adapters.AdapterProvider;
@@ -139,6 +141,13 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
         UiUtils.applyWindowInsetsAsMargin(addNewItem);
         // Display warning if it's the first time
         displayOneTimeWarningDialog();
+        // Refresh settings after 5 seconds
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                runOnUiThread(() -> adapter.refresh());
+            }
+        }, 5000, 5000);
     }
 
     @Override

@@ -32,6 +32,8 @@ public abstract class AbsRecyclerAdapter extends RecyclerView.Adapter<AbsRecycle
         this.context = context;
     }
 
+    public abstract void refresh();
+
     @NonNull
     public abstract List<Pair<String, String>> getAllItems();
 

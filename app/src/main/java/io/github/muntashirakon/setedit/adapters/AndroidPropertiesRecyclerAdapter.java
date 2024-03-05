@@ -20,6 +20,12 @@ class AndroidPropertiesRecyclerAdapter extends AbsRecyclerAdapter {
 
     public AndroidPropertiesRecyclerAdapter(Context context) {
         super(context);
+        refresh();
+    }
+
+    @Override
+    public void refresh() {
+        propertyList.clear();
         Native.setPropertyList(propertyList);
         getFilter().filter(null);
     }
@@ -81,10 +87,9 @@ class AndroidPropertiesRecyclerAdapter extends AbsRecyclerAdapter {
 
                 @Override
                 protected void publishResults(CharSequence constraint, FilterResults results) {
-                    matchedIndexes.clear();
                     //noinspection unchecked
-                    matchedIndexes.addAll((List<Integer>) results.values);
-                    notifyDataSetChanged();
+                    AdapterUtils.notifyDataSetChanged(AndroidPropertiesRecyclerAdapter.this, matchedIndexes,
+                            (List<Integer>) results.values);
                 }
             };
         }

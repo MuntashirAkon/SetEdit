@@ -38,7 +38,11 @@ public class SettingsRecyclerAdapter extends AbsRecyclerAdapter {
         super(context);
         mSettingsType = settingsType;
         mMatchedPositions = new ArrayList<>();
-        swapCursor(getCursor(context, settingsType));
+        refresh();
+    }
+
+    public void refresh() {
+        swapCursor(getCursor(context, mSettingsType));
     }
 
     @NonNull
@@ -114,7 +118,7 @@ public class SettingsRecyclerAdapter extends AbsRecyclerAdapter {
             contentValues.put("name", name);
             contentValues.put("value", value);
             contentResolver.insert(Uri.parse("content://settings/" + mSettingsType), contentValues);
-            swapCursor(getCursor(context, mSettingsType));
+            refresh();
         } catch (Throwable th) {
             th.printStackTrace();
             setMessage(new SpannableStringBuilder(context.getText(R.string.error_unexpected))
@@ -134,7 +138,7 @@ public class SettingsRecyclerAdapter extends AbsRecyclerAdapter {
         try {
             String[] strArr = {keyName};
             contentResolver.delete(Uri.parse("content://settings/" + mSettingsType), "name = ?", strArr);
-            swapCursor(getCursor(context, mSettingsType));
+            refresh();
         } catch (Throwable th) {
             th.printStackTrace();
             setMessage(new SpannableStringBuilder(context.getText(R.string.error_unexpected))
@@ -192,10 +196,9 @@ public class SettingsRecyclerAdapter extends AbsRecyclerAdapter {
 
                 @Override
                 protected void publishResults(CharSequence constraint, FilterResults results) {
-                    mMatchedPositions.clear();
                     //noinspection unchecked
-                    mMatchedPositions.addAll((List<Integer>) results.values);
-                    notifyDataSetChanged();
+                    AdapterUtils.notifyDataSetChanged(SettingsRecyclerAdapter.this, mMatchedPositions,
+                            (List<Integer>) results.values);
                 }
             };
         }
