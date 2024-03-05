@@ -30,7 +30,7 @@ class LinuxEnvironmentsRecyclerAdapter extends AbsRecyclerAdapter {
         mEnvVars.clear();
         mEnvVars.addAll(mEnvVarMap.keySet());
         Collections.sort(mEnvVars);
-        getFilter().filter(null);
+        filter();
     }
 
     @NonNull

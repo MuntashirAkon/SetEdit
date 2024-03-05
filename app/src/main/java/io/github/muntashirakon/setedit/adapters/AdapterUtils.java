@@ -14,15 +14,15 @@ public final class AdapterUtils {
         int currentCount = baseList.size();
         if (previousCount > currentCount) {
             // Some values removed
-            adapter.notifyItemChanged(0, currentCount);
+            adapter.notifyItemRangeChanged(0, currentCount);
             adapter.notifyItemRangeRemoved(currentCount, previousCount - currentCount);
         } else if (previousCount < currentCount) {
             // Some values added
-            adapter.notifyItemChanged(0, previousCount);
+            adapter.notifyItemRangeChanged(0, previousCount);
             adapter.notifyItemRangeInserted(previousCount, currentCount - previousCount);
         } else {
             // No values added or removed
-            adapter.notifyItemChanged(0, previousCount);
+            adapter.notifyItemRangeChanged(0, previousCount);
         }
     }
 }

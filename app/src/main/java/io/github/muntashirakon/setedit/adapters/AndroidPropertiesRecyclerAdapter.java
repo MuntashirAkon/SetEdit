@@ -1,17 +1,21 @@
 package io.github.muntashirakon.setedit.adapters;
 
 import android.content.Context;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.widget.Filter;
 
 import androidx.annotation.NonNull;
 import androidx.core.util.Pair;
 
+import com.topjohnwu.superuser.Shell;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 import io.github.muntashirakon.setedit.Native;
+import io.github.muntashirakon.setedit.R;
 
 class AndroidPropertiesRecyclerAdapter extends AbsRecyclerAdapter {
     private final List<String[]> propertyList = new ArrayList<>();
@@ -27,7 +31,7 @@ class AndroidPropertiesRecyclerAdapter extends AbsRecyclerAdapter {
     public void refresh() {
         propertyList.clear();
         Native.setPropertyList(propertyList);
-        getFilter().filter(null);
+        filter();
     }
 
     @NonNull
@@ -43,6 +47,23 @@ class AndroidPropertiesRecyclerAdapter extends AbsRecyclerAdapter {
     @Override
     public int getListType() {
         return 3;
+    }
+
+    @Override
+    public boolean canEdit() {
+        return Boolean.TRUE.equals(Shell.isAppGrantedRoot());
+    }
+
+    @Override
+    public void update(String keyName, String newValue) {
+        Shell.Result result = Shell.cmd("resetprop " + keyName + " \"" + newValue + "\"").exec();
+        if (result.isSuccess()) {
+            refresh();
+        } else {
+            setMessage(new SpannableStringBuilder(context.getText(R.string.error_unexpected))
+                    .append(" ")
+                    .append(TextUtils.join("\n", result.getErr())));
+        }
     }
 
     @Override

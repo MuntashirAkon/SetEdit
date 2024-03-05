@@ -10,13 +10,23 @@ import androidx.annotation.Nullable;
 import androidx.core.view.WindowCompat;
 
 import com.google.android.material.color.DynamicColors;
+import com.topjohnwu.superuser.Shell;
 
 public class App extends Application {
+    static {
+        // Set settings before the main shell can be created
+        Shell.enableVerboseLogging = BuildConfig.DEBUG;
+        Shell.setDefaultBuilder(Shell.Builder.create()
+                .setFlags(Shell.FLAG_MOUNT_MASTER)
+                .setTimeout(10));
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
         DynamicColors.applyToActivitiesIfAvailable(this);
         registerActivityLifecycleCallbacks(new ActivityAppearanceCallback());
+        Shell.getShell();
     }
 
     public static class ActivityAppearanceCallback implements Application.ActivityLifecycleCallbacks {

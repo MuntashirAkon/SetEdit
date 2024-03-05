@@ -30,7 +30,7 @@ class JavaPropertiesRecyclerAdapter extends AbsRecyclerAdapter {
         mPropertyNames.clear();
         mPropertyNames.addAll(mProperties.stringPropertyNames());
         Collections.sort(mPropertyNames);
-        getFilter().filter(null);
+        filter();
     }
 
     @NonNull
