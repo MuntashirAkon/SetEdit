@@ -116,9 +116,7 @@ public abstract class AbsRecyclerAdapter extends RecyclerView.Adapter<AbsRecycle
                 editText.setKeyListener(null);
             }
             if (canDelete()) {
-                builder.setNeutralButton(R.string.delete, (dialog, which) -> {
-                    delete(keyName);
-                });
+                builder.setNeutralButton(R.string.delete, (dialog, which) -> delete(keyName));
             }
             AlertDialog dialog = builder.create();
             dialog.setOnShowListener(dialogInterface -> {

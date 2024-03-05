@@ -41,6 +41,7 @@ import io.github.muntashirakon.setedit.adapters.AbsRecyclerAdapter;
 import io.github.muntashirakon.setedit.adapters.AdapterProvider;
 import io.github.muntashirakon.setedit.adapters.SettingsRecyclerAdapter;
 import io.github.muntashirakon.util.UiUtils;
+import me.zhanghai.android.fastscroll.FastScrollerBuilder;
 
 public class EditorActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener,
         SearchView.OnQueryTextListener {
@@ -123,6 +124,7 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
         // List view
         listView = findViewById(R.id.recycler_view);
         listView.setLayoutManager(new LinearLayoutManager(this));
+        new FastScrollerBuilder(listView).useMd2Style().build();
         // Add efab
         addNewItem = findViewById(R.id.efab);
         addNewItem.setOnClickListener(v -> {
