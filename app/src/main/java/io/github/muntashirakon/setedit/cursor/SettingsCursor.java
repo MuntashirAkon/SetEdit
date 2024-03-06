@@ -133,7 +133,6 @@ public class SettingsCursor implements Cursor {
         return cursor == null ? Long.MIN_VALUE : cursor.getLong(i);
     }
 
-    @TargetApi(19)
     @Override
     public Uri getNotificationUri() {
         return cursor == null ? null : cursor.getNotificationUri();
@@ -156,7 +155,7 @@ public class SettingsCursor implements Cursor {
 
     @Override
     public int getType(int i) {
-        return cursor == null ? 0 : cursor.getType(i);
+        return cursor == null ? FIELD_TYPE_NULL : cursor.getType(i);
     }
 
     @Override

@@ -16,6 +16,8 @@ import java.util.Locale;
 
 import io.github.muntashirakon.setedit.Native;
 import io.github.muntashirakon.setedit.R;
+import io.github.muntashirakon.setedit.utils.ActionResult;
+import io.github.muntashirakon.setedit.utils.AndroidPropertyUtils;
 
 class AndroidPropertiesRecyclerAdapter extends AbsRecyclerAdapter {
     private final List<String[]> propertyList = new ArrayList<>();
@@ -56,13 +58,13 @@ class AndroidPropertiesRecyclerAdapter extends AbsRecyclerAdapter {
 
     @Override
     public void update(String keyName, String newValue) {
-        Shell.Result result = Shell.cmd("resetprop " + keyName + " \"" + newValue + "\"").exec();
-        if (result.isSuccess()) {
+        ActionResult result = AndroidPropertyUtils.update(keyName, newValue);
+        if (result.successful) {
             refresh();
         } else {
             setMessage(new SpannableStringBuilder(context.getText(R.string.error_unexpected))
                     .append(" ")
-                    .append(TextUtils.join("\n", result.getErr())));
+                    .append(result.getLogs()));
         }
     }
 

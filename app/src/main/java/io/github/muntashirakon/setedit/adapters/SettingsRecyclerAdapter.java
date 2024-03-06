@@ -1,7 +1,6 @@
 package io.github.muntashirakon.setedit.adapters;
 
 import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.MatrixCursor;
@@ -14,17 +13,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.util.Pair;
 
-import com.topjohnwu.superuser.Shell;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-import io.github.muntashirakon.setedit.EditorUtils;
 import io.github.muntashirakon.setedit.R;
 import io.github.muntashirakon.setedit.SettingsType;
 import io.github.muntashirakon.setedit.cursor.SettingsCursor;
+import io.github.muntashirakon.setedit.utils.ActionResult;
+import io.github.muntashirakon.setedit.utils.SettingsUtils;
 
 public class SettingsRecyclerAdapter extends AbsRecyclerAdapter {
     public static final String[] columns = {"_id", "name", "value"};
@@ -97,72 +95,37 @@ public class SettingsRecyclerAdapter extends AbsRecyclerAdapter {
 
     @Override
     public void create(String keyName, String newValue) {
-        update(keyName, newValue);
+        ActionResult result = SettingsUtils.create(context, mSettingsType, keyName, newValue);
+        if (result.successful) {
+            refresh();
+        } else {
+            setMessage(new SpannableStringBuilder(context.getText(R.string.error_unexpected))
+                    .append(" ")
+                    .append(result.getLogs()));
+        }
     }
 
     @Override
     public void update(String keyName, String newValue) {
-        if (Boolean.TRUE.equals(Shell.isAppGrantedRoot())) {
-            Shell.Result result = Shell.cmd("settings put " + mSettingsType + " " + keyName + " \"" + newValue + "\"").exec();
-            if (result.isSuccess()) {
-                refresh();
-            } else {
-                setMessage(new SpannableStringBuilder(context.getText(R.string.error_unexpected))
-                        .append(" ")
-                        .append(TextUtils.join("\n", result.getErr())));
-            }
-            return;
-        }
-        Boolean isGranted = EditorUtils.checkSettingsPermission(context, mSettingsType);
-        if (isGranted == null) return;
-        if (!isGranted) {
-            EditorUtils.displayGrantPermissionMessage(context);
-            return;
-        }
-        ContentResolver contentResolver = context.getContentResolver();
-        try {
-            ContentValues contentValues = new ContentValues(2);
-            contentValues.put("name", keyName);
-            contentValues.put("value", newValue);
-            contentResolver.insert(Uri.parse("content://settings/" + mSettingsType), contentValues);
+        ActionResult result = SettingsUtils.update(context, mSettingsType, keyName, newValue);
+        if (result.successful) {
             refresh();
-        } catch (Throwable th) {
-            th.printStackTrace();
+        } else {
             setMessage(new SpannableStringBuilder(context.getText(R.string.error_unexpected))
                     .append(" ")
-                    .append(th.getMessage()));
+                    .append(result.getLogs()));
         }
     }
 
     @Override
     public void delete(String keyName) {
-        if (Boolean.TRUE.equals(Shell.isAppGrantedRoot())) {
-            Shell.Result result = Shell.cmd("settings delete " + mSettingsType + " " + keyName).exec();
-            if (result.isSuccess()) {
-                refresh();
-            } else {
-                setMessage(new SpannableStringBuilder(context.getText(R.string.error_unexpected))
-                        .append(" ")
-                        .append(TextUtils.join("\n", result.getErr())));
-            }
-            return;
-        }
-        Boolean isGranted = EditorUtils.checkSettingsPermission(context, mSettingsType);
-        if (isGranted == null) return;
-        if (!isGranted) {
-            EditorUtils.displayGrantPermissionMessage(context);
-            return;
-        }
-        ContentResolver contentResolver = context.getContentResolver();
-        try {
-            String[] strArr = {keyName};
-            contentResolver.delete(Uri.parse("content://settings/" + mSettingsType), "name = ?", strArr);
+        ActionResult result = SettingsUtils.delete(context, mSettingsType, keyName);
+        if (result.successful) {
             refresh();
-        } catch (Throwable th) {
-            th.printStackTrace();
+        } else {
             setMessage(new SpannableStringBuilder(context.getText(R.string.error_unexpected))
                     .append(" ")
-                    .append(th.getMessage()));
+                    .append(result.getLogs()));
         }
     }
 
