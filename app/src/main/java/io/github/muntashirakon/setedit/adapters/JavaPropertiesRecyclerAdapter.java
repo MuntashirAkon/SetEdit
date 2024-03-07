@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 
+import io.github.muntashirakon.setedit.TableTypeInt;
+
 class JavaPropertiesRecyclerAdapter extends AbsRecyclerAdapter {
     private Properties mProperties;
     private final List<String> mPropertyNames = new ArrayList<>();
@@ -45,7 +47,7 @@ class JavaPropertiesRecyclerAdapter extends AbsRecyclerAdapter {
 
     @Override
     public int getListType() {
-        return 4;
+        return TableTypeInt.TABLE_JAVA;
     }
 
     @Override

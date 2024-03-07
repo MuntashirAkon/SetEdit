@@ -24,6 +24,7 @@ import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 
@@ -40,6 +41,9 @@ import java.util.TimerTask;
 import io.github.muntashirakon.setedit.adapters.AbsRecyclerAdapter;
 import io.github.muntashirakon.setedit.adapters.AdapterProvider;
 import io.github.muntashirakon.setedit.adapters.SettingsRecyclerAdapter;
+import io.github.muntashirakon.setedit.boot.BootItem;
+import io.github.muntashirakon.setedit.boot.BootUtils;
+import io.github.muntashirakon.setedit.utils.ActionResult;
 import io.github.muntashirakon.util.UiUtils;
 import me.zhanghai.android.fastscroll.FastScrollerBuilder;
 
@@ -88,6 +92,10 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
         View editorDialogView = getLayoutInflater().inflate(R.layout.dialog_new, null);
         EditText keyNameView = editorDialogView.findViewById(R.id.txtName);
         EditText keyValueView = editorDialogView.findViewById(R.id.txtValue);
+        MaterialCheckBox performOnReboot = editorDialogView.findViewById(R.id.checkbox);
+        if (adapter.canSetOnReboot()) {
+            performOnReboot.setVisibility(View.VISIBLE);
+        } else performOnReboot.setVisibility(View.GONE);
         keyNameView.requestFocus();
         new MaterialAlertDialogBuilder(this)
                 .setView(editorDialogView)
@@ -97,6 +105,10 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
                     Editable keyValue = keyValueView.getText();
                     if (TextUtils.isEmpty(keyName) || keyValue == null) return;
                     adapter.create(keyName.toString(), keyValue.toString());
+                    if (adapter.canSetOnReboot() && performOnReboot.isChecked()) {
+                        BootItem bootItem = new BootItem(ActionResult.TYPE_CREATE, EditorUtils.toTableType(adapter.getListType()), keyName.toString(), keyValue.toString());
+                        BootUtils.add(this, bootItem);
+                    }
                 }))
                 .setNegativeButton(android.R.string.cancel, null)
                 .show();

@@ -65,6 +65,12 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <com.google.android.material.checkbox.MaterialCheckBox
+            android:id="@+id/checkbox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/perform_this_action_on_reboot" />
+
     </androidx.appcompat.widget.LinearLayoutCompat>
 
 </ScrollView>

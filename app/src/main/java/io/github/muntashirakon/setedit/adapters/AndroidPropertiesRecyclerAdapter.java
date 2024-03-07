@@ -16,6 +16,7 @@ import java.util.Locale;
 
 import io.github.muntashirakon.setedit.Native;
 import io.github.muntashirakon.setedit.R;
+import io.github.muntashirakon.setedit.TableTypeInt;
 import io.github.muntashirakon.setedit.utils.ActionResult;
 import io.github.muntashirakon.setedit.utils.AndroidPropertyUtils;
 
@@ -41,14 +42,19 @@ class AndroidPropertiesRecyclerAdapter extends AbsRecyclerAdapter {
     public List<Pair<String, String>> getAllItems() {
         List<Pair<String, String>> items = new ArrayList<>(propertyList.size());
         for (String[] pair : propertyList) {
-            items.add(new Pair<>(pair[0], pair[0]));
+            items.add(new Pair<>(pair[0], pair[1]));
         }
         return items;
     }
 
     @Override
     public int getListType() {
-        return 3;
+        return TableTypeInt.TABLE_PROPERTIES;
+    }
+
+    @Override
+    public boolean canSetOnReboot() {
+        return true;
     }
 
     @Override

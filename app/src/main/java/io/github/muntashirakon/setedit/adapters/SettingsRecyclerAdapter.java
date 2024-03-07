@@ -20,6 +20,7 @@ import java.util.Locale;
 
 import io.github.muntashirakon.setedit.R;
 import io.github.muntashirakon.setedit.SettingsType;
+import io.github.muntashirakon.setedit.TableTypeInt;
 import io.github.muntashirakon.setedit.cursor.SettingsCursor;
 import io.github.muntashirakon.setedit.utils.ActionResult;
 import io.github.muntashirakon.setedit.utils.SettingsUtils;
@@ -70,12 +71,17 @@ public class SettingsRecyclerAdapter extends AbsRecyclerAdapter {
         switch (mSettingsType) {
             default:
             case SettingsType.SYSTEM_SETTINGS:
-                return 0;
+                return TableTypeInt.TABLE_SYSTEM;
             case SettingsType.SECURE_SETTINGS:
-                return 1;
+                return TableTypeInt.TABLE_SECURE;
             case SettingsType.GLOBAL_SETTINGS:
-                return 2;
+                return TableTypeInt.TABLE_GLOBAL;
         }
+    }
+
+    @Override
+    public boolean canSetOnReboot() {
+        return true;
     }
 
     @Override

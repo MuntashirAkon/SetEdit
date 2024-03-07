@@ -3,6 +3,7 @@ package io.github.muntashirakon.setedit.adapters;
 import android.content.Context;
 
 import io.github.muntashirakon.setedit.SettingsType;
+import io.github.muntashirakon.setedit.TableTypeInt;
 
 public class AdapterProvider {
     private final Context context;
@@ -11,20 +12,22 @@ public class AdapterProvider {
         this.context = context;
     }
 
-    public AbsRecyclerAdapter getRecyclerAdapter(int position) {
+    public AbsRecyclerAdapter getRecyclerAdapter(@TableTypeInt int position) {
         switch (position) {
-            case 0:
+            case TableTypeInt.TABLE_SYSTEM:
                 return new SettingsRecyclerAdapter(context, SettingsType.SYSTEM_SETTINGS);
-            case 1:
+            case TableTypeInt.TABLE_SECURE:
                 return new SettingsRecyclerAdapter(context, SettingsType.SECURE_SETTINGS);
-            case 2:
+            case TableTypeInt.TABLE_GLOBAL:
                 return new SettingsRecyclerAdapter(context, SettingsType.GLOBAL_SETTINGS);
-            case 3:
+            case TableTypeInt.TABLE_PROPERTIES:
                 return new AndroidPropertiesRecyclerAdapter(context);
-            case 4:
+            case TableTypeInt.TABLE_JAVA:
                 return new JavaPropertiesRecyclerAdapter(context);
-            case 5:
+            case TableTypeInt.TABLE_ENV:
                 return new LinuxEnvironmentsRecyclerAdapter(context);
+            case TableTypeInt.TABLE_BOOT:
+                return new BootItemsRecyclerAdapter(context);
             default:
                 throw new IllegalArgumentException("Invalid position " + position);
         }

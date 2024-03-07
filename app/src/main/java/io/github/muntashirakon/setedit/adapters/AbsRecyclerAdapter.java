@@ -17,12 +17,18 @@ import androidx.core.content.ContextCompat;
 import androidx.core.util.Pair;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.List;
 
+import io.github.muntashirakon.setedit.EditorUtils;
 import io.github.muntashirakon.setedit.R;
+import io.github.muntashirakon.setedit.TableTypeInt;
+import io.github.muntashirakon.setedit.boot.BootItem;
+import io.github.muntashirakon.setedit.boot.BootUtils;
+import io.github.muntashirakon.setedit.utils.ActionResult;
 
 public abstract class AbsRecyclerAdapter extends RecyclerView.Adapter<AbsRecyclerAdapter.ViewHolder> {
     protected final Context context;
@@ -38,6 +44,7 @@ public abstract class AbsRecyclerAdapter extends RecyclerView.Adapter<AbsRecycle
     @NonNull
     public abstract List<Pair<String, String>> getAllItems();
 
+    @TableTypeInt
     public abstract int getListType();
 
     public void filter(String constraint) {
@@ -47,6 +54,10 @@ public abstract class AbsRecyclerAdapter extends RecyclerView.Adapter<AbsRecycle
 
     public void filter() {
         getFilter().filter(constraint);
+    }
+
+    public boolean canSetOnReboot() {
+        return false;
     }
 
     public boolean canCreate() {
@@ -102,21 +113,37 @@ public abstract class AbsRecyclerAdapter extends RecyclerView.Adapter<AbsRecycle
             editDialogView.findViewById(R.id.button_help).setOnClickListener(v2 -> openHelp(keyName));
             ((TextView) editDialogView.findViewById(R.id.title)).setText(keyName);
             TextInputEditText editText = editDialogView.findViewById(R.id.txt);
+            MaterialCheckBox performOnReboot = editDialogView.findViewById(R.id.checkbox);
+            boolean canEdit = canEdit();
+            boolean canDelete = canDelete();
             editText.setText(keyValue);
             MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context)
                     .setView(editDialogView)
                     .setNegativeButton(R.string.close, null);
-            if (canEdit()) {
+            if (canSetOnReboot() && (canEdit || canDelete)) {
+                performOnReboot.setVisibility(View.VISIBLE);
+            } else performOnReboot.setVisibility(View.GONE);
+            if (canEdit) {
                 builder.setPositiveButton(R.string.save, (dialog, which) -> {
                     Editable editable = editText.getText();
                     if (editable == null) return;
                     update(keyName, editable.toString());
+                    if (canSetOnReboot() && performOnReboot.isChecked()) {
+                        BootItem bootItem = new BootItem(ActionResult.TYPE_UPDATE, EditorUtils.toTableType(getListType()), keyName, editable.toString());
+                        BootUtils.add(context, bootItem);
+                    }
                 });
             } else {
                 editText.setKeyListener(null);
             }
-            if (canDelete()) {
-                builder.setNeutralButton(R.string.delete, (dialog, which) -> delete(keyName));
+            if (canDelete) {
+                builder.setNeutralButton(R.string.delete, (dialog, which) -> {
+                    delete(keyName);
+                    if (canSetOnReboot() && performOnReboot.isChecked()) {
+                        BootItem bootItem = new BootItem(ActionResult.TYPE_DELETE, EditorUtils.toTableType(getListType()), keyName, null);
+                        BootUtils.add(context, bootItem);
+                    }
+                });
             }
             AlertDialog dialog = builder.create();
             dialog.setOnShowListener(dialogInterface -> {

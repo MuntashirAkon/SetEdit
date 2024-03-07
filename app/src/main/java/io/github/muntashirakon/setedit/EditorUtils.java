@@ -85,4 +85,26 @@ public class EditorUtils {
         }
         return jsonObject.toString(4);
     }
+
+    @TableType
+    public static String toTableType(@TableTypeInt int tableTypeInt) {
+        switch (tableTypeInt) {
+            case TableTypeInt.TABLE_SYSTEM:
+                return TableType.TABLE_SYSTEM;
+            case TableTypeInt.TABLE_SECURE:
+                return TableType.TABLE_SECURE;
+            case TableTypeInt.TABLE_GLOBAL:
+                return TableType.TABLE_GLOBAL;
+            case TableTypeInt.TABLE_PROPERTIES:
+                return TableType.TABLE_PROPERTIES;
+            case TableTypeInt.TABLE_JAVA:
+                return TableType.TABLE_JAVA;
+            case TableTypeInt.TABLE_ENV:
+                return TableType.TABLE_ENV;
+            case TableTypeInt.TABLE_BOOT:
+                return TableType.TABLE_BOOT;
+            default:
+                throw new IllegalArgumentException("Invalid table type: " + tableTypeInt);
+        }
+    }
 }

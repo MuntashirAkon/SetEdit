@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import io.github.muntashirakon.setedit.TableTypeInt;
+
 class LinuxEnvironmentsRecyclerAdapter extends AbsRecyclerAdapter {
     private Map<String, String> mEnvVarMap = Collections.emptyMap();
     private final List<String> mEnvVars = new ArrayList<>();
@@ -45,7 +47,7 @@ class LinuxEnvironmentsRecyclerAdapter extends AbsRecyclerAdapter {
 
     @Override
     public int getListType() {
-        return 5;
+        return TableTypeInt.TABLE_ENV;
     }
 
     @Override
