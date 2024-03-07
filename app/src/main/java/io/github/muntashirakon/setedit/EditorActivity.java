@@ -64,7 +64,7 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
     private SharedPreferences preferences;
 
     private final ActivityResultLauncher<String> post21SaveLauncher = registerForActivityResult(
-            new ActivityResultContracts.CreateDocument(),
+            new ActivityResultContracts.CreateDocument("application/json"),
             uri -> {
                 if (uri == null) return;
                 try (OutputStream os = getContentResolver().openOutputStream(uri)) {
