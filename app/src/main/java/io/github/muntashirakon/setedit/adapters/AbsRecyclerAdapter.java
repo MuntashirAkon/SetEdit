@@ -172,29 +172,29 @@ public abstract class AbsRecyclerAdapter extends RecyclerView.Adapter<AbsRecycle
 
     private void openHelp(String keyName) {
         String str;
-        StringBuilder sb = new StringBuilder("https://search.disroot.org/?q=android+");
+        StringBuilder sb = new StringBuilder("https://search.brave.com/search?q=android+");
         switch (getListType()) {
-            case 0:
+            case TableTypeInt.TABLE_SYSTEM:
                 str = "settings put system \"";
                 break;
-            case 1:
+            case TableTypeInt.TABLE_SECURE:
                 str = "settings put secure \"";
                 break;
-            case 2:
+            case TableTypeInt.TABLE_GLOBAL:
                 str = "settings put global \"";
                 break;
-            case 3:
+            case TableTypeInt.TABLE_PROPERTIES:
                 str = "setprop \"";
                 break;
-            case 4:
+            case TableTypeInt.TABLE_JAVA:
                 str = "java properties \"";
                 break;
-            case 5:
+            case TableTypeInt.TABLE_ENV:
                 str = "environment \"";
                 break;
             default:
-                str = "\"";
-                break;
+                // Unsupported
+                return;
         }
         sb.append(str);
         sb.append(Uri.encode(keyName));
