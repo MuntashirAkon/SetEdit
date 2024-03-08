@@ -103,6 +103,8 @@ public class EditorUtils {
                 return TableType.TABLE_ENV;
             case TableTypeInt.TABLE_BOOT:
                 return TableType.TABLE_BOOT;
+            case TableTypeInt.TABLE_SHORTCUTS:
+                return TableType.TABLE_SHORTCUTS;
             default:
                 throw new IllegalArgumentException("Invalid table type: " + tableTypeInt);
         }

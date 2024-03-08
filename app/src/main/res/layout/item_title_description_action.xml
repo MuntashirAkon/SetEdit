@@ -1,0 +1,56 @@
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/item_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:focusable="true"
+    android:paddingHorizontal="8dp"
+    android:paddingVertical="8dp">
+
+    <ImageView
+        android:id="@+id/drag_handle"
+        android:layout_width="48dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:scaleType="center"
+        android:src="@drawable/ic_drag"
+        android:contentDescription="@string/drag_item" />
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceListItem"
+            tools:text="@tools:sample/lorem[5]" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/txt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="?android:attr/textColorSecondary"
+            tools:text="@tools:sample/lorem[20]" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/action"
+        style="@style/Widget.Material3.Button.IconButton"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="8dp"
+        android:layout_weight="0"
+        android:focusable="true"
+        app:icon="@drawable/ic_clear"
+        app:iconSize="24dp"
+        app:iconGravity="textStart" />
+
+</androidx.appcompat.widget.LinearLayoutCompat>

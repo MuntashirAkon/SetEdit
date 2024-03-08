@@ -1,11 +1,11 @@
 package io.github.muntashirakon.setedit.adapters;
 
-import android.content.Context;
 import android.text.TextUtils;
 import android.widget.Filter;
 
 import androidx.annotation.NonNull;
 import androidx.core.util.Pair;
+import androidx.fragment.app.FragmentActivity;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,7 +21,7 @@ class JavaPropertiesRecyclerAdapter extends AbsRecyclerAdapter {
     private final List<Integer> mMatchedIndexes = new ArrayList<>();
     private Filter mFilter;
 
-    public JavaPropertiesRecyclerAdapter(Context context) {
+    public JavaPropertiesRecyclerAdapter(FragmentActivity context) {
         super(context);
         refresh();
     }

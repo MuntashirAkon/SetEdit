@@ -8,15 +8,15 @@ import java.util.StringTokenizer;
 
 import io.github.muntashirakon.setedit.utils.ActionResult;
 
-public class BootItem {
+public class ActionItem {
     @NonNull
-    public static BootItem unflattenFromString(@NonNull String str) {
+    public static ActionItem unflattenFromString(@NonNull String str) {
         StringTokenizer tokenizer = new StringTokenizer(str, "\t");
         int action = Integer.parseInt(tokenizer.nextToken());
         String table = tokenizer.nextToken();
         String name = tokenizer.nextToken();
         String value = tokenizer.hasMoreTokens() ? tokenizer.nextToken() : null;
-        return new BootItem(action, table, name, value);
+        return new ActionItem(action, table, name, value);
     }
 
     @ActionResult.ActionType
@@ -28,7 +28,7 @@ public class BootItem {
     @Nullable
     public final String value;
 
-    public BootItem(@ActionResult.ActionType int action, @NonNull String table, @NonNull String name, @Nullable String value) {
+    public ActionItem(@ActionResult.ActionType int action, @NonNull String table, @NonNull String name, @Nullable String value) {
         this.action = action;
         this.table = table;
         this.name = name;
@@ -50,8 +50,8 @@ public class BootItem {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof BootItem)) return false;
-        BootItem that = (BootItem) o;
+        if (!(o instanceof ActionItem)) return false;
+        ActionItem that = (ActionItem) o;
         return Objects.equals(table, that.table) && Objects.equals(name, that.name);
     }
 

@@ -7,9 +7,8 @@
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:orientation="vertical"
-        android:paddingStart="15dp"
-        android:paddingEnd="15dp"
-        android:paddingTop="15dp"
+        android:paddingHorizontal="16dp"
+        android:paddingTop="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -17,7 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginBottom="15dp">
+            android:layout_marginBottom="16dp">
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/title"
@@ -51,16 +50,16 @@
             style="@style/Widget.Material3.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/value">
+            android:hint="@string/value"
+            app:hintAnimationEnabled="true"
+            app:hintEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/txt"
-                style="@style/TextAppearance.MaterialComponents.Subtitle1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textMultiLine"
                 android:textIsSelectable="true"
-                android:textSize="16sp"
                 tools:text="@tools:sample/lorem[7]" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -70,6 +69,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/perform_this_action_on_reboot" />
+
+        <com.google.android.material.checkbox.MaterialCheckBox
+            android:id="@+id/checkbox_2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/perform_this_action_via_shortcut" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 

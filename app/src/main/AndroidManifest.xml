@@ -14,6 +14,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
 
     <uses-feature
         android:name="android.software.leanback"
@@ -42,6 +43,10 @@
                 <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".shortcut.ShortcutActivity"
+            android:launchMode="singleInstance"
+            android:exported="false" />
 
         <receiver
             android:name=".boot.BootReceiver"

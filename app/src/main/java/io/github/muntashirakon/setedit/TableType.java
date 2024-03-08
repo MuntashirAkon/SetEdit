@@ -12,4 +12,5 @@ public @interface TableType {
     String TABLE_JAVA = "java";
     String TABLE_ENV = "env";
     String TABLE_BOOT = "boot";
+    String TABLE_SHORTCUTS = "shortcuts";
 }

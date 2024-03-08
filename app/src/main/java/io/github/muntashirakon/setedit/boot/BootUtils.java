@@ -24,46 +24,46 @@ import io.github.muntashirakon.setedit.utils.AndroidPropertyUtils;
 import io.github.muntashirakon.setedit.utils.SettingsUtils;
 
 public final class BootUtils {
-    private static Set<BootItem> sBootItems;
+    private static Set<ActionItem> sActionItems;
 
-    public static void add(@NonNull Context context, @NonNull BootItem bootItem) {
-        getBootItems(context).remove(bootItem);
-        getBootItems(context).add(bootItem);
+    public static void add(@NonNull Context context, @NonNull ActionItem actionItem) {
+        getBootItems(context).remove(actionItem);
+        getBootItems(context).add(actionItem);
         persistBootItems(context);
     }
 
     public static void delete(@NonNull Context context, @NonNull String table, @NonNull String name) {
-        BootItem bootItem = new BootItem(ActionResult.TYPE_DELETE, table, name, null);
-        getBootItems(context).remove(bootItem);
+        ActionItem actionItem = new ActionItem(ActionResult.TYPE_DELETE, table, name, null);
+        getBootItems(context).remove(actionItem);
         persistBootItems(context);
     }
 
     @NonNull
-    public static Set<BootItem> getBootItems(@NonNull Context context) {
-        if (sBootItems != null) {
-            return sBootItems;
+    public static Set<ActionItem> getBootItems(@NonNull Context context) {
+        if (sActionItems != null) {
+            return sActionItems;
         }
-        sBootItems = Collections.synchronizedSet(new HashSet<>());
+        sActionItems = Collections.synchronizedSet(new HashSet<>());
         File propertyFile = getBootItemsFile(context);
         if (!propertyFile.exists()) {
-            return sBootItems;
+            return sActionItems;
         }
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(propertyFile)))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                 sBootItems.add(BootItem.unflattenFromString(line));
+                 sActionItems.add(ActionItem.unflattenFromString(line));
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return sBootItems;
+        return sActionItems;
     }
 
     public static void persistBootItems(@NonNull Context context) {
         File propertyFile = getBootItemsFile(context);
         try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(propertyFile)))) {
-            for (BootItem bootItem : sBootItems) {
-                writer.write(bootItem.flattenToString());
+            for (ActionItem actionItem : sActionItems) {
+                writer.write(actionItem.flattenToString());
                 writer.newLine();
             }
         } catch (IOException e) {
@@ -73,42 +73,22 @@ public final class BootUtils {
 
     public static boolean runBootActions(@NonNull Context context) {
         File logFile = getLogFile(context);
-        Set<BootItem> bootItems = getBootItems(context);
+        Set<ActionItem> actionItems = getBootItems(context);
         boolean isSuccess = true;
         try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(logFile)))) {
             writer.write("==> Run at " + System.currentTimeMillis() + "ms\n");
-            for (BootItem bootItem : bootItems) {
+            for (ActionItem actionItem : actionItems) {
                 try {
-                    ActionResult result;
-                    if (bootItem.table.equals(TableType.TABLE_PROPERTIES)) {
-                        assert bootItem.action == ActionResult.TYPE_UPDATE && bootItem.value != null;
-                        result = AndroidPropertyUtils.update(bootItem.name, bootItem.value);
-                    } else {
-                        switch (bootItem.action) {
-                            case ActionResult.TYPE_UPDATE:
-                                assert bootItem.value != null;
-                                result = SettingsUtils.update(context, bootItem.table, bootItem.name, bootItem.value);
-                                break;
-                            case ActionResult.TYPE_CREATE:
-                                assert bootItem.value != null;
-                                result = SettingsUtils.create(context, bootItem.table, bootItem.name, bootItem.value);
-                                break;
-                            case ActionResult.TYPE_DELETE:
-                                result = SettingsUtils.delete(context, bootItem.table, bootItem.name);
-                                break;
-                            default:
-                                throw new UnsupportedOperationException("Invalid action " + bootItem.action);
-                        }
-                    }
+                    ActionResult result = executeAction(context, actionItem);
                     if (result.successful) {
-                        writer.write("Success! " + bootItem.flattenToString() + "\n");
+                        writer.write("Success! " + actionItem.flattenToString() + "\n");
                     } else {
                         isSuccess = false;
-                        writer.write("Failed! " + result.getLogs() + " " + bootItem.flattenToString() + "\n");
+                        writer.write("Failed! " + result.getLogs() + " " + actionItem.flattenToString() + "\n");
                     }
                 } catch (Throwable th) {
                     isSuccess = false;
-                    writer.write("Failed! " + th.getMessage() + " " + bootItem.flattenToString() + "\n");
+                    writer.write("Failed! " + th.getMessage() + " " + actionItem.flattenToString() + "\n");
                 }
             }
         } catch (IOException e) {
@@ -116,6 +96,27 @@ public final class BootUtils {
             e.printStackTrace();
         }
         return isSuccess;
+    }
+
+    public static ActionResult executeAction(@NonNull Context context, @NonNull ActionItem actionItem)
+            throws UnsupportedOperationException, AssertionError {
+        if (actionItem.table.equals(TableType.TABLE_PROPERTIES)) {
+            assert actionItem.action == ActionResult.TYPE_UPDATE && actionItem.value != null;
+            return AndroidPropertyUtils.update(actionItem.name, actionItem.value);
+        } else {
+            switch (actionItem.action) {
+                case ActionResult.TYPE_UPDATE:
+                    assert actionItem.value != null;
+                    return SettingsUtils.update(context, actionItem.table, actionItem.name, actionItem.value);
+                case ActionResult.TYPE_CREATE:
+                    assert actionItem.value != null;
+                    return SettingsUtils.create(context, actionItem.table, actionItem.name, actionItem.value);
+                case ActionResult.TYPE_DELETE:
+                    return SettingsUtils.delete(context, actionItem.table, actionItem.name);
+                default:
+                    throw new UnsupportedOperationException("Invalid action " + actionItem.action);
+            }
+        }
     }
 
     @NonNull

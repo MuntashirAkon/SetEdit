@@ -41,8 +41,9 @@ import java.util.TimerTask;
 import io.github.muntashirakon.setedit.adapters.AbsRecyclerAdapter;
 import io.github.muntashirakon.setedit.adapters.AdapterProvider;
 import io.github.muntashirakon.setedit.adapters.SettingsRecyclerAdapter;
-import io.github.muntashirakon.setedit.boot.BootItem;
+import io.github.muntashirakon.setedit.boot.ActionItem;
 import io.github.muntashirakon.setedit.boot.BootUtils;
+import io.github.muntashirakon.setedit.shortcut.ShortcutUtils;
 import io.github.muntashirakon.setedit.utils.ActionResult;
 import io.github.muntashirakon.util.UiUtils;
 import me.zhanghai.android.fastscroll.FastScrollerBuilder;
@@ -93,9 +94,13 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
         EditText keyNameView = editorDialogView.findViewById(R.id.txtName);
         EditText keyValueView = editorDialogView.findViewById(R.id.txtValue);
         MaterialCheckBox performOnReboot = editorDialogView.findViewById(R.id.checkbox);
+        MaterialCheckBox performViaShortcut = editorDialogView.findViewById(R.id.checkbox_2);
         if (adapter.canSetOnReboot()) {
             performOnReboot.setVisibility(View.VISIBLE);
         } else performOnReboot.setVisibility(View.GONE);
+        if (adapter.canCreateShortcut()) {
+            performViaShortcut.setVisibility(View.VISIBLE);
+        } else performViaShortcut.setVisibility(View.GONE);
         keyNameView.requestFocus();
         new MaterialAlertDialogBuilder(this)
                 .setView(editorDialogView)
@@ -106,8 +111,12 @@ public class EditorActivity extends AppCompatActivity implements AdapterView.OnI
                     if (TextUtils.isEmpty(keyName) || keyValue == null) return;
                     adapter.create(keyName.toString(), keyValue.toString());
                     if (adapter.canSetOnReboot() && performOnReboot.isChecked()) {
-                        BootItem bootItem = new BootItem(ActionResult.TYPE_CREATE, EditorUtils.toTableType(adapter.getListType()), keyName.toString(), keyValue.toString());
-                        BootUtils.add(this, bootItem);
+                        ActionItem actionItem = new ActionItem(ActionResult.TYPE_CREATE, EditorUtils.toTableType(adapter.getListType()), keyName.toString(), keyValue.toString());
+                        BootUtils.add(this, actionItem);
+                    }
+                    if (adapter.canCreateShortcut() && performViaShortcut.isChecked()) {
+                        ActionItem actionItem = new ActionItem(ActionResult.TYPE_CREATE, EditorUtils.toTableType(adapter.getListType()), keyName.toString(), keyValue.toString());
+                        ShortcutUtils.displayShortcutTypeChooserDialog(this, actionItem);
                     }
                 }))
                 .setNegativeButton(android.R.string.cancel, null)

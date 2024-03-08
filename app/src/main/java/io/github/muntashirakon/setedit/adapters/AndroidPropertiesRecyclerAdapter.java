@@ -1,12 +1,12 @@
 package io.github.muntashirakon.setedit.adapters;
 
-import android.content.Context;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.widget.Filter;
 
 import androidx.annotation.NonNull;
 import androidx.core.util.Pair;
+import androidx.fragment.app.FragmentActivity;
 
 import com.topjohnwu.superuser.Shell;
 
@@ -25,7 +25,7 @@ class AndroidPropertiesRecyclerAdapter extends AbsRecyclerAdapter {
     private final List<Integer> matchedIndexes = new ArrayList<>();
     private Filter filter;
 
-    public AndroidPropertiesRecyclerAdapter(Context context) {
+    public AndroidPropertiesRecyclerAdapter(FragmentActivity context) {
         super(context);
         refresh();
     }
@@ -54,6 +54,11 @@ class AndroidPropertiesRecyclerAdapter extends AbsRecyclerAdapter {
 
     @Override
     public boolean canSetOnReboot() {
+        return true;
+    }
+
+    @Override
+    public boolean canCreateShortcut() {
         return true;
     }
 

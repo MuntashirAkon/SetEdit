@@ -1,14 +1,14 @@
 package io.github.muntashirakon.setedit.adapters;
 
-import android.content.Context;
+import androidx.fragment.app.FragmentActivity;
 
 import io.github.muntashirakon.setedit.SettingsType;
 import io.github.muntashirakon.setedit.TableTypeInt;
 
 public class AdapterProvider {
-    private final Context context;
+    private final FragmentActivity context;
 
-    public AdapterProvider(Context context) {
+    public AdapterProvider(FragmentActivity context) {
         this.context = context;
     }
 
@@ -28,6 +28,8 @@ public class AdapterProvider {
                 return new LinuxEnvironmentsRecyclerAdapter(context);
             case TableTypeInt.TABLE_BOOT:
                 return new BootItemsRecyclerAdapter(context);
+            case TableTypeInt.TABLE_SHORTCUTS:
+                return new ShortcutsRecyclerAdapter(context);
             default:
                 throw new IllegalArgumentException("Invalid position " + position);
         }

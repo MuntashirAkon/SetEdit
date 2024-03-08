@@ -8,6 +8,11 @@
         <item>@string/java_properties</item>
         <item>@string/linux_environment</item>
         <item>@string/boot_items</item>
+        <item>@string/shortcuts</item>
+    </string-array>
+    <string-array name="shortcut_choices">
+        <item>@string/create_new_shortcut</item>
+        <item>@string/add_to_existing_shortcuts</item>
     </string-array>
     <string-array name="theme_options">
         <item>@string/theme_system</item>

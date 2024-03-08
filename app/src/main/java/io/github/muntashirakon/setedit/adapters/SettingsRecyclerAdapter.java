@@ -12,6 +12,7 @@ import android.widget.Filter;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.util.Pair;
+import androidx.fragment.app.FragmentActivity;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,7 +36,7 @@ public class SettingsRecyclerAdapter extends AbsRecyclerAdapter {
     private boolean mDataValid;
     private Filter mFilter;
 
-    public SettingsRecyclerAdapter(Context context, @SettingsType String settingsType) {
+    public SettingsRecyclerAdapter(FragmentActivity context, @SettingsType String settingsType) {
         super(context);
         mSettingsType = settingsType;
         mMatchedPositions = new ArrayList<>();
@@ -81,6 +82,11 @@ public class SettingsRecyclerAdapter extends AbsRecyclerAdapter {
 
     @Override
     public boolean canSetOnReboot() {
+        return true;
+    }
+
+    @Override
+    public boolean canCreateShortcut() {
         return true;
     }
 

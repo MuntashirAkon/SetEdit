@@ -28,4 +28,17 @@
     <string name="theme">Theme</string>
     <string name="boot_items">Boot Items</string>
     <string name="perform_this_action_on_reboot">Perform this action on reboot</string>
+    <string name="shortcuts">Shortcuts</string>
+    <string name="perform_this_action_via_shortcut">Perform this action via a shortcut</string>
+    <string name="select_shortcuts">Select shortcuts</string>
+    <string name="create_new_shortcut">Create a new shortcut</string>
+    <string name="add_to_existing_shortcuts">Add to the existing shortcuts</string>
+    <string name="shortcut_icon">Icon</string>
+    <string name="pick_icon">Pick an icon</string>
+    <string name="error_creating_shortcut">Failed!</string>
+    <string name="error_creating_shortcut_description">Could not create shortcut as the launcher does not support creating pin shortcuts.</string>
+    <string name="create_shortcut">Create shortcut</string>
+    <string name="delete_shortcut_title">Delete shortcut</string>
+    <string name="delete_shortcut_message">SetEdit cannot delete a shortcut automatically. To delete the shortcut, you must remove it from the launcher where it was originally added.</string>
+    <string name="drag_item">Drag item</string>
 </resources>

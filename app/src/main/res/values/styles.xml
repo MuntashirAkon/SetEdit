@@ -11,4 +11,8 @@
         <item name="android:windowAllowEnterTransitionOverlap">true</item>
         <item name="android:windowAllowReturnTransitionOverlap">true</item>
     </style>
+
+    <style name="ShapeAppearance.AppTheme.CircleComponent" parent="">
+        <item name="cornerSize">50%</item>
+    </style>
 </resources>
