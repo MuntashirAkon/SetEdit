@@ -1,0 +1,7 @@
+[This is a release candidate]
+- Added option to modify settings after a reboot
+- Added option to create shortcuts to quickly modify settings
+- Use root to modify settings if available
+- Allow modifying android properties via Magisk resetprop command
+- Grant necessary permissions automatically using root
+and various other fixes and improvements.
