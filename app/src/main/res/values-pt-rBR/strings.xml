@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="save">Salvar</string>
+    <string name="error_no_support"><b>SetEdit</b> atualmente não suporta a edição desta tabela. Para ativar a edição, execute o seguinte comando em uma terminal de comando com root ou ADB shell:</string>
+    <string name="error_unexpected"><b>Falha inesperada:</b></string>
+    <string name="delete">Excluir</string>
+    <string name="help">Obter ajuda</string>
+    <string name="system_table">Tabela system</string>
+    <string name="secure_table">Tabela secure</string>
+    <string name="global_table">Tabela global</string>
+    <string name="android_properties">Propriedades Android</string>
+    <string name="java_properties">Propriedades Java</string>
+    <string name="linux_environment">Ambientes Linux</string>
+    <string name="startup_warning"><b>Aviso!</b> Não garantimos que os problemas causados pelo uso indevido desta ferramenta possam ser corrigidos, e não podemos ajudá-lo com tais problemas. Oferecemos suporte apenas para este app, e não para seu dispositivo.</string>
+    <string name="save_as_json">Salvar como JSON</string>
+    <string name="new_item">Novo item</string>
+    <string name="close">Fechar</string>
+    <string name="value">Valor</string>
+    <string name="name">Nome</string>
+    <string name="saved">Salvo</string>
+    <string name="failed">Falhou</string>
+    <string name="saved_to_file">Salvo em %s</string>
+    <string name="theme_system">Seguir sistema</string>
+    <string name="theme_day">Claro</string>
+    <string name="theme_night">Escuro</string>
+    <string name="theme_battery">Seguir economia de bateria</string>
+    <string name="theme">Tema</string>
+    <string name="boot_items">Itens de boot</string>
+    <string name="perform_this_action_on_reboot">Execute esta ação ao reinciar</string>
+    <string name="shortcuts">Atalhos</string>
+    <string name="perform_this_action_via_shortcut">Execute esta ação através de um atalho</string>
+    <string name="select_shortcuts">Selecionar atalhos</string>
+    <string name="create_new_shortcut">Criar novo atalho</string>
+    <string name="add_to_existing_shortcuts">Adicionar aos atalhos existentes</string>
+    <string name="shortcut_icon">Ícone</string>
+    <string name="pick_icon">Escolher um ícone</string>
+    <string name="error_creating_shortcut">Falhou!</string>
+    <string name="error_creating_shortcut_description">Não foi possível criar o atalho porque a launcher não suporta a criação de atalhos fixos.</string>
+    <string name="create_shortcut">Criar atalho</string>
+    <string name="delete_shortcut_title">Excluir atalho</string>
+    <string name="delete_shortcut_message">SetEdit não pode excluir um atalho automaticamente. Para excluir o atalho, você deve removê-lo da tela inicial onde foi adicionado originalmente.</string>
+    <string name="drag_item">Arrastar item</string>
+</resources>
