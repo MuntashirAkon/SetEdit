@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name" translatable="false">Settings Database Editor</string>
+    <string name="save">Сохранить</string>
+    <string name="error_no_support"><b>SetEdit</b> в настоящее время не поддерживает редактирование этой таблицы. Чтобы активировать возможность редактирования, выполните следующую команду в оболочке root или ADB:</string>
+    <string name="error_unexpected"><b>Непредвиденный сбой:</b></string>
+    <string name="delete">Удалить</string>
+    <string name="help">Получить помощь</string>
+    <string name="system_table">Таблица System</string>
+    <string name="secure_table">Таблица Secure</string>
+    <string name="global_table">Таблица Global</string>
+    <string name="android_properties">Свойства Android</string>
+    <string name="java_properties">Свойства Java</string>
+    <string name="linux_environment">Переменные среды Linux</string>
+    <string name="startup_warning"><b>Предупреждение!</b> Мы не гарантируем, что проблемы, вызванные неправильным использованием этой утилиты, могут быть устранены, и мы не можем помочь вам с любыми подобными проблемами. Мы поддерживаем только это приложение, а не ваше устройство</string>
+    <string name="save_as_json">Сохранить в JSON</string>
+    <string name="new_item">Новый Элемент</string>
+    <string name="close">Закрыть</string>
+    <string name="value">Значение</string>
+    <string name="name">Название</string>
+    <string name="saved">Сохранено</string>
+    <string name="failed">Ошибка</string>
+    <string name="saved_to_file">Сохранено в %s</string>
+    <string name="theme_system">Как в системе</string>
+    <string name="theme_day">Дневная</string>
+    <string name="theme_night">Ночная</string>
+    <string name="theme_battery">Зависит от режима экономии энергии</string>
+    <string name="theme">Тема</string>
+    <string name="boot_items">Элементы при загрузке</string>
+    <string name="perform_this_action_on_reboot">Применять это действие после перезагрузки</string>
+    <string name="shortcuts">Ярлыки</string>
+    <string name="perform_this_action_via_shortcut">Применять это действие с помощью ярлыка</string>
+    <string name="select_shortcuts">Выберите ярлыки</string>
+    <string name="create_new_shortcut">Создать новый ярлык</string>
+    <string name="add_to_existing_shortcuts">Добавить в существующий ярлык</string>
+    <string name="shortcut_icon">Иконка</string>
+    <string name="pick_icon">Выбрать иконку</string>
+    <string name="error_creating_shortcut">Ошибка!</string>
+    <string name="error_creating_shortcut_description">Не удалось создать ярлык, так как рабочий стол не поддерживает создание ярлыков</string>
+    <string name="create_shortcut">Создать ярлык</string>
+    <string name="delete_shortcut_title">Удалить ярлык</string>
+    <string name="delete_shortcut_message">SetEdit не может удалить ярлык автоматически. Чтобы удалить ярлык, необходимо удалить его из рабочего стола, в который он был добавлен.</string>
+    <string name="drag_item">Переместить элемент</string>
+</resources>
