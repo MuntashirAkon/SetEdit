@@ -9,6 +9,12 @@
     <string name="system_table">System Table</string>
     <string name="secure_table">Secure Table</string>
     <string name="global_table">Global Table</string>
+    <string name="moto_system_table">Moto System Table</string>
+    <string name="moto_secure_table">Moto Secure Table</string>
+    <string name="moto_global_table">Moto Global Table</string>
+    <string name="lineage_system_table">Lineage System Table</string>
+    <string name="lineage_secure_table">Lineage Secure Table</string>
+    <string name="lineage_global_table">Lineage Global Table</string>
     <string name="android_properties">Android Properties</string>
     <string name="java_properties">Java Properties</string>
     <string name="linux_environment">Linux Environments</string>

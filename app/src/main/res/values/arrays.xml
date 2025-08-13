@@ -9,6 +9,12 @@
         <item>@string/linux_environment</item>
         <item>@string/boot_items</item>
         <item>@string/shortcuts</item>
+        <item>@string/moto_system_table</item>
+        <item>@string/moto_secure_table</item>
+        <item>@string/moto_global_table</item>
+        <item>@string/lineage_system_table</item>
+        <item>@string/lineage_secure_table</item>
+        <item>@string/lineage_global_table</item>
     </string-array>
     <string-array name="shortcut_choices">
         <item>@string/create_new_shortcut</item>

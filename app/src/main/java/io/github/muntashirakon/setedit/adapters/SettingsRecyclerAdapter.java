@@ -14,11 +14,14 @@ import androidx.annotation.Nullable;
 import androidx.core.util.Pair;
 import androidx.fragment.app.FragmentActivity;
 
+import com.topjohnwu.superuser.Shell;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+import io.github.muntashirakon.setedit.EditorUtils;
 import io.github.muntashirakon.setedit.R;
 import io.github.muntashirakon.setedit.SettingsType;
 import io.github.muntashirakon.setedit.TableTypeInt;
@@ -77,33 +80,55 @@ public class SettingsRecyclerAdapter extends AbsRecyclerAdapter {
                 return TableTypeInt.TABLE_SECURE;
             case SettingsType.GLOBAL_SETTINGS:
                 return TableTypeInt.TABLE_GLOBAL;
+            case SettingsType.MOTO_SYSTEM_SETTINGS:
+                return TableTypeInt.TABLE_MOTO_SYSTEM;
+            case SettingsType.MOTO_SECURE_SETTINGS:
+                return TableTypeInt.TABLE_MOTO_SECURE;
+            case SettingsType.MOTO_GLOBAL_SETTINGS:
+                return TableTypeInt.TABLE_MOTO_GLOBAL;
+            case SettingsType.LINEAGE_SYSTEM_SETTINGS:
+                return TableTypeInt.TABLE_LINEAGE_SYSTEM;
+            case SettingsType.LINEAGE_SECURE_SETTINGS:
+                return TableTypeInt.TABLE_LINEAGE_SECURE;
+            case SettingsType.LINEAGE_GLOBAL_SETTINGS:
+                return TableTypeInt.TABLE_LINEAGE_GLOBAL;
         }
     }
 
     @Override
     public boolean canSetOnReboot() {
-        return true;
+        return canEdit();
     }
 
     @Override
     public boolean canCreateShortcut() {
-        return true;
+        return canEdit();
     }
 
     @Override
     public boolean canCreate() {
-        return true;
+        return canEdit();
     }
 
     @Override
     public boolean canEdit() {
-        return true;
+        switch (mSettingsType) {
+            case SettingsType.MOTO_GLOBAL_SETTINGS:
+            case SettingsType.MOTO_SECURE_SETTINGS:
+            case SettingsType.MOTO_SYSTEM_SETTINGS:
+                return Boolean.TRUE.equals(Shell.isAppGrantedRoot()) ||
+                        Boolean.TRUE.equals(EditorUtils.checkSettingsPermission(context, mSettingsType));
+            default:
+                return true;
+        }
     }
 
     @Override
     public boolean canDelete() {
-        return true;
+        return canEdit();
     }
+
+
 
     @Override
     public void create(String keyName, String newValue) {
@@ -223,9 +248,11 @@ public class SettingsRecyclerAdapter extends AbsRecyclerAdapter {
 
                 @Override
                 protected void publishResults(CharSequence constraint, FilterResults results) {
-                    //noinspection unchecked
-                    AdapterUtils.notifyDataSetChanged(SettingsRecyclerAdapter.this, mMatchedPositions,
-                            (List<Integer>) results.values);
+                    if (results.values!=null) {
+                        //noinspection unchecked
+                        AdapterUtils.notifyDataSetChanged(SettingsRecyclerAdapter.this, mMatchedPositions,
+                                (List<Integer>) results.values);
+                    }
                 }
             };
         }
@@ -237,7 +264,7 @@ public class SettingsRecyclerAdapter extends AbsRecyclerAdapter {
         try {
             ContentResolver contentResolver = context.getContentResolver();
             @Nullable
-            Cursor query = contentResolver.query(Uri.parse("content://settings/" + settingsType),
+            Cursor query = contentResolver.query(Uri.parse("content://" + settingsType),
                     columns, null, null, null);
             return new SettingsCursor(query);
         } catch (Throwable th) {

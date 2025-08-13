@@ -30,6 +30,18 @@ public class AdapterProvider {
                 return new BootItemsRecyclerAdapter(context);
             case TableTypeInt.TABLE_SHORTCUTS:
                 return new ShortcutsRecyclerAdapter(context);
+            case TableTypeInt.TABLE_MOTO_SYSTEM:
+                return new SettingsRecyclerAdapter(context, SettingsType.MOTO_SYSTEM_SETTINGS);
+            case TableTypeInt.TABLE_MOTO_SECURE:
+                return new SettingsRecyclerAdapter(context, SettingsType.MOTO_SECURE_SETTINGS);
+            case TableTypeInt.TABLE_MOTO_GLOBAL:
+                return new SettingsRecyclerAdapter(context, SettingsType.MOTO_GLOBAL_SETTINGS);
+            case TableTypeInt.TABLE_LINEAGE_SYSTEM:
+                return new SettingsRecyclerAdapter(context, SettingsType.LINEAGE_SYSTEM_SETTINGS);
+            case TableTypeInt.TABLE_LINEAGE_SECURE:
+                return new SettingsRecyclerAdapter(context, SettingsType.LINEAGE_SECURE_SETTINGS);
+            case TableTypeInt.TABLE_LINEAGE_GLOBAL:
+                return new SettingsRecyclerAdapter(context, SettingsType.LINEAGE_GLOBAL_SETTINGS);
             default:
                 throw new IllegalArgumentException("Invalid position " + position);
         }

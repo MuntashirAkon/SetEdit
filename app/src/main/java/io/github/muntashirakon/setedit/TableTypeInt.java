@@ -13,4 +13,10 @@ public @interface TableTypeInt {
     int TABLE_ENV = 5;
     int TABLE_BOOT = 6;
     int TABLE_SHORTCUTS = 7;
+    int TABLE_MOTO_SYSTEM = 8;
+    int TABLE_MOTO_SECURE = 9;
+    int TABLE_MOTO_GLOBAL = 10;
+    int TABLE_LINEAGE_SYSTEM = 11;
+    int TABLE_LINEAGE_SECURE = 12;
+    int TABLE_LINEAGE_GLOBAL = 13;
 }
