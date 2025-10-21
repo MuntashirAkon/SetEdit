@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name" translatable="false">Settings Database Editor</string>
+    <string name="save">保存</string>
+    <string name="error_no_support"><b>SetEdit</b> 当前不支持编辑此表。要启用编辑，请在 root 或 ADB shell 中运行以下命令：</string>
+    <string name="error_unexpected"><b>意外失败：</b></string>
+    <string name="delete">删除</string>
+    <string name="help">获取帮助</string>
+    <string name="system_table">系统表</string>
+    <string name="secure_table">安全表</string>
+    <string name="global_table">全局表</string>
+    <string name="android_properties">Android 属性</string>
+    <string name="java_properties">Java 属性</string>
+    <string name="linux_environment">Linux 环境</string>
+    <string name="startup_warning"><b>警告！</b>我们不保证可以修复因不当使用此工具引起的问题，并且我们无法帮助您解决任何此类问题。我们只支持此应用程序，而不是您的设备。</string>
+    <string name="save_as_json">保存为 JSON</string>
+    <string name="new_item">新项目</string>
+    <string name="close">关闭</string>
+    <string name="value">值</string>
+    <string name="name">名称</string>
+    <string name="saved">已保存</string>
+    <string name="failed">失败</string>
+    <string name="saved_to_file">已保存到%s</string>
+    <string name="theme_system">跟随系统</string>
+    <string name="theme_day">日间</string>
+    <string name="theme_night">夜间</string>
+    <string name="theme_battery">跟随电池节能</string>
+    <string name="theme">主题</string>
+    <string name="boot_items">启动项</string>
+    <string name="perform_this_action_on_reboot">在重启时执行此操作</string>
+    <string name="shortcuts">快捷方式</string>
+    <string name="perform_this_action_via_shortcut">通过快捷方式执行此操作</string>
+    <string name="select_shortcuts">选择快捷方式</string>
+    <string name="create_new_shortcut">创建新快捷方式</string>
+    <string name="add_to_existing_shortcuts">添加到现有快捷方式</string>
+    <string name="shortcut_icon">图标</string>
+    <string name="pick_icon">选择一个图标</string>
+    <string name="error_creating_shortcut">失败！</string>
+    <string name="error_creating_shortcut_description">无法创建快捷方式，因为启动器不支持创建固定快捷方式。</string>
+    <string name="create_shortcut">创建快捷方式</string>
+    <string name="delete_shortcut_title">删除快捷方式</string>
+    <string name="delete_shortcut_message">SetEdit 无法自动删除快捷方式。要删除快捷方式，您必须从最初添加它的启动器中移除它。</string>
+    <string name="drag_item">拖动项目</string>
+</resources>
