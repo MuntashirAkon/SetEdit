@@ -2,9 +2,9 @@ name: Build Android APK
 
 on:
   push:
-    branches: [ "shizuku-lock-history" ]
+    branches: [ "master" ]
   pull_request:
-    branches: [ "shizuku-lock-history" ]
+    branches: [ "master" ]
   workflow_dispatch:
 
 jobs:
