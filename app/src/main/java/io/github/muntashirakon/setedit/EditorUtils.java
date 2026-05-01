@@ -48,6 +48,9 @@ public class EditorUtils {
                     try {
                         Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS)
                                 .setData(Uri.parse("package:" + BuildConfig.APPLICATION_ID));
+                        if (!(context instanceof android.app.Activity)) {
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        }
                         context.startActivity(intent);
                     } catch (Exception e) {
                         e.printStackTrace();
