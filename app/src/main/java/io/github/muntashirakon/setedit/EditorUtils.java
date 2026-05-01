@@ -61,8 +61,16 @@ public class EditorUtils {
         } else if (Boolean.TRUE.equals(Shell.isAppGrantedRoot())) {
             Shell.cmd("pm grant " + BuildConfig.APPLICATION_ID + " " + permission).exec();
         }
-        if (Shizuku.pingBinder() && Shizuku.checkSelfPermission() == PackageManager.PERMISSION_GRANTED) {
-            return true;
+        if (Shizuku.pingBinder()) {
+            if (Shizuku.checkSelfPermission() == PackageManager.PERMISSION_GRANTED) {
+                return true;
+            } else if (!Shizuku.shouldShowRequestPermissionRationale()) {
+                try {
+                    Shizuku.requestPermission(0);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
         return ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED;
     }
