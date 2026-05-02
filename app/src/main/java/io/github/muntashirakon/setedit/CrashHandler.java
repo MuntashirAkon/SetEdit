@@ -30,6 +30,16 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
         SharedPreferences prefs = context.getSharedPreferences("crash_logs", Context.MODE_PRIVATE);
         prefs.edit().putString("last_crash", stackTrace).commit();
 
+        try {
+            java.io.File file = new java.io.File(context.getExternalFilesDir(null), "crash_log.txt");
+            java.io.FileOutputStream fos = new java.io.FileOutputStream(file);
+            fos.write(stackTrace.getBytes());
+            fos.close();
+            Log.e("SetEditCrash", "Wrote crash log to " + file.getAbsolutePath());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
         // Launch ReadCrashActivity so it pops up immediately
         android.content.Intent intent = new android.content.Intent(context, ReadCrashActivity.class);
         intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK | android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK);
