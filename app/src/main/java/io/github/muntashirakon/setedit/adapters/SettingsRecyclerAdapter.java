@@ -111,9 +111,10 @@ public class SettingsRecyclerAdapter extends AbsRecyclerAdapter {
         if (result.successful) {
             refresh();
         } else {
+            String logs = result.getLogs() != null ? result.getLogs() : "Permission denied or operation failed.";
             setMessage(new SpannableStringBuilder(context.getText(R.string.error_unexpected))
                     .append(" ")
-                    .append(result.getLogs()));
+                    .append(logs));
         }
     }
 
@@ -123,9 +124,10 @@ public class SettingsRecyclerAdapter extends AbsRecyclerAdapter {
         if (result.successful) {
             refresh();
         } else {
+            String logs = result.getLogs() != null ? result.getLogs() : "Permission denied or operation failed.";
             setMessage(new SpannableStringBuilder(context.getText(R.string.error_unexpected))
                     .append(" ")
-                    .append(result.getLogs()));
+                    .append(logs));
         }
     }
 
@@ -135,9 +137,10 @@ public class SettingsRecyclerAdapter extends AbsRecyclerAdapter {
         if (result.successful) {
             refresh();
         } else {
+            String logs = result.getLogs() != null ? result.getLogs() : "Permission denied or operation failed.";
             setMessage(new SpannableStringBuilder(context.getText(R.string.error_unexpected))
                     .append(" ")
-                    .append(result.getLogs()));
+                    .append(logs));
         }
     }
 
