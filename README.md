@@ -1,5 +1,5 @@
 # SetEdit
-
+ 
 The open source version of **4A Settings Database Editor**.
 
 [<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
